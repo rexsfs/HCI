@@ -26,14 +26,14 @@
 <body>
 <div class="app-container">
   <div class="header">
-    <button class="back-button" onclick="window.location.href='search.html'">
+    <button class="back-button" onclick="goBackToSearch()">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div class="header-title">Search Result</div>
   </div>
 
   <div class="search-section">
-    <div class="search-bar-card" onclick="window.location.href='search.html'">
+    <div class="search-bar-card" onclick="goBackToSearch()">
       <i class="fas fa-search"></i>
       <div class="search-text">
         <span class="main-text" id="searchLocationDisplay">Loading...</span>
@@ -52,7 +52,36 @@
 </div>
 
 <script>
-  // Room type occupancy mapping - follows user selection
+  // =====================================================
+  // CHECK IF COMING FROM HOME PAGE - RESET SEARCH
+  // =====================================================
+  function shouldResetSearch() {
+    // Check if coming from home page
+    const referrer = document.referrer;
+    if (referrer && (referrer.includes('home.html') || referrer.includes('/nav/home.html'))) {
+      console.log('Coming from home page - resetting search');
+      return true;
+    }
+    // Check sessionStorage flag
+    const fromHome = sessionStorage.getItem('fromHome');
+    if (fromHome === 'true') {
+      sessionStorage.removeItem('fromHome');
+      console.log('Reset flag found - resetting search');
+      return true;
+    }
+    return false;
+  }
+
+  function goBackToSearch() {
+    // Clear search params before going back
+    if (shouldResetSearch()) {
+      localStorage.removeItem('searchParams');
+      localStorage.removeItem('searchParamsForHotel');
+    }
+    window.location.href = 'search.html';
+  }
+
+  // Room type occupancy mapping
   const ROOM_OCCUPANCY = {
     standard: { adults: 2, children: 0, display: "2 Adults" },
     deluxe: { adults: 2, children: 1, display: "2 Adults + 1 Child" },
@@ -134,6 +163,12 @@
   }
 
   function getSearchParams() {
+    // If coming from home, return null (no search params)
+    if (shouldResetSearch()) {
+      console.log('Resetting search params - returning null');
+      return null;
+    }
+    
     const params = localStorage.getItem('searchParams');
     if (params) {
       return JSON.parse(params);
@@ -159,12 +194,12 @@
     } else {
       const locationDisplay = document.getElementById('searchLocationDisplay');
       if (locationDisplay) {
-        locationDisplay.textContent = "Kuala Lumpur City Centre";
+        locationDisplay.textContent = "No search data";
       }
       
       const dateDisplay = document.getElementById('searchDateDisplay');
       if (dateDisplay) {
-        dateDisplay.textContent = "15 Apr 2026 - 18 Apr 2026 · 2 Adults · 1 Room";
+        dateDisplay.textContent = "Please go back and search";
       }
     }
   }
@@ -176,39 +211,93 @@
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   }
 
+  // =====================================================
+  // FIXED SEARCH FUNCTION - Handles both "KL" and "kl"
+  // =====================================================
   function searchHotels(searchLocation, allHotels) {
     if (!searchLocation) return [];
     
     const searchTerm = searchLocation.toLowerCase().trim();
     const searchWords = searchTerm.split(' ');
     
+    // Expanded abbreviation mapping - case insensitive
     const abbreviationMap = {
-      'kl': 'kuala lumpur', 'klcc': 'kuala lumpur', 'phg': 'pahang', 'pah': 'pahang',
-      'lgk': 'langkawi', 'lang': 'langkawi', 'pn': 'penang', 'pen': 'penang',
-      'jb': 'johor', 'jhr': 'johor', 'mlk': 'malacca', 'melaka': 'malacca',
-      'ked': 'kedah', 'kdh': 'kedah', 'ktn': 'kuantan'
+      'kl': 'kuala lumpur',
+      'klcc': 'kuala lumpur',
+      'phg': 'pahang',
+      'pah': 'pahang',
+      'lgk': 'langkawi',
+      'lang': 'langkawi',
+      'pn': 'penang',
+      'pen': 'penang',
+      'jb': 'johor',
+      'jhr': 'johor',
+      'mlk': 'malacca',
+      'melaka': 'malacca',
+      'ked': 'kedah',
+      'kdh': 'kedah',
+      'ktn': 'kuantan'
     };
     
-    let expandedSearchTerm = searchTerm;
+    // Check if search term matches any abbreviation (including partial)
+    let expandedSearchTerms = [searchTerm];
     let expandedWords = [];
     
+    // Check for exact abbreviation match
     if (abbreviationMap[searchTerm]) {
-      expandedSearchTerm = abbreviationMap[searchTerm];
-      expandedWords = expandedSearchTerm.split(' ');
+      expandedSearchTerms.push(abbreviationMap[searchTerm]);
+      expandedWords = abbreviationMap[searchTerm].split(' ');
+    }
+    
+    // Check if search term contains any abbreviation
+    for (const [abbr, full] of Object.entries(abbreviationMap)) {
+      if (searchTerm.includes(abbr) && abbr.length > 1) {
+        expandedSearchTerms.push(full);
+        expandedWords.push(...full.split(' '));
+      }
+    }
+    
+    // Remove duplicates
+    expandedSearchTerms = [...new Set(expandedSearchTerms)];
+    expandedWords = [...new Set(expandedWords)];
+    
+    // Also add common variations
+    if (searchTerm === 'kl' || searchTerm.includes('kl ')) {
+      expandedSearchTerms.push('kuala lumpur', 'klcc');
     }
     
     return allHotels.filter(hotel => {
       const hotelLocation = hotel.location.toLowerCase();
       const hotelName = hotel.name.toLowerCase();
       
-      const locationMatch = hotelLocation.includes(expandedSearchTerm) || hotelLocation.includes(searchTerm);
-      const nameMatch = hotelName.includes(expandedSearchTerm) || hotelName.includes(searchTerm);
+      // Check all expanded search terms
+      let locationMatch = false;
+      for (const term of expandedSearchTerms) {
+        if (hotelLocation.includes(term)) {
+          locationMatch = true;
+          break;
+        }
+      }
       
-      const keywordMatch = hotel.keywords.some(keyword => 
-        expandedSearchTerm.includes(keyword) || keyword.includes(expandedSearchTerm) ||
-        searchTerm.includes(keyword) || keyword.includes(searchTerm)
-      );
+      let nameMatch = false;
+      for (const term of expandedSearchTerms) {
+        if (hotelName.includes(term)) {
+          nameMatch = true;
+          break;
+        }
+      }
       
+      // Check keywords
+      const keywordMatch = hotel.keywords.some(keyword => {
+        for (const term of expandedSearchTerms) {
+          if (keyword.includes(term) || term.includes(keyword)) {
+            return true;
+          }
+        }
+        return false;
+      });
+      
+      // Check individual words
       let wordMatch = false;
       const wordsToCheck = [...new Set([...searchWords, ...expandedWords])];
       for (const word of wordsToCheck) {
@@ -221,7 +310,8 @@
         }
       }
       
-      const isKL = searchTerm === 'kl' || searchTerm.includes('kl ');
+      // Special handling for KL
+      const isKL = searchTerm === 'kl' || searchTerm.includes('kl ') || searchTerm === 'KL';
       const hasKL = hotelLocation.includes('kuala lumpur') || hotelLocation.includes('klcc') ||
                     hotelName.includes('kuala lumpur');
       
@@ -232,20 +322,36 @@
   function updateResultsCount(count, searchLocation) {
     const countDisplay = document.getElementById('resultsCountDisplay');
     if (countDisplay) {
-      if (count === 0) {
+      if (count === 0 && searchLocation) {
         countDisplay.innerHTML = `<span>0 hotels</span> found for "${searchLocation}"`;
       } else if (count === 1) {
         countDisplay.innerHTML = `<span>1 hotel</span> found for your search`;
-      } else {
+      } else if (count > 1) {
         countDisplay.innerHTML = `<span>${count} hotels</span> found for your search`;
+      } else {
+        countDisplay.innerHTML = `<span>No search</span> Please search again`;
       }
     }
   }
 
-  function renderHotels(hotels, selectedRoomTypeValue) {
+  function renderHotels(hotels, selectedRoomTypeValue, hasSearchParams) {
     const container = document.getElementById('hotelListContainer');
     
     if (!container) return;
+    
+    if (!hasSearchParams) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px; color: #666;">
+          <i class="fas fa-search" style="font-size: 64px; color: #ccc; margin-bottom: 20px; display: block;"></i>
+          <h3 style="margin-bottom: 10px;">No Search Data</h3>
+          <p>Please go back to the search page and enter your travel details.</p>
+          <button onclick="window.location.href='search.html'" style="margin-top: 20px; padding: 12px 24px; background: #1e3a5f; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            <i class="fas fa-arrow-left"></i> Back to Search
+          </button>
+        </div>
+      `;
+      return;
+    }
     
     if (hotels.length === 0) {
       container.innerHTML = `
@@ -261,17 +367,14 @@
     let hotelsHTML = '';
     
     hotels.forEach(hotel => {
-      // Get the specific room based on user's selected room type
       let displayRoom = getRoomByTypeValue(hotel.allRooms, selectedRoomTypeValue);
       let occupancyDisplay = getOccupancyDisplay(selectedRoomTypeValue);
       
-      // If the hotel doesn't have the exact room type, use first available room
       if (!displayRoom && hotel.allRooms.length > 0) {
         displayRoom = hotel.allRooms[0];
         occupancyDisplay = getOccupancyDisplay(displayRoom.typeValue);
       }
       
-      // Generate amenities HTML
       let amenitiesHTML = '';
       hotel.amenities.forEach(amenity => {
         let icon = 'fa-hotel';
@@ -330,8 +433,9 @@
     
     const ALL_HOTELS = convertToAllHotels();
     const searchParams = getSearchParams();
+    const hasSearchParams = searchParams !== null;
     
-    if (searchParams) {
+    if (hasSearchParams) {
       displaySearchInfo(searchParams);
       
       const searchLocation = searchParams.location;
@@ -345,9 +449,8 @@
       console.log('Found ' + matchingHotels.length + ' matching hotels');
       
       updateResultsCount(matchingHotels.length, searchLocation);
-      renderHotels(matchingHotels, selectedRoomTypeValue);
+      renderHotels(matchingHotels, selectedRoomTypeValue, true);
       
-      // Save search params for hotel page to use
       localStorage.setItem('searchParamsForHotel', JSON.stringify({
         roomTypeValue: selectedRoomTypeValue,
         roomTypeName: searchParams.roomType || 'Standard Room',
@@ -359,31 +462,15 @@
       }));
       
     } else {
-      console.log('No search parameters found, using default');
-      
-      const defaultLocation = "Kuala Lumpur City Centre";
-      const defaultRoomTypeValue = "standard";
-      
-      const locationDisplay = document.getElementById('searchLocationDisplay');
-      if (locationDisplay) {
-        locationDisplay.textContent = defaultLocation;
-      }
-      
-      const dateDisplay = document.getElementById('searchDateDisplay');
-      if (dateDisplay) {
-        dateDisplay.textContent = "15 Apr 2026 - 18 Apr 2026 · 2 Adults · 1 Room";
-      }
-      
-      const defaultHotels = searchHotels(defaultLocation, ALL_HOTELS);
-      
-      updateResultsCount(defaultHotels.length, defaultLocation);
-      renderHotels(defaultHotels, defaultRoomTypeValue);
+      console.log('No search parameters found - showing empty state');
+      displaySearchInfo(null);
+      updateResultsCount(0, null);
+      renderHotels([], 'standard', false);
     }
   }
 
-  // =====================================================
-  // LOAD NAVIGATION AND INITIALIZE PAGE
-  // =====================================================
+  // Make goBackToSearch available globally
+  window.goBackToSearch = goBackToSearch;
   
   fetch('nav.html')
     .then(response => {

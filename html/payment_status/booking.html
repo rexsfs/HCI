@@ -140,18 +140,28 @@
 </div>
 
 <script>
-  // Get booking data from URL or localStorage
+  // Room type occupancy mapping
+  const ROOM_OCCUPANCY = {
+    standard: { adults: 2, children: 0, display: "2 Adults" },
+    deluxe: { adults: 2, children: 1, display: "2 Adults, 1 Child" },
+    suite: { adults: 2, children: 2, display: "2 Adults, 2 Children" },
+    family: { adults: 4, children: 2, display: "4 Adults, 2 Children" },
+    presidential: { adults: 4, children: 2, display: "4 Adults, 2 Children" }
+  };
+
   let bookingData = {
     hotelId: null,
     roomId: null,
     roomPrice: 0,
     roomType: '',
+    roomTypeValue: '',
     hotelName: '',
     location: '',
     checkIn: '',
     checkOut: '',
     nights: 0,
-    guests: ''
+    adults: 2,
+    children: 0
   };
 
   // Function to get URL parameters
@@ -162,33 +172,58 @@
       roomId: urlParams.get('roomId'),
       checkIn: urlParams.get('checkIn'),
       checkOut: urlParams.get('checkOut'),
-      guests: urlParams.get('guests'),
+      adults: urlParams.get('adults'),
+      children: urlParams.get('children'),
       nights: urlParams.get('nights')
     };
+  }
+
+  // Function to calculate nights between two dates
+  function calculateNights(checkIn, checkOut) {
+    if (!checkIn || !checkOut) return 0;
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+
+  // Function to format date with check-in/out times
+  function formatDateWithTime(dateString, isCheckIn) {
+    if (!dateString) return 'Not selected';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const time = isCheckIn ? '3:00 PM' : '12:00 PM';
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} (${time})`;
+  }
+
+  // Function to format date for display
+  function formatDate(dateString) {
+    if (!dateString) return 'Not selected';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  }
+
+  // Function to get guest display text
+  function getGuestDisplay(roomTypeValue, adults, children) {
+    const occupancy = ROOM_OCCUPANCY[roomTypeValue];
+    if (occupancy) {
+      return occupancy.display;
+    }
+    return `${adults} Adult${adults > 1 ? 's' : ''}${children > 0 ? `, ${children} Child${children > 1 ? 'ren' : ''}` : ''}`;
   }
 
   // Function to load booking data
   function loadBookingData() {
     const params = getUrlParams();
-    
-    // Try to get data from localStorage first (from booking.html)
-    const savedBooking = localStorage.getItem('currentBooking');
     let hotel = null;
     let room = null;
     
-    if (savedBooking) {
-      const booking = JSON.parse(savedBooking);
-      bookingData = booking;
-      
-      // Get hotel and room details from database
-      if (bookingData.hotelId && HOTELS_DATABASE[bookingData.hotelId]) {
-        hotel = HOTELS_DATABASE[bookingData.hotelId];
-        if (bookingData.roomId) {
-          room = hotel.rooms.find(r => r.id == bookingData.roomId);
-        }
-      }
-    } else if (params.hotelId && params.roomId) {
-      // Get from URL parameters
+    console.log('URL Parameters:', params);
+    
+    // FIRST: Try to get from URL parameters (when coming from room.html)
+    if (params.hotelId && params.roomId) {
       bookingData.hotelId = parseInt(params.hotelId);
       bookingData.roomId = parseInt(params.roomId);
       
@@ -197,28 +232,109 @@
         room = hotel.rooms.find(r => r.id == bookingData.roomId);
       }
       
-      // Set date and guest info from URL
-      if (params.checkIn) bookingData.checkIn = params.checkIn;
-      if (params.checkOut) bookingData.checkOut = params.checkOut;
-      if (params.nights) bookingData.nights = parseInt(params.nights);
-      if (params.guests) bookingData.guests = params.guests;
+      // IMPORTANT: Get dates from URL parameters
+      if (params.checkIn) {
+        bookingData.checkIn = params.checkIn;
+        console.log('Check-in from URL:', bookingData.checkIn);
+      }
+      if (params.checkOut) {
+        bookingData.checkOut = params.checkOut;
+        console.log('Check-out from URL:', bookingData.checkOut);
+      }
+      if (params.adults) bookingData.adults = parseInt(params.adults);
+      if (params.children) bookingData.children = parseInt(params.children);
+      if (params.nights) {
+        bookingData.nights = parseInt(params.nights);
+      } else if (bookingData.checkIn && bookingData.checkOut) {
+        bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
+      }
     }
     
-    // If still no data, try to get from selectedRoom in localStorage
+    // SECOND: Try to get from searchParamsForHotel (from result.html)
     if (!hotel || !room) {
-      const selectedRoom = localStorage.getItem('selectedRoom');
-      if (selectedRoom) {
-        const roomData = JSON.parse(selectedRoom);
-        if (roomData.hotelId && HOTELS_DATABASE[roomData.hotelId]) {
-          hotel = HOTELS_DATABASE[roomData.hotelId];
-          room = hotel.rooms.find(r => r.id == roomData.roomId);
-          bookingData.hotelId = roomData.hotelId;
-          bookingData.roomId = roomData.roomId;
+      const savedSearchParams = localStorage.getItem('searchParamsForHotel');
+      console.log('Search params from localStorage:', savedSearchParams);
+      
+      if (savedSearchParams) {
+        const searchParams = JSON.parse(savedSearchParams);
+        
+        // Get hotel from URL or use saved data
+        const hotelId = params.hotelId || searchParams.hotelId;
+        if (hotelId && HOTELS_DATABASE[hotelId]) {
+          hotel = HOTELS_DATABASE[hotelId];
+          bookingData.hotelId = parseInt(hotelId);
+          
+          // Find room by type value
+          if (searchParams.roomTypeValue) {
+            room = hotel.rooms.find(r => r.typeValue === searchParams.roomTypeValue);
+            if (room) {
+              bookingData.roomId = room.id;
+              bookingData.roomTypeValue = searchParams.roomTypeValue;
+            }
+          }
+        }
+        
+        // Get dates from searchParams if not already set
+        if (!bookingData.checkIn && searchParams.checkIn) {
+          bookingData.checkIn = searchParams.checkIn;
+          console.log('Check-in from searchParams:', bookingData.checkIn);
+        }
+        if (!bookingData.checkOut && searchParams.checkOut) {
+          bookingData.checkOut = searchParams.checkOut;
+          console.log('Check-out from searchParams:', bookingData.checkOut);
+        }
+        if (searchParams.adults) bookingData.adults = searchParams.adults;
+        if (searchParams.children) bookingData.children = searchParams.children;
+        
+        // Calculate nights
+        if (bookingData.checkIn && bookingData.checkOut) {
+          bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
         }
       }
     }
     
-    // Set default dates if not provided
+    // THIRD: Try to get from currentBooking (from room.html)
+    if (!hotel || !room) {
+      const savedBooking = localStorage.getItem('currentBooking');
+      console.log('Current booking from localStorage:', savedBooking);
+      
+      if (savedBooking) {
+        const booking = JSON.parse(savedBooking);
+        bookingData = { ...bookingData, ...booking };
+        
+        if (bookingData.hotelId && HOTELS_DATABASE[bookingData.hotelId]) {
+          hotel = HOTELS_DATABASE[bookingData.hotelId];
+          if (bookingData.roomId) {
+            room = hotel.rooms.find(r => r.id == bookingData.roomId);
+          }
+        }
+      }
+    }
+    
+    // FOURTH: Try to get from searchParams (original search data)
+    if (!bookingData.checkIn || !bookingData.checkOut) {
+      const originalSearchParams = localStorage.getItem('searchParams');
+      console.log('Original search params:', originalSearchParams);
+      
+      if (originalSearchParams) {
+        const searchParams = JSON.parse(originalSearchParams);
+        if (searchParams.checkIn && !bookingData.checkIn) {
+          bookingData.checkIn = searchParams.checkIn;
+          console.log('Check-in from original search:', bookingData.checkIn);
+        }
+        if (searchParams.checkOut && !bookingData.checkOut) {
+          bookingData.checkOut = searchParams.checkOut;
+          console.log('Check-out from original search:', bookingData.checkOut);
+        }
+        
+        // Calculate nights
+        if (bookingData.checkIn && bookingData.checkOut) {
+          bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
+        }
+      }
+    }
+    
+    // Set default dates if still not provided
     if (!bookingData.checkIn) {
       const today = new Date();
       const checkInDate = new Date(today);
@@ -229,16 +345,27 @@
       checkOutDate.setDate(checkInDate.getDate() + 3);
       bookingData.checkOut = checkOutDate.toISOString().split('T')[0];
       bookingData.nights = 3;
+      console.log('Using default dates:', bookingData.checkIn, bookingData.checkOut);
     }
     
-    if (!bookingData.guests) {
-      bookingData.guests = '2 Adults, 1 Child';
+    // Calculate nights if not set
+    if (!bookingData.nights || bookingData.nights === 0) {
+      bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
     }
+    
+    console.log('Final booking data:', {
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      nights: bookingData.nights,
+      hotelId: bookingData.hotelId,
+      roomId: bookingData.roomId
+    });
     
     if (hotel && room) {
       bookingData.hotelName = hotel.name;
       bookingData.location = hotel.location;
       bookingData.roomType = room.type;
+      bookingData.roomTypeValue = room.typeValue;
       bookingData.roomPrice = room.price;
       
       // Calculate prices
@@ -246,29 +373,40 @@
       const tax = roomTotal * 0.1;
       const total = roomTotal + tax;
       
+      // Get guest display text
+      const guestDisplay = getGuestDisplay(bookingData.roomTypeValue, bookingData.adults, bookingData.children);
+      
       // Update the page with data
       document.getElementById('location').textContent = bookingData.location;
       document.getElementById('hotelName').textContent = bookingData.hotelName;
       document.getElementById('roomType').textContent = bookingData.roomType;
-      document.getElementById('checkIn').textContent = formatDate(bookingData.checkIn) + ' (3:00 PM)';
-      document.getElementById('checkOut').textContent = formatDate(bookingData.checkOut) + ' (12:00 PM)';
+      document.getElementById('checkIn').textContent = formatDateWithTime(bookingData.checkIn, true);
+      document.getElementById('checkOut').textContent = formatDateWithTime(bookingData.checkOut, false);
       document.getElementById('nights').textContent = bookingData.nights + ' Nights';
-      document.getElementById('guests').textContent = bookingData.guests;
+      document.getElementById('guests').textContent = guestDisplay;
       document.getElementById('nightsCount').textContent = bookingData.nights;
       document.getElementById('roomPrice').textContent = 'RM ' + roomTotal.toLocaleString();
       document.getElementById('taxAmount').textContent = 'RM ' + tax.toLocaleString();
       document.getElementById('totalPrice').textContent = 'RM ' + total.toLocaleString();
+      
+      console.log('Booking loaded successfully:', {
+        hotel: bookingData.hotelName,
+        room: bookingData.roomType,
+        checkIn: formatDateWithTime(bookingData.checkIn, true),
+        checkOut: formatDateWithTime(bookingData.checkOut, false),
+        nights: bookingData.nights,
+        guests: guestDisplay,
+        roomTotal: roomTotal,
+        total: total
+      });
+    } else {
+      console.error('Hotel or room not found');
+      document.getElementById('location').textContent = 'Error loading data';
+      document.getElementById('hotelName').textContent = 'Please go back and try again';
     }
     
     // Load user profile data if logged in
     loadUserProfile();
-  }
-  
-  // Function to format date
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
   }
   
   // Function to load user profile from data.js
@@ -302,7 +440,7 @@
   
   // Function to show help
   function showHelp() {
-    alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available');
+    alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available\n\nCheck-in: 3:00 PM\nCheck-out: 12:00 PM');
   }
   
   // Function to proceed to payment
@@ -317,7 +455,8 @@
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,
       nights: bookingData.nights,
-      guests: bookingData.guests,
+      adults: bookingData.adults,
+      children: bookingData.children,
       totalPrice: document.getElementById('totalPrice').textContent,
       bookingDate: new Date().toISOString()
     };
@@ -337,7 +476,7 @@
     .then(html => {
       document.getElementById('nav-container').innerHTML = html;
       
-      const currentPage = window.location.pathname.split('/').pop() || 'reservation_summary.html';
+      const currentPage = window.location.pathname.split('/').pop() || 'booking.html';
       const navItems = document.querySelectorAll('.nav-item');
       
       navItems.forEach(item => {

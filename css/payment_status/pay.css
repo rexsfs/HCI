@@ -1,0 +1,615 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Logo Header - Centered at Top */
+    .logo-header {
+      padding: 32px 24px 24px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Header with Back Button and Title */
+    .back-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #1e2f3e;
+    }
+
+    /* Total Price Section */
+    .total-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .total-card {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+      color: white;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .total-label {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) with larger */
+    .total-amount {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .total-amount small {
+      font-size: 1rem;
+      font-weight: normal;
+    }
+
+    /* Payment Method Section */
+    .payment-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Payment Method Options */
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: #f8fafd;
+      border: 1px solid #edf2f7;
+      border-radius: 60px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .payment-option:hover {
+      border-color: #1e3a5f;
+      background: #f0f4fa;
+      transform: translateY(-2px);
+    }
+
+    .payment-radio {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .payment-icon {
+      width: 44px;
+      font-size: 1.5rem;
+      color: #1e3a5f;
+      text-align: center;
+    }
+
+    .payment-info {
+      flex: 1;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .payment-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .payment-desc {
+      font-size: 1rem;
+      color: #6c7e8e;
+      margin-top: 4px;
+    }
+
+    /* Cash Option Section - matches guideline.html .eula-card style */
+    .cash-section {
+      background: #fef4e6;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #f5e6d0;
+    }
+
+    .cash-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .cash-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .cash-label {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1e3a5f;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .cash-note {
+      font-size: 1rem;
+      color: #b88b3a;
+      margin-left: 36px;
+    }
+
+    /* Deadline Logic Section */
+    .deadline-section {
+      background: #fff5e6;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 0;
+      border-left: 4px solid #f5a623;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .deadline-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #b88b3a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .deadline-message {
+      font-size: 1rem;
+      color: #6c7e8e;
+      line-height: 1.4;
+    }
+
+    .deadline-message strong {
+      color: #e67e22;
+    }
+
+    /* Action Buttons */
+    .action-section {
+      padding: 20px 24px 40px 24px;
+      background: white;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .action-section a {
+      text-decoration: none;
+    }
+
+    /* Matches guideline.html .amenity-tag style */
+    .help-btn {
+      background: #f0f4fa;
+      border: none;
+      padding: 18px 22px;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .help-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .confirm-pay-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 2;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .confirm-pay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    .confirm-pay-btn a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .logo-header {
+        padding: 24px 20px 20px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .back-header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.4rem;
+      }
+
+      .total-section {
+        padding: 16px 20px;
+      }
+
+      .total-card {
+        padding: 20px;
+      }
+
+      .total-label {
+        font-size: 1.2rem;
+      }
+
+      .total-amount {
+        font-size: 1.8rem;
+      }
+
+      .total-amount small {
+        font-size: 0.9rem;
+      }
+
+      .payment-section {
+        padding: 16px 20px;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .payment-option {
+        padding: 14px 18px;
+      }
+
+      .payment-icon {
+        font-size: 1.3rem;
+        width: 38px;
+      }
+
+      .payment-name {
+        font-size: 1.2rem;
+      }
+
+      .payment-desc {
+        font-size: 0.9rem;
+      }
+
+      .cash-section {
+        padding: 16px;
+      }
+
+      .cash-label {
+        font-size: 1.2rem;
+      }
+
+      .cash-note {
+        font-size: 0.9rem;
+        margin-left: 32px;
+      }
+
+      .deadline-section {
+        padding: 16px;
+      }
+
+      .deadline-title {
+        font-size: 1.2rem;
+      }
+
+      .deadline-message {
+        font-size: 0.9rem;
+      }
+
+      .action-section {
+        padding: 16px 20px 45px 20px;
+        gap: 12px;
+      }
+
+      .help-btn {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+      }
+
+      .confirm-pay-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .logo-header {
+        padding: 20px 16px 16px 16px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .back-header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.3rem;
+      }
+
+      .total-section {
+        padding: 14px 16px;
+      }
+
+      .total-card {
+        padding: 16px;
+      }
+
+      .total-label {
+        font-size: 1.1rem;
+      }
+
+      .total-amount {
+        font-size: 1.6rem;
+      }
+
+      .total-amount small {
+        font-size: 0.85rem;
+      }
+
+      .payment-section {
+        padding: 14px 16px;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+      }
+
+      .payment-option {
+        padding: 12px 16px;
+      }
+
+      .payment-icon {
+        font-size: 1.2rem;
+        width: 34px;
+      }
+
+      .payment-name {
+        font-size: 1.1rem;
+      }
+
+      .payment-desc {
+        font-size: 0.85rem;
+      }
+
+      .cash-section {
+        padding: 14px;
+      }
+
+      .cash-label {
+        font-size: 1.1rem;
+      }
+
+      .cash-note {
+        font-size: 0.85rem;
+        margin-left: 28px;
+      }
+
+      .deadline-section {
+        padding: 14px;
+      }
+
+      .deadline-title {
+        font-size: 1.1rem;
+      }
+
+      .deadline-message {
+        font-size: 0.85rem;
+      }
+
+      .action-section {
+        padding: 14px 16px 55px 16px;
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .help-btn, .confirm-pay-btn {
+        width: 100%;
+      }
+
+      .help-btn {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+      }
+
+      .confirm-pay-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+    }

@@ -11,7 +11,7 @@
 <body>
 <div class="app-container">
   <div class="header">
-    <button class="back-button" onclick="window.location.href='/html/nav/home.html'">
+    <button class="back-button" onclick="goBackToHome()">
       <i class="fas fa-arrow-left"></i>
     </button>
     <div class="header-title">Search Your Destination</div>
@@ -80,9 +80,69 @@
   const searchBtn = document.getElementById('searchDestinationBtn');
 
   // =====================================================
+  // FUNCTION: Check if coming from home page
+  // =====================================================
+  function isComingFromHome() {
+    const referrer = document.referrer;
+    // Check if referrer is home page
+    if (referrer && (referrer.includes('home.html') || referrer.includes('/nav/home.html'))) {
+      return true;
+    }
+    // Also check if there's a flag in sessionStorage
+    const fromHome = sessionStorage.getItem('fromHome');
+    if (fromHome === 'true') {
+      sessionStorage.removeItem('fromHome');
+      return true;
+    }
+    return false;
+  }
+
+  // =====================================================
+  // FUNCTION: Reset form to default values
+  // =====================================================
+  function resetToDefault() {
+    console.log('Resetting form to default values');
+    
+    // Reset location
+    if (locationInput) {
+      locationInput.value = '';
+    }
+    
+    // Reset dates to default
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    if (checkInInput) {
+      const defaultCheckIn = formatDate(today);
+      checkInInput.value = defaultCheckIn;
+      checkInInput.min = defaultCheckIn;
+    }
+    
+    if (checkOutInput) {
+      const defaultCheckOut = formatDate(tomorrow);
+      checkOutInput.value = defaultCheckOut;
+      checkOutInput.min = defaultCheckOut;
+    }
+    
+    // Reset room type
+    if (roomSelect) {
+      roomSelect.value = '';
+    }
+    
+    // Clear saved form data
+    localStorage.removeItem('searchFormData');
+  }
+
+  // =====================================================
   // FUNCTION: Save search data to localStorage
   // =====================================================
   function saveSearchData() {
+    // Don't save if coming from home (we want fresh search)
+    if (isComingFromHome()) {
+      return;
+    }
+    
     const searchData = {
       location: locationInput.value.trim(),
       checkIn: checkInInput.value,
@@ -97,6 +157,12 @@
   // FUNCTION: Load saved search data from localStorage
   // =====================================================
   function loadSavedSearchData() {
+    // If coming from home, reset to default and don't load saved data
+    if (isComingFromHome()) {
+      resetToDefault();
+      return;
+    }
+    
     const savedData = localStorage.getItem('searchFormData');
     if (savedData) {
       const searchData = JSON.parse(savedData);
@@ -120,21 +186,12 @@
       if (searchData.roomType && roomSelect) {
         roomSelect.value = searchData.roomType;
       }
+    } else {
+      // No saved data, set defaults
+      setDefaultDates();
     }
   }
 
-  // =====================================================
-  // FUNCTION: Clear search form data (optional, called after search)
-  // =====================================================
-  function clearSearchData() {
-    localStorage.removeItem('searchFormData');
-  }
-
-  // Set default dates with proper formatting
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  
   // Format date to YYYY-MM-DD for input value
   function formatDate(date) {
     const year = date.getFullYear();
@@ -143,9 +200,12 @@
     return `${year}-${month}-${day}`;
   }
   
-  // Set default values ONLY if no saved data exists
+  // Set default dates
   function setDefaultDates() {
-    // Only set defaults if inputs are empty
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
     if (checkInInput && !checkInInput.value) {
       const defaultCheckIn = formatDate(today);
       checkInInput.value = defaultCheckIn;
@@ -159,78 +219,89 @@
     }
   }
 
-  // Load saved data first, then set defaults for any empty fields
-  loadSavedSearchData();
-  setDefaultDates();
+  // =====================================================
+  // FUNCTION: Go back to home
+  // =====================================================
+  function goBackToHome() {
+    // Set flag that we're going to home
+    sessionStorage.setItem('fromHome', 'true');
+    window.location.href = '/html/nav/home.html';
+  }
 
-  // Handle date validation and auto-update
-  if (checkInInput && checkOutInput) {
-    checkInInput.addEventListener('change', function() {
-      const selectedCheckIn = new Date(this.value);
-      const nextDay = new Date(selectedCheckIn);
-      nextDay.setDate(selectedCheckIn.getDate() + 1);
-      
-      // Update min date for check-out
-      checkOutInput.min = this.value;
-      
-      // If current check-out is before or equal to new check-in, update it
-      if (checkOutInput.value <= this.value) {
-        checkOutInput.value = formatDate(nextDay);
-      }
-      
-      // Save data when changed
-      saveSearchData();
-    });
+  // Initialize page
+  function initializePage() {
+    // First, load saved data (which will reset if coming from home)
+    loadSavedSearchData();
     
-    // Validate on page load
-    checkOutInput.addEventListener('change', function() {
-      if (checkInInput.value && this.value <= checkInInput.value) {
-        const nextDay = new Date(checkInInput.value);
-        nextDay.setDate(nextDay.getDate() + 1);
-        this.value = formatDate(nextDay);
-        alert('Check-out date must be after check-in date. It has been adjusted.');
-      }
-      // Save data when changed
-      saveSearchData();
-    });
+    // Set up event listeners for saving data
+    setupEventListeners();
   }
 
-  // Save data when typing in location
-  if (locationInput) {
-    locationInput.addEventListener('input', function() {
-      saveSearchData();
-    });
-  }
+  // Set up event listeners for saving data
+  function setupEventListeners() {
+    // Handle date validation and auto-update
+    if (checkInInput && checkOutInput) {
+      checkInInput.addEventListener('change', function() {
+        const selectedCheckIn = new Date(this.value);
+        const nextDay = new Date(selectedCheckIn);
+        nextDay.setDate(selectedCheckIn.getDate() + 1);
+        
+        // Update min date for check-out
+        checkOutInput.min = this.value;
+        
+        // If current check-out is before or equal to new check-in, update it
+        if (checkOutInput.value <= this.value) {
+          checkOutInput.value = formatDate(nextDay);
+        }
+        
+        // Save data when changed
+        saveSearchData();
+      });
+      
+      checkOutInput.addEventListener('change', function() {
+        if (checkInInput.value && this.value <= checkInInput.value) {
+          const nextDay = new Date(checkInInput.value);
+          nextDay.setDate(nextDay.getDate() + 1);
+          this.value = formatDate(nextDay);
+          alert('Check-out date must be after check-in date. It has been adjusted.');
+        }
+        saveSearchData();
+      });
+    }
 
-  // Save data when room type changes
-  if (roomSelect) {
-    roomSelect.addEventListener('change', function() {
-      saveSearchData();
-    });
+    // Save data when typing in location
+    if (locationInput) {
+      locationInput.addEventListener('input', function() {
+        saveSearchData();
+      });
+    }
+
+    // Save data when room type changes
+    if (roomSelect) {
+      roomSelect.addEventListener('change', function() {
+        saveSearchData();
+      });
+    }
   }
 
   // Function to show error message
   function showError(inputId, message) {
     const inputElement = document.getElementById(inputId);
     if (inputElement) {
-      // Find the parent field container
       let container = inputElement.closest('.search-field, .date-field, .room-field');
       if (container) {
         container.classList.add('error');
         
-        // Remove existing error message if any
         const existingError = container.querySelector('.error-message');
         if (existingError) {
           existingError.remove();
         }
         
-        // Create new error message
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
         errorDiv.textContent = message;
         container.appendChild(errorDiv);
         
-        // Add red border to input/select container
         const inputContainer = container.querySelector('.location-input, .date-input, .room-select');
         if (inputContainer) {
           inputContainer.style.borderColor = '#e74c3c';
@@ -257,19 +328,16 @@
   
   // Validation and search function
   function validateAndSearch() {
-    // Get values
     const location = locationInput.value.trim();
     const checkIn = checkInInput.value;
     const checkOut = checkOutInput.value;
     const roomType = roomSelect.value;
     const roomTypeText = roomSelect.options[roomSelect.selectedIndex]?.text || '';
     
-    // Clear previous error messages
     clearErrors();
     
     let isValid = true;
     
-    // Validate Location
     if (!location) {
       showError('locationInput', 'Please enter a destination');
       isValid = false;
@@ -278,40 +346,33 @@
       isValid = false;
     }
     
-    // Validate Check-In Date
     if (!checkIn) {
       showError('checkInDate', 'Please select check-in date');
       isValid = false;
     }
     
-    // Validate Check-Out Date
     if (!checkOut) {
       showError('checkOutDate', 'Please select check-out date');
       isValid = false;
     }
     
-    // Validate that check-out is after check-in
     if (checkIn && checkOut && checkOut <= checkIn) {
       showError('checkOutDate', 'Check-out date must be after check-in date');
       isValid = false;
     }
     
-    // Validate Room Type
     if (!roomType) {
       showError('roomSelect', 'Please select a room type');
       isValid = false;
     }
     
-    // If all validations pass, proceed to search results
     if (isValid) {
-      // Format dates for display (DD MMM YYYY format)
       function formatDisplayDate(dateString) {
         const date = new Date(dateString);
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
       }
       
-      // Store search parameters in localStorage to use in results page
       const searchParams = {
         location: location,
         checkIn: checkIn,
@@ -325,17 +386,11 @@
       };
       
       localStorage.setItem('searchParams', JSON.stringify(searchParams));
-      
-      // IMPORTANT: Keep the form data saved so when user clicks back, it's still there
-      // Do NOT clear the searchFormData here - this preserves the input when going back
-      // saveSearchData() is already called on every input change, so data is already saved
-      
-      // Navigate to search results page
       window.location.href = '/html/search/result.html';
     }
   }
   
-  // Add real-time validation clearing on input
+  // Add real-time validation clearing
   if (locationInput) {
     locationInput.addEventListener('input', function() {
       const container = this.closest('.search-field');
@@ -393,7 +448,6 @@
     searchBtn.addEventListener('click', validateAndSearch);
   }
   
-  // Also allow Enter key to trigger search
   if (locationInput) {
     locationInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
@@ -402,7 +456,10 @@
     });
   }
   
-  // Load navigation component from external file
+  // Make goBackToHome available globally
+  window.goBackToHome = goBackToHome;
+  
+  // Load navigation component and initialize page
   fetch('nav.html')
     .then(response => {
       if (!response.ok) {
@@ -413,7 +470,6 @@
     .then(html => {
       document.getElementById('nav-container').innerHTML = html;
       
-      // After loading nav, set active state
       const currentPage = window.location.pathname.split('/').pop() || 'search.html';
       const navItems = document.querySelectorAll('.nav-item');
       
@@ -423,10 +479,12 @@
           item.classList.add('active');
         }
       });
+      
+      // Initialize page after nav is loaded
+      initializePage();
     })
     .catch(error => {
       console.error('Error loading navigation:', error);
-      // Fallback navigation
       document.getElementById('nav-container').innerHTML = `
         <div class="bottom-nav">
           <div class="nav-buttons">
@@ -450,15 +508,7 @@
         </div>
       `;
       
-      // Set active state for fallback
-      const currentPage = window.location.pathname.split('/').pop() || 'search.html';
-      const navItems = document.querySelectorAll('.nav-item');
-      navItems.forEach(item => {
-        const href = item.getAttribute('href');
-        if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
-          item.classList.add('active');
-        }
-      });
+      initializePage();
     });
 </script>
 </body>
