@@ -111,9 +111,9 @@
     const roomId = urlParams.get('roomId');
     
     if (hotelId && roomId) {
-      window.location.href = `payment.html?hotelId=${hotelId}&roomId=${roomId}`;
+      window.location.href = `../payment_status/booking.html?hotelId=${hotelId}&roomId=${roomId}`;
     } else {
-      window.location.href = 'payment.html';
+      window.location.href = '../payment_status/booking.html';
     }
   }
   
@@ -165,22 +165,22 @@
       document.getElementById('nav-container').innerHTML = `
         <div class="bottom-nav">
           <div class="nav-buttons">
-            <a href="home.html" class="nav-item">
+            <a href="../nav/home.html" class="nav-item">
               <i class="fas fa-home"></i>
               <span>Home</span>
             </a>
-            <a href="history.html" class="nav-item">
+            <a href="../nav/history.html" class="nav-item">
               <i class="fas fa-clock-rotate-left"></i>
               <span>History</span>
             </a>
-            <a href="profile.html" class="nav-item">
+            <a href="../nav/profile.html" class="nav-item">
               <i class="fas fa-user-circle"></i>
               <span>Profile</span>
             </a>
-            <button class="nav-item" id="serviceBtn">
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
               <i class="fas fa-headset"></i>
               <span>Service</span>
-            </button>
+            </a>
           </div>
         </div>
       `;

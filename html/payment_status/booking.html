@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Reservation Summary</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <link rel="stylesheet" href="/css/payment_status/book.css">
+  <script src="../hotel/hotel.js"></script>
+  <script src="../hotel/room.js"></script>
+  <script src="../login_register/data.js"></script>
+</head>
+<body>
+<div class="app-container">
+
+  <div class="back-header">
+    <button class="back-button" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Booking Details</div>
+  </div>
+  
+  <!-- Logo Section - Centered at Top -->
+  <div class="logo-header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+  <!-- Consider Button -->
+  <div class="consider-section">
+    <button class="consider-btn" onclick="goBackToHotel()">
+      <i class="fas fa-undo-alt"></i>
+      Have Second Thought? Click Here to Browse More
+    </button>
+  </div>
+
+  <!-- Reservation Summary Section -->
+  <div class="summary-section">
+    <div class="section-title">Reservation Room Summary</div>
+
+    <!-- Room Details -->
+    <div class="details-card">
+      <div class="detail-row">
+        <span class="detail-label">Location:</span>
+        <span class="detail-value" id="location">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Hotel:</span>
+        <span class="detail-value" id="hotelName">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Room Type:</span>
+        <span class="detail-value" id="roomType">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Check-In:</span>
+        <span class="detail-value" id="checkIn">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Check-Out:</span>
+        <span class="detail-value" id="checkOut">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Nights:</span>
+        <span class="detail-value" id="nights">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Guests:</span>
+        <span class="detail-value" id="guests">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Price Breakdown -->
+    <div class="price-breakdown">
+      <div class="price-row">
+        <span class="price-label">Room Price (<span id="nightsCount">0</span> nights)</span>
+        <span class="price-amount" id="roomPrice">RM 0</span>
+      </div>
+      <div class="price-row">
+        <span class="price-label">Taxes & Service Charges (10%)</span>
+        <span class="price-amount" id="taxAmount">RM 0</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">Total Price</span>
+        <span class="total-amount" id="totalPrice">RM 0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Information Section -->
+  <div class="contact-section">
+    <div class="section-title">Contact Information</div>
+    
+    <div class="contact-note">
+      <i class="fas fa-user-circle"></i>
+      Autofilled with logged-in user information
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input autofilled" id="fullName" readonly>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input autofilled" id="email" readonly>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Phone Number</label>
+      <input type="tel" class="form-input autofilled" id="phone" readonly>
+    </div>
+
+    <div class="contact-note" style="background: #f0f4fa; color: #6c7e8e;">
+      <i class="fas fa-info-circle"></i>
+      If not logged in, please fill out all information manually
+    </div>
+  </div>
+
+  <!-- Help and Pay Section -->
+  <div class="action-section">
+    <button class="help-btn" onclick="showHelp()">
+      <i class="fas fa-question-circle"></i>
+      Help
+    </button>
+    <button class="pay-btn" onclick="proceedToPayment()">
+      <i class="fas fa-credit-card"></i>
+      Click to Pay
+    </button>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Get booking data from URL or localStorage
+  let bookingData = {
+    hotelId: null,
+    roomId: null,
+    roomPrice: 0,
+    roomType: '',
+    hotelName: '',
+    location: '',
+    checkIn: '',
+    checkOut: '',
+    nights: 0,
+    guests: ''
+  };
+
+  // Function to get URL parameters
+  function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      hotelId: urlParams.get('hotelId'),
+      roomId: urlParams.get('roomId'),
+      checkIn: urlParams.get('checkIn'),
+      checkOut: urlParams.get('checkOut'),
+      guests: urlParams.get('guests'),
+      nights: urlParams.get('nights')
+    };
+  }
+
+  // Function to load booking data
+  function loadBookingData() {
+    const params = getUrlParams();
+    
+    // Try to get data from localStorage first (from booking.html)
+    const savedBooking = localStorage.getItem('currentBooking');
+    let hotel = null;
+    let room = null;
+    
+    if (savedBooking) {
+      const booking = JSON.parse(savedBooking);
+      bookingData = booking;
+      
+      // Get hotel and room details from database
+      if (bookingData.hotelId && HOTELS_DATABASE[bookingData.hotelId]) {
+        hotel = HOTELS_DATABASE[bookingData.hotelId];
+        if (bookingData.roomId) {
+          room = hotel.rooms.find(r => r.id == bookingData.roomId);
+        }
+      }
+    } else if (params.hotelId && params.roomId) {
+      // Get from URL parameters
+      bookingData.hotelId = parseInt(params.hotelId);
+      bookingData.roomId = parseInt(params.roomId);
+      
+      if (HOTELS_DATABASE[bookingData.hotelId]) {
+        hotel = HOTELS_DATABASE[bookingData.hotelId];
+        room = hotel.rooms.find(r => r.id == bookingData.roomId);
+      }
+      
+      // Set date and guest info from URL
+      if (params.checkIn) bookingData.checkIn = params.checkIn;
+      if (params.checkOut) bookingData.checkOut = params.checkOut;
+      if (params.nights) bookingData.nights = parseInt(params.nights);
+      if (params.guests) bookingData.guests = params.guests;
+    }
+    
+    // If still no data, try to get from selectedRoom in localStorage
+    if (!hotel || !room) {
+      const selectedRoom = localStorage.getItem('selectedRoom');
+      if (selectedRoom) {
+        const roomData = JSON.parse(selectedRoom);
+        if (roomData.hotelId && HOTELS_DATABASE[roomData.hotelId]) {
+          hotel = HOTELS_DATABASE[roomData.hotelId];
+          room = hotel.rooms.find(r => r.id == roomData.roomId);
+          bookingData.hotelId = roomData.hotelId;
+          bookingData.roomId = roomData.roomId;
+        }
+      }
+    }
+    
+    // Set default dates if not provided
+    if (!bookingData.checkIn) {
+      const today = new Date();
+      const checkInDate = new Date(today);
+      checkInDate.setDate(today.getDate() + 7);
+      bookingData.checkIn = checkInDate.toISOString().split('T')[0];
+      
+      const checkOutDate = new Date(checkInDate);
+      checkOutDate.setDate(checkInDate.getDate() + 3);
+      bookingData.checkOut = checkOutDate.toISOString().split('T')[0];
+      bookingData.nights = 3;
+    }
+    
+    if (!bookingData.guests) {
+      bookingData.guests = '2 Adults, 1 Child';
+    }
+    
+    if (hotel && room) {
+      bookingData.hotelName = hotel.name;
+      bookingData.location = hotel.location;
+      bookingData.roomType = room.type;
+      bookingData.roomPrice = room.price;
+      
+      // Calculate prices
+      const roomTotal = bookingData.roomPrice * bookingData.nights;
+      const tax = roomTotal * 0.1;
+      const total = roomTotal + tax;
+      
+      // Update the page with data
+      document.getElementById('location').textContent = bookingData.location;
+      document.getElementById('hotelName').textContent = bookingData.hotelName;
+      document.getElementById('roomType').textContent = bookingData.roomType;
+      document.getElementById('checkIn').textContent = formatDate(bookingData.checkIn) + ' (3:00 PM)';
+      document.getElementById('checkOut').textContent = formatDate(bookingData.checkOut) + ' (12:00 PM)';
+      document.getElementById('nights').textContent = bookingData.nights + ' Nights';
+      document.getElementById('guests').textContent = bookingData.guests;
+      document.getElementById('nightsCount').textContent = bookingData.nights;
+      document.getElementById('roomPrice').textContent = 'RM ' + roomTotal.toLocaleString();
+      document.getElementById('taxAmount').textContent = 'RM ' + tax.toLocaleString();
+      document.getElementById('totalPrice').textContent = 'RM ' + total.toLocaleString();
+    }
+    
+    // Load user profile data if logged in
+    loadUserProfile();
+  }
+  
+  // Function to format date
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  }
+  
+  // Function to load user profile from data.js
+  function loadUserProfile() {
+    if (typeof UserDB !== 'undefined') {
+      const currentUser = UserDB.getCurrentUser();
+      if (currentUser) {
+        document.getElementById('fullName').value = currentUser.fullName || 'Not set';
+        document.getElementById('email').value = currentUser.email || 'Not set';
+        document.getElementById('phone').value = currentUser.phone || 'Not set';
+      } else {
+        document.getElementById('fullName').value = 'Please login to autofill';
+        document.getElementById('email').value = 'Please login to autofill';
+        document.getElementById('phone').value = 'Please login to autofill';
+      }
+    } else {
+      document.getElementById('fullName').value = 'Guest User';
+      document.getElementById('email').value = 'guest@example.com';
+      document.getElementById('phone').value = '+60XXXXXXXXX';
+    }
+  }
+  
+  // Function to go back to hotel page
+  function goBackToHotel() {
+    if (bookingData.hotelId) {
+      window.location.href = `hotel.html?id=${bookingData.hotelId}`;
+    } else {
+      window.location.href = 'view_more.html';
+    }
+  }
+  
+  // Function to show help
+  function showHelp() {
+    alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available');
+  }
+  
+  // Function to proceed to payment
+  function proceedToPayment() {
+    // Save final booking data before proceeding to payment
+    const finalBooking = {
+      hotelId: bookingData.hotelId,
+      roomId: bookingData.roomId,
+      hotelName: bookingData.hotelName,
+      roomType: bookingData.roomType,
+      roomPrice: bookingData.roomPrice,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      nights: bookingData.nights,
+      guests: bookingData.guests,
+      totalPrice: document.getElementById('totalPrice').textContent,
+      bookingDate: new Date().toISOString()
+    };
+    
+    localStorage.setItem('finalBooking', JSON.stringify(finalBooking));
+    window.location.href = 'pay_by.html';
+  }
+  
+  // Load navigation and booking data
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'reservation_summary.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+      
+      loadBookingData();
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="../nav/history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="../nav/profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      loadBookingData();
+    });
+</script>
+</body>
+</html>
