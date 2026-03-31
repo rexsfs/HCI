@@ -263,6 +263,7 @@
         if (hotelId && HOTELS_DATABASE[hotelId]) {
           hotel = HOTELS_DATABASE[hotelId];
           bookingData.hotelId = parseInt(hotelId);
+          bookingData.location = hotel.location;
           
           // Find room by type value
           if (searchParams.roomTypeValue) {
@@ -304,6 +305,7 @@
         
         if (bookingData.hotelId && HOTELS_DATABASE[bookingData.hotelId]) {
           hotel = HOTELS_DATABASE[bookingData.hotelId];
+          bookingData.location = hotel.location;
           if (bookingData.roomId) {
             room = hotel.rooms.find(r => r.id == bookingData.roomId);
           }
@@ -358,7 +360,8 @@
       checkOut: bookingData.checkOut,
       nights: bookingData.nights,
       hotelId: bookingData.hotelId,
-      roomId: bookingData.roomId
+      roomId: bookingData.roomId,
+      location: bookingData.location
     });
     
     if (hotel && room) {
@@ -391,6 +394,7 @@
       
       console.log('Booking loaded successfully:', {
         hotel: bookingData.hotelName,
+        location: bookingData.location,
         room: bookingData.roomType,
         checkIn: formatDateWithTime(bookingData.checkIn, true),
         checkOut: formatDateWithTime(bookingData.checkOut, false),
@@ -443,13 +447,16 @@
     alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available\n\nCheck-in: 3:00 PM\nCheck-out: 12:00 PM');
   }
   
-  // Function to proceed to payment
+  // =====================================================
+  // FIXED: Function to proceed to payment - Added location field
+  // =====================================================
   function proceedToPayment() {
     // Save final booking data before proceeding to payment
     const finalBooking = {
       hotelId: bookingData.hotelId,
       roomId: bookingData.roomId,
       hotelName: bookingData.hotelName,
+      location: bookingData.location,  // ← ADDED - FIXES LOCATION ISSUE
       roomType: bookingData.roomType,
       roomPrice: bookingData.roomPrice,
       checkIn: bookingData.checkIn,
@@ -457,12 +464,14 @@
       nights: bookingData.nights,
       adults: bookingData.adults,
       children: bookingData.children,
+      guests: document.getElementById('guests').textContent,
       totalPrice: document.getElementById('totalPrice').textContent,
       bookingDate: new Date().toISOString()
     };
     
+    console.log('Saving finalBooking with location:', finalBooking.location);
     localStorage.setItem('finalBooking', JSON.stringify(finalBooking));
-    window.location.href = 'pay_by.html';
+    window.location.href = 'pay.html';
   }
   
   // Load navigation and booking data

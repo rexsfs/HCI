@@ -85,8 +85,8 @@
   <div class="table-section">
     <div class="table-title">📋 Room Details</div>
     <table class="info-table" id="infoTable">
-      <tr><td colspan="2">Loading room details...</td></tr>
-    </table>
+      <tr><td colspan="2">Loading room details...</td> </tr>
+     </table>
   </div>
 
   <!-- Action Buttons Section -->
@@ -104,13 +104,125 @@
 </div>
 
 <script>
+  // Store current room data globally
+  let currentRoomData = null;
+  let currentHotelData = null;
+  
+  // Function to get room display name (roomName if available, otherwise type)
+  function getRoomDisplayName(room) {
+    if (room.roomName && room.roomName !== '') {
+      return room.roomName;
+    }
+    return room.type;
+  }
+  
+  // Override the updateRoomPage function to store data globally and display room name
+  const originalUpdateRoomPage = window.updateRoomPage;
+  window.updateRoomPage = function(hotel, room) {
+    // Store current data globally
+    currentHotelData = hotel;
+    currentRoomData = room;
+    
+    // Update room type display with ROOM NAME instead of type
+    const roomTypeElement = document.querySelector('.room-type');
+    if (roomTypeElement) {
+      roomTypeElement.textContent = getRoomDisplayName(room);
+    }
+    
+    // Update suitable for text (keep using typeValue for occupancy)
+    const suitableElement = document.querySelector('.suitable-for');
+    if (suitableElement && typeof getMaxOccupancy === 'function') {
+      suitableElement.innerHTML = `<i class="fas fa-users"></i> Suitable for: ${getMaxOccupancy(room.typeValue)}`;
+    }
+    
+    // Update main room image
+    const mainImage = document.querySelector('.main-room-image img');
+    if (mainImage && room.image) {
+      mainImage.src = room.image;
+      mainImage.alt = `${hotel.name} - ${getRoomDisplayName(room)}`;
+    }
+    
+    // Update amenities with hotel-specific amenities
+    const amenitiesList = document.querySelector('.amenities-list');
+    if (amenitiesList && typeof getRoomAmenities === 'function') {
+      const amenities = getRoomAmenities(hotel.id, room.typeValue);
+      amenitiesList.innerHTML = amenities.map(amenity => 
+        `<span class="amenity-tag"><i class="fas ${amenity.icon}"></i> ${amenity.name}</span>`
+      ).join('');
+    }
+    
+    // Update gallery images
+    if (typeof getRoomGallery === 'function') {
+      const gallery = getRoomGallery(hotel.id, room.typeValue);
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      
+      if (galleryItems.length >= 3) {
+        const deskImg = galleryItems[0]?.querySelector('.gallery-image img');
+        if (deskImg) deskImg.src = gallery.workDesk;
+        
+        const overviewImg = galleryItems[1]?.querySelector('.gallery-image img');
+        if (overviewImg) overviewImg.src = gallery.overview;
+        
+        const bathroomImg = galleryItems[2]?.querySelector('.gallery-image img');
+        if (bathroomImg) bathroomImg.src = gallery.bathroom;
+      }
+    }
+    
+    // Update room details table - NOW DISPLAYS ROOM NAME
+    const table = document.querySelector('.info-table');
+    if (table && typeof getRoomDetailsTable === 'function') {
+      // Create a modified version of room details with room name
+      const originalDetails = getRoomDetailsTable(room, hotel);
+      
+      // Modify the details to use room name for Room Type display
+      const modifiedDetails = {
+        ...originalDetails,
+        "Room Type": getRoomDisplayName(room),
+        "Room Name": getRoomDisplayName(room)
+      };
+      
+      table.innerHTML = Object.entries(modifiedDetails).map(([label, value]) => `
+        <tr>
+          <td class="detail-label">${label}</td>
+          <td class="detail-value">${value}</td>
+        </tr>
+      `).join('');
+    }
+    
+    // Update pay button price
+    const payButton = document.querySelector('.pay-now-btn');
+    if (payButton && typeof formatPrice === 'function') {
+      payButton.innerHTML = `<i class="fas fa-credit-card"></i> PAY NOW - ${formatPrice(room.price)}`;
+    }
+    
+    // Update page title
+    document.title = `LuxeStay | ${getRoomDisplayName(room)} at ${hotel.name}`;
+  };
+  
   // Function to proceed to payment
   function proceedToPayment() {
     const urlParams = new URLSearchParams(window.location.search);
     const hotelId = urlParams.get('hotelId');
     const roomId = urlParams.get('roomId');
     
-    if (hotelId && roomId) {
+    if (hotelId && roomId && currentHotelData && currentRoomData) {
+      // Get room data from the global variables
+      const bookingInfo = {
+        hotelId: parseInt(hotelId),
+        roomId: parseInt(roomId),
+        hotelName: currentHotelData.name,
+        roomType: currentRoomData.type,
+        roomName: getRoomDisplayName(currentRoomData),
+        roomPrice: currentRoomData.price,
+        location: currentHotelData.location,
+        roomImage: currentRoomData.image,
+        roomDescription: currentRoomData.description
+      };
+      
+      // Save booking data to localStorage for reservation summary
+      localStorage.setItem('currentBooking', JSON.stringify(bookingInfo));
+      
+      // Navigate to reservation summary
       window.location.href = `../payment_status/booking.html?hotelId=${hotelId}&roomId=${roomId}`;
     } else {
       window.location.href = '../payment_status/booking.html';

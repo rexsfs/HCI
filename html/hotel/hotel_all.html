@@ -127,6 +127,14 @@
   // Store current hotel ID globally
   let currentHotelId = null;
   
+  // FUNCTION: Get room display name (roomName if available, otherwise type)
+  function getRoomDisplayName(room) {
+    if (room.roomName && room.roomName !== '') {
+      return room.roomName;
+    }
+    return room.type;
+  }
+  
   // FUNCTION: Get hotel ID from URL
   function getHotelIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -165,7 +173,7 @@
     return types.sort();
   }
 
-  // FUNCTION: Render all rooms with navigation to room.html
+  // FUNCTION: Render all rooms with navigation to room.html - DISPLAYS ROOM NAME
   function renderAllRooms(rooms, hotelId) {
     const roomContainer = document.getElementById('roomContainer');
     const noRoomsMessage = document.getElementById('noRoomsMessage');
@@ -180,13 +188,16 @@
     
     let roomsHTML = '';
     rooms.forEach(room => {
+      // Get the room display name (roomName or type)
+      const roomDisplayName = getRoomDisplayName(room);
+      
       roomsHTML += `
         <div class="room-card">
           <div class="room-image">
-            <img src="${room.image}" alt="${room.type}">
+            <img src="${room.image}" alt="${roomDisplayName}">
           </div>
           <div class="room-info">
-            <div class="room-type">${room.type}</div>
+            <div class="room-type">${roomDisplayName}</div>
             <div class="room-example">${room.description}</div>
             <div class="room-price">RM ${room.price} <small>/ night including tax</small></div>
             <button class="select-room-btn" onclick="selectRoom(${hotelId}, ${room.id})">
@@ -275,7 +286,10 @@
       
       // Log total room count for debugging
       console.log(`${hotel.name} has ${allRooms.length} total rooms`);
-      console.log(`Room IDs available: ${allRooms.map(r => r.id).join(', ')}`);
+      console.log(`Rooms available:`);
+      allRooms.forEach(room => {
+        console.log(`  - ${getRoomDisplayName(room)} (${room.type})`);
+      });
     }
   }
 

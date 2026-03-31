@@ -3,463 +3,485 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>LuxeStay | Search Hotels</title>
+  <title>LuxeStay | Payment</title>
+  <!-- Font Awesome 6 (free icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="/css/search/search.css">
-  <link rel="stylesheet" href="/css/nav/nav.css"> 
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <link rel="stylesheet" href="/css/payment_status/pay.css">
+  <script src="../login_register/data.js"></script>
 </head>
 <body>
 <div class="app-container">
-  <div class="header">
-    <button class="back-button" onclick="goBackToHome()">
+
+    <!-- Header with Back Button and Payment Title -->
+  <div class="back-header">
+    <button class="back-button" onclick="goBack()">
       <i class="fas fa-arrow-left"></i>
     </button>
-    <div class="header-title">Search Your Destination</div>
+    <div class="header-title">Payment</div>
   </div>
-
-  <div class="search-form">
-    <div class="search-field">
-      <label><i class="fas fa-map-marker-alt"></i> Location</label>
-      <div class="location-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="locationInput" placeholder="Where are you going? (City, hotel, or area)">
-      </div>
-    </div>
-
-    <div class="date-row">
-      <div class="date-field">
-        <label><i class="fas fa-calendar-alt"></i> Check-In</label>
-        <div class="date-input">
-          <i class="fas fa-calendar-day"></i>
-          <input type="date" id="checkInDate">
-        </div>
-      </div>
-    </div>
-    <div class="date-row">
-      <div class="date-field">
-        <label><i class="fas fa-calendar-alt"></i> Check-Out</label>
-        <div class="date-input">
-          <i class="fas fa-calendar-week"></i>
-          <input type="date" id="checkOutDate">
-        </div>
-      </div>
-    </div>
-
-    <div class="room-field">
-      <label><i class="fas fa-bed"></i> Room Type</label>
-      <div class="room-select">
+  <!-- Logo Section - Centered at Top -->
+  <div class="logo-header">
+    <div class="logo-area">
+      <div class="logo-icon">
         <i class="fas fa-hotel"></i>
-        <select id="roomSelect">
-          <option value="">Select Room Type</option>
-          <option value="standard">Standard Room</option>
-          <option value="deluxe">Deluxe Room</option>
-          <option value="suite">Suite</option>
-          <option value="family">Family Room</option>
-          <option value="presidential">Presidential Suite</option>
-        </select>
       </div>
-    </div>
-
-    <div class="button-wrapper">
-      <button class="search-button" id="searchDestinationBtn">
-        <i class="fas fa-search"></i>
-        <span>Search Your Destination</span>
-      </button>
+      <div class="logo-text">LuxeStay</div>
     </div>
   </div>
 
+
+
+  <!-- Total Price Section -->
+  <div class="total-section">
+    <div class="total-card">
+      <div class="total-label">TOTAL PRICE</div>
+      <div class="total-amount" id="totalAmount">RM 0 <small>including tax</small></div>
+    </div>
+  </div>
+
+  <!-- Payment Method Section -->
+  <div class="payment-section">
+    <div class="section-title">Select Your Payment Method</div>
+
+    <!-- Payment Method Options -->
+    <div class="payment-options">
+      <!-- Touch 'n Go -->
+      <div class="payment-option" onclick="selectPayment(this)" data-method="tng">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Touch 'n Go eWallet</div>
+          <div class="payment-desc">Pay instantly using TNG eWallet</div>
+        </div>
+      </div>
+
+      <!-- Bank Transfer (FPX) -->
+      <div class="payment-option" onclick="selectPayment(this)" data-method="fpx">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-university"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Bank Transfer (FPX)</div>
+          <div class="payment-desc">Online banking from Maybank, CIMB, Public Bank & more</div>
+        </div>
+      </div>
+
+      <!-- Credit/Debit Card -->
+      <div class="payment-option" onclick="selectPayment(this)" data-method="card">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Credit / Debit Card</div>
+          <div class="payment-desc">Visa, Mastercard, American Express</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional Pay with Cash -->
+    <div class="cash-section" onclick="toggleCash(this)">
+      <div class="cash-header">
+        <div class="cash-checkbox"></div>
+        <div class="cash-label">Pay with Cash (Optional)</div>
+      </div>
+      <div class="cash-note">Available for walk-in guests. Payment to be made at hotel reception.</div>
+    </div>
+
+    <!-- Deadline Logic Section -->
+    <div class="deadline-section">
+      <div class="deadline-title">
+        <i class="fas fa-clock"></i> Important Notice
+      </div>
+      <div class="deadline-message">
+        <strong>⏰ System shall cancel booking if unpaid after deadline.</strong><br>
+        Payment deadline: <strong>24 hours after booking confirmation</strong>. Please complete payment before the deadline to secure your reservation.
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-section">
+    <button class="help-btn" onclick="showHelp()">
+      <i class="fas fa-question-circle"></i>
+      Help
+    </button>
+    <button class="confirm-pay-btn" onclick="processPayment()">
+      <i class="fas fa-check-circle"></i>
+      Confirm & Pay
+    </button>
+  </div>
+
+  <!-- Navigation Container -->
   <div id="nav-container"></div>
 </div>
 
 <script>
-  // Get DOM elements
-  const checkInInput = document.getElementById('checkInDate');
-  const checkOutInput = document.getElementById('checkOutDate');
-  const locationInput = document.getElementById('locationInput');
-  const roomSelect = document.getElementById('roomSelect');
-  const searchBtn = document.getElementById('searchDestinationBtn');
+  let selectedPaymentMethod = null;
+  let isCashSelected = false;
+  let currentBooking = null;
+  let isPaymentProcessed = false;
+  let navigationCheckEnabled = true;
 
-  // =====================================================
-  // FUNCTION: Check if coming from home page
-  // =====================================================
-  function isComingFromHome() {
-    const referrer = document.referrer;
-    // Check if referrer is home page
-    if (referrer && (referrer.includes('home.html') || referrer.includes('/nav/home.html'))) {
+  // Function to check login status
+  function checkLoginAndRedirect() {
+    if (typeof UserDB === 'undefined') {
+      console.error('UserDB not loaded');
+      alert('System error. Please try again later.');
+      window.location.href = '../login_register/login.html';
+      return false;
+    }
+    
+    const currentUser = UserDB.getCurrentUser();
+    
+    if (!currentUser) {
+      localStorage.setItem('redirectAfterLogin', window.location.href);
+      alert('Please login to proceed with payment');
+      window.location.href = '../login_register/login.html';
+      return false;
+    }
+    
+    return true;
+  }
+
+  // Function to show pending confirmation dialog when leaving
+  function showPendingConfirmation() {
+    if (isPaymentProcessed) return false;
+    
+    const userConfirmed = confirm('⚠️ Payment not completed!\n\nYour booking will be marked as PENDING if you leave this page.\n\nDo you want to complete the payment now?\n\n- Click "OK" to stay and complete payment\n- Click "Cancel" to leave (booking will be pending)');
+    
+    if (userConfirmed) {
+      return false;
+    } else {
+      savePendingBooking();
       return true;
     }
-    // Also check if there's a flag in sessionStorage
-    const fromHome = sessionStorage.getItem('fromHome');
-    if (fromHome === 'true') {
-      sessionStorage.removeItem('fromHome');
+  }
+
+  // Save booking as pending and redirect to pending page - FIXED: Added roomName
+  function savePendingBooking() {
+    const finalBooking = localStorage.getItem('finalBooking');
+    const currentBookingData = localStorage.getItem('currentBooking');
+    let booking = null;
+    
+    if (finalBooking) {
+      booking = JSON.parse(finalBooking);
+    } else if (currentBookingData) {
+      booking = JSON.parse(currentBookingData);
+    }
+    
+    if (booking) {
+      const currentUser = UserDB.getCurrentUser();
+      
+      const pendingData = {
+        bookingId: 'PND-' + new Date().getFullYear() + '-' + 
+                   String(new Date().getMonth() + 1).padStart(2, '0') + 
+                   String(new Date().getDate()).padStart(2, '0') + '-' + 
+                   Math.random().toString(36).substring(2, 6).toUpperCase(),
+        hotelName: booking.hotelName,
+        location: booking.location || booking.hotelLocation || booking.hotelName,
+        hotelLocation: booking.location || booking.hotelLocation || booking.hotelName,
+        roomType: booking.roomType,
+        roomName: booking.roomName || booking.roomType,  // ← FIXED: Use actual room name
+        totalAmount: document.getElementById('totalAmount').innerHTML.split('<')[0].trim() || 'RM 0',
+        checkIn: booking.checkIn,
+        checkOut: booking.checkOut,
+        nights: booking.nights,
+        guests: booking.guests || `${booking.adults || 2} Adults${booking.children ? ', ' + booking.children + ' Children' : ''}`,
+        paymentMethod: 'Not selected',
+        paymentDate: new Date().toISOString(),
+        deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        userName: currentUser?.fullName || currentUser?.name || 'Guest',
+        userPhone: currentUser?.phone || '+60XXXXXXXXX',
+        userEmail: currentUser?.email || 'Not provided',
+        paymentStatus: 'pending',
+        pendingUntil: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+      };
+      
+      console.log('Saving pending booking with roomName:', pendingData.roomName);
+      
+      // Save to pending payments
+      let pendingPayments = localStorage.getItem('pendingPayments');
+      if (pendingPayments) {
+        pendingPayments = JSON.parse(pendingPayments);
+      } else {
+        pendingPayments = [];
+      }
+      pendingPayments.push(pendingData);
+      localStorage.setItem('pendingPayments', JSON.stringify(pendingPayments));
+      
+      // Save as payment result for pending page
+      localStorage.setItem('paymentResult', JSON.stringify(pendingData));
+      
+      // Clear booking data
+      localStorage.removeItem('finalBooking');
+      localStorage.removeItem('currentBooking');
+      localStorage.removeItem('selectedRoom');
+      
+      isPaymentProcessed = true;
+      
+      // Redirect to pending page
+      window.location.href = 'pending.html';
       return true;
     }
     return false;
   }
 
-  // =====================================================
-  // FUNCTION: Reset form to default values
-  // =====================================================
-  function resetToDefault() {
-    console.log('Resetting form to default values');
-    
-    // Reset location
-    if (locationInput) {
-      locationInput.value = '';
+  // Handle beforeunload event (tab close, refresh)
+  function handleBeforeUnload(e) {
+    if (!isPaymentProcessed && navigationCheckEnabled) {
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
     }
-    
-    // Reset dates to default
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    if (checkInInput) {
-      const defaultCheckIn = formatDate(today);
-      checkInInput.value = defaultCheckIn;
-      checkInInput.min = defaultCheckIn;
-    }
-    
-    if (checkOutInput) {
-      const defaultCheckOut = formatDate(tomorrow);
-      checkOutInput.value = defaultCheckOut;
-      checkOutInput.min = defaultCheckOut;
-    }
-    
-    // Reset room type
-    if (roomSelect) {
-      roomSelect.value = '';
-    }
-    
-    // Clear saved form data
-    localStorage.removeItem('searchFormData');
   }
 
-  // =====================================================
-  // FUNCTION: Save search data to localStorage
-  // =====================================================
-  function saveSearchData() {
-    // Don't save if coming from home (we want fresh search)
-    if (isComingFromHome()) {
-      return;
+  // Handle navigation clicks (for nav bar items - SHOW PENDING)
+  function handleNavClick(e) {
+    if (!isPaymentProcessed && navigationCheckEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const target = e.currentTarget;
+      const href = target.getAttribute('href');
+      
+      const userConfirmed = confirm('⚠️ Payment not completed!\n\nYour booking will be marked as PENDING if you leave this page.\n\nDo you want to complete the payment now?\n\n- Click "OK" to stay and complete payment\n- Click "Cancel" to leave (booking will be pending)');
+      
+      if (userConfirmed) {
+        return false;
+      } else {
+        const saved = savePendingBooking();
+        if (saved) {
+          return false;
+        }
+        if (href) {
+          window.location.href = href;
+        }
+        return false;
+      }
     }
-    
-    const searchData = {
-      location: locationInput.value.trim(),
-      checkIn: checkInInput.value,
-      checkOut: checkOutInput.value,
-      roomType: roomSelect.value,
-      roomTypeText: roomSelect.options[roomSelect.selectedIndex]?.text || ''
-    };
-    localStorage.setItem('searchFormData', JSON.stringify(searchData));
+    return true;
   }
 
-  // =====================================================
-  // FUNCTION: Load saved search data from localStorage
-  // =====================================================
-  function loadSavedSearchData() {
-    // If coming from home, reset to default and don't load saved data
-    if (isComingFromHome()) {
-      resetToDefault();
-      return;
+  // Function to go back - NO PENDING CONFIRMATION (just go back)
+  function goBack() {
+    window.history.back();
+  }
+
+  // Function to show help
+  function showHelp() {
+    alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n\nPayment Support: 24/7 Available');
+  }
+
+  // Load booking data and update total price
+  function loadBookingData() {
+    const finalBooking = localStorage.getItem('finalBooking');
+    const currentBookingData = localStorage.getItem('currentBooking');
+    let booking = null;
+    
+    if (finalBooking) {
+      booking = JSON.parse(finalBooking);
+    } else if (currentBookingData) {
+      booking = JSON.parse(currentBookingData);
     }
     
-    const savedData = localStorage.getItem('searchFormData');
-    if (savedData) {
-      const searchData = JSON.parse(savedData);
+    if (booking) {
+      currentBooking = booking;
+      let totalPrice = booking.totalPrice;
       
-      // Restore location
-      if (searchData.location && locationInput) {
-        locationInput.value = searchData.location;
+      if (!totalPrice && booking.roomPrice && booking.nights) {
+        const roomTotal = booking.roomPrice * booking.nights;
+        const tax = roomTotal * 0.1;
+        totalPrice = 'RM ' + (roomTotal + tax).toLocaleString();
       }
       
-      // Restore check-in date
-      if (searchData.checkIn && checkInInput) {
-        checkInInput.value = searchData.checkIn;
-      }
-      
-      // Restore check-out date
-      if (searchData.checkOut && checkOutInput) {
-        checkOutInput.value = searchData.checkOut;
-      }
-      
-      // Restore room type
-      if (searchData.roomType && roomSelect) {
-        roomSelect.value = searchData.roomType;
-      }
+      document.getElementById('totalAmount').innerHTML = totalPrice + ' <small>including tax</small>';
+      console.log('Loaded booking with roomName:', booking.roomName);
     } else {
-      // No saved data, set defaults
-      setDefaultDates();
+      document.getElementById('totalAmount').innerHTML = 'RM 0 <small>including tax</small>';
     }
   }
 
-  // Format date to YYYY-MM-DD for input value
-  function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-  
-  // Set default dates
-  function setDefaultDates() {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+  // Simple payment selection functionality
+  function selectPayment(element) {
+    const allOptions = document.querySelectorAll('.payment-option');
+    allOptions.forEach(option => {
+      option.style.borderColor = '#edf2f7';
+      option.style.background = '#f8fafd';
+      const radio = option.querySelector('.payment-radio');
+      if (radio) radio.innerHTML = '';
+    });
     
-    if (checkInInput && !checkInInput.value) {
-      const defaultCheckIn = formatDate(today);
-      checkInInput.value = defaultCheckIn;
-      checkInInput.min = defaultCheckIn;
+    element.style.borderColor = '#1e3a5f';
+    element.style.background = '#f0f4fa';
+    const selectedRadio = element.querySelector('.payment-radio');
+    if (selectedRadio) {
+      selectedRadio.innerHTML = '<div style="width: 12px; height: 12px; background: #1e3a5f; border-radius: 50%;"></div>';
     }
     
-    if (checkOutInput && !checkOutInput.value) {
-      const defaultCheckOut = formatDate(tomorrow);
-      checkOutInput.value = defaultCheckOut;
-      checkOutInput.min = defaultCheckOut;
+    selectedPaymentMethod = element.getAttribute('data-method');
+  }
+
+  // Toggle cash option
+  function toggleCash(element) {
+    const checkbox = element.querySelector('.cash-checkbox');
+    if (checkbox.innerHTML === '') {
+      checkbox.innerHTML = '<i class="fas fa-check" style="font-size: 14px; color: #1e3a5f;"></i>';
+      isCashSelected = true;
+    } else {
+      checkbox.innerHTML = '';
+      isCashSelected = false;
     }
   }
 
-  // =====================================================
-  // FUNCTION: Go back to home
-  // =====================================================
-  function goBackToHome() {
-    // Set flag that we're going to home
-    sessionStorage.setItem('fromHome', 'true');
-    window.location.href = '/html/nav/home.html';
+  // Process payment - ALWAYS GOES TO SUCCESS - FIXED: Added roomName
+  async function processPayment() {
+    const currentUser = UserDB.getCurrentUser();
+    
+    if (!currentUser) {
+      alert('Please login to complete payment');
+      window.location.href = '../login_register/login.html';
+      return;
+    }
+    
+    if (!selectedPaymentMethod && !isCashSelected) {
+      alert('Please select a payment method');
+      return;
+    }
+    
+    const finalBooking = localStorage.getItem('finalBooking');
+    const currentBookingData = localStorage.getItem('currentBooking');
+    let booking = null;
+    
+    if (finalBooking) {
+      booking = JSON.parse(finalBooking);
+    } else if (currentBookingData) {
+      booking = JSON.parse(currentBookingData);
+    }
+    
+    if (!booking) {
+      alert('Booking information not found. Please try again.');
+      return;
+    }
+    
+    let paymentMethodName = '';
+    if (isCashSelected) {
+      paymentMethodName = 'Cash (Pay at Hotel)';
+    } else if (selectedPaymentMethod === 'tng') {
+      paymentMethodName = 'Touch \'n Go eWallet';
+    } else if (selectedPaymentMethod === 'fpx') {
+      paymentMethodName = 'Bank Transfer (FPX)';
+    } else if (selectedPaymentMethod === 'card') {
+      paymentMethodName = 'Credit / Debit Card';
+    }
+    
+    navigationCheckEnabled = false;
+    
+    const payButton = document.querySelector('.confirm-pay-btn');
+    const originalText = payButton.innerHTML;
+    payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    payButton.disabled = true;
+    
+    setTimeout(() => {
+      const bookingDataForResult = {
+        bookingId: 'LXS-' + new Date().getFullYear() + '-' + 
+                   String(new Date().getMonth() + 1).padStart(2, '0') + 
+                   String(new Date().getDate()).padStart(2, '0') + '-' + 
+                   Math.random().toString(36).substring(2, 6).toUpperCase(),
+        hotelName: booking.hotelName,
+        location: booking.location || booking.hotelLocation || booking.hotelName,
+        hotelLocation: booking.location || booking.hotelLocation || booking.hotelName,
+        roomType: booking.roomType,
+        roomName: booking.roomName || booking.roomType,  // ← FIXED: Use actual room name
+        totalAmount: document.getElementById('totalAmount').innerHTML.split('<')[0].trim(),
+        checkIn: booking.checkIn,
+        checkOut: booking.checkOut,
+        nights: booking.nights,
+        guests: booking.guests || `${booking.adults || 2} Adults${booking.children ? ', ' + booking.children + ' Children' : ''}`,
+        paymentMethod: paymentMethodName,
+        paymentDate: new Date().toISOString(),
+        deadline: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        userName: currentUser.fullName || currentUser.name || 'Guest',
+        userPhone: currentUser.phone || '+60XXXXXXXXX',
+        userEmail: currentUser.email || 'Not provided'
+      };
+      
+      console.log('Saving paymentResult with roomName:', bookingDataForResult.roomName);
+      localStorage.setItem('paymentResult', JSON.stringify(bookingDataForResult));
+      
+      const paymentRecord = {
+        ...bookingDataForResult,
+        paymentStatus: 'completed',
+        paymentDate: new Date().toISOString()
+      };
+      
+      let paymentHistory = localStorage.getItem('paymentHistory');
+      if (paymentHistory) {
+        paymentHistory = JSON.parse(paymentHistory);
+      } else {
+        paymentHistory = [];
+      }
+      paymentHistory.push(paymentRecord);
+      localStorage.setItem('paymentHistory', JSON.stringify(paymentHistory));
+      
+      localStorage.removeItem('finalBooking');
+      localStorage.removeItem('currentBooking');
+      localStorage.removeItem('selectedRoom');
+      
+      isPaymentProcessed = true;
+      
+      payButton.innerHTML = originalText;
+      payButton.disabled = false;
+      
+      window.location.href = 'success.html';
+      
+    }, 1000);
+  }
+
+  // Set up navigation interceptors
+  function setupNavigationInterceptors() {
+    const navLinks = document.querySelectorAll('.nav-item');
+    console.log('Found nav items:', navLinks.length);
+    navLinks.forEach(link => {
+      link.removeEventListener('click', handleNavClick);
+      link.addEventListener('click', handleNavClick);
+    });
   }
 
   // Initialize page
   function initializePage() {
-    // First, load saved data (which will reset if coming from home)
-    loadSavedSearchData();
+    if (!checkLoginAndRedirect()) {
+      return;
+    }
     
-    // Set up event listeners for saving data
-    setupEventListeners();
+    loadBookingData();
+    
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    window.addEventListener('popstate', function() {});
+    
+    const observer = new MutationObserver(function(mutations) {
+      const navContainer = document.getElementById('nav-container');
+      if (navContainer && navContainer.innerHTML.trim() !== '') {
+        setupNavigationInterceptors();
+        observer.disconnect();
+      }
+    });
+    
+    observer.observe(document.getElementById('nav-container'), { childList: true, subtree: true });
+    
+    setTimeout(() => {
+      setupNavigationInterceptors();
+      observer.disconnect();
+    }, 1000);
   }
 
-  // Set up event listeners for saving data
-  function setupEventListeners() {
-    // Handle date validation and auto-update
-    if (checkInInput && checkOutInput) {
-      checkInInput.addEventListener('change', function() {
-        const selectedCheckIn = new Date(this.value);
-        const nextDay = new Date(selectedCheckIn);
-        nextDay.setDate(selectedCheckIn.getDate() + 1);
-        
-        // Update min date for check-out
-        checkOutInput.min = this.value;
-        
-        // If current check-out is before or equal to new check-in, update it
-        if (checkOutInput.value <= this.value) {
-          checkOutInput.value = formatDate(nextDay);
-        }
-        
-        // Save data when changed
-        saveSearchData();
-      });
-      
-      checkOutInput.addEventListener('change', function() {
-        if (checkInInput.value && this.value <= checkInInput.value) {
-          const nextDay = new Date(checkInInput.value);
-          nextDay.setDate(nextDay.getDate() + 1);
-          this.value = formatDate(nextDay);
-          alert('Check-out date must be after check-in date. It has been adjusted.');
-        }
-        saveSearchData();
-      });
-    }
+  // Make functions available globally
+  window.goBack = goBack;
+  window.showHelp = showHelp;
+  window.selectPayment = selectPayment;
+  window.toggleCash = toggleCash;
+  window.processPayment = processPayment;
 
-    // Save data when typing in location
-    if (locationInput) {
-      locationInput.addEventListener('input', function() {
-        saveSearchData();
-      });
-    }
-
-    // Save data when room type changes
-    if (roomSelect) {
-      roomSelect.addEventListener('change', function() {
-        saveSearchData();
-      });
-    }
-  }
-
-  // Function to show error message
-  function showError(inputId, message) {
-    const inputElement = document.getElementById(inputId);
-    if (inputElement) {
-      let container = inputElement.closest('.search-field, .date-field, .room-field');
-      if (container) {
-        container.classList.add('error');
-        
-        const existingError = container.querySelector('.error-message');
-        if (existingError) {
-          existingError.remove();
-        }
-        
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
-        container.appendChild(errorDiv);
-        
-        const inputContainer = container.querySelector('.location-input, .date-input, .room-select');
-        if (inputContainer) {
-          inputContainer.style.borderColor = '#e74c3c';
-        }
-      }
-    }
-  }
-  
-  // Function to clear all error messages
-  function clearErrors() {
-    const errorContainers = document.querySelectorAll('.search-field, .date-field, .room-field');
-    errorContainers.forEach(container => {
-      container.classList.remove('error');
-      const errorMsg = container.querySelector('.error-message');
-      if (errorMsg) {
-        errorMsg.remove();
-      }
-      const inputContainer = container.querySelector('.location-input, .date-input, .room-select');
-      if (inputContainer) {
-        inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
-  // Validation and search function
-  function validateAndSearch() {
-    const location = locationInput.value.trim();
-    const checkIn = checkInInput.value;
-    const checkOut = checkOutInput.value;
-    const roomType = roomSelect.value;
-    const roomTypeText = roomSelect.options[roomSelect.selectedIndex]?.text || '';
-    
-    clearErrors();
-    
-    let isValid = true;
-    
-    if (!location) {
-      showError('locationInput', 'Please enter a destination');
-      isValid = false;
-    } else if (location.length < 2) {
-      showError('locationInput', 'Please enter a valid destination (at least 2 characters)');
-      isValid = false;
-    }
-    
-    if (!checkIn) {
-      showError('checkInDate', 'Please select check-in date');
-      isValid = false;
-    }
-    
-    if (!checkOut) {
-      showError('checkOutDate', 'Please select check-out date');
-      isValid = false;
-    }
-    
-    if (checkIn && checkOut && checkOut <= checkIn) {
-      showError('checkOutDate', 'Check-out date must be after check-in date');
-      isValid = false;
-    }
-    
-    if (!roomType) {
-      showError('roomSelect', 'Please select a room type');
-      isValid = false;
-    }
-    
-    if (isValid) {
-      function formatDisplayDate(dateString) {
-        const date = new Date(dateString);
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-      }
-      
-      const searchParams = {
-        location: location,
-        checkIn: checkIn,
-        checkOut: checkOut,
-        checkInDisplay: formatDisplayDate(checkIn),
-        checkOutDisplay: formatDisplayDate(checkOut),
-        roomType: roomTypeText,
-        roomTypeValue: roomType,
-        adults: 2,
-        rooms: 1
-      };
-      
-      localStorage.setItem('searchParams', JSON.stringify(searchParams));
-      window.location.href = '/html/search/result.html';
-    }
-  }
-  
-  // Add real-time validation clearing
-  if (locationInput) {
-    locationInput.addEventListener('input', function() {
-      const container = this.closest('.search-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.location-input');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
-  if (checkInInput) {
-    checkInInput.addEventListener('change', function() {
-      const container = this.closest('.date-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.date-input');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
-  if (checkOutInput) {
-    checkOutInput.addEventListener('change', function() {
-      const container = this.closest('.date-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.date-input');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
-  if (roomSelect) {
-    roomSelect.addEventListener('change', function() {
-      const container = this.closest('.room-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.room-select');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
-  // Attach search button click event
-  if (searchBtn) {
-    searchBtn.addEventListener('click', validateAndSearch);
-  }
-  
-  if (locationInput) {
-    locationInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        validateAndSearch();
-      }
-    });
-  }
-  
-  // Make goBackToHome available globally
-  window.goBackToHome = goBackToHome;
-  
-  // Load navigation component and initialize page
+  // Load navigation and initialize page
   fetch('nav.html')
     .then(response => {
       if (!response.ok) {
@@ -470,17 +492,16 @@
     .then(html => {
       document.getElementById('nav-container').innerHTML = html;
       
-      const currentPage = window.location.pathname.split('/').pop() || 'search.html';
+      const currentPage = window.location.pathname.split('/').pop() || 'pay.html';
       const navItems = document.querySelectorAll('.nav-item');
       
       navItems.forEach(item => {
         const href = item.getAttribute('href');
-        if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
+        if (href && href === currentPage) {
           item.classList.add('active');
         }
       });
       
-      // Initialize page after nav is loaded
       initializePage();
     })
     .catch(error => {
@@ -500,7 +521,7 @@
               <i class="fas fa-user-circle"></i>
               <span>Profile</span>
             </a>
-            <a href="../nav/cs.html" class="nav-item">
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
               <i class="fas fa-headset"></i>
               <span>Service</span>
             </a>

@@ -1,0 +1,521 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header - matches home.html exactly with back button */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Logo area styling - matches home.html logo-text exactly */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Matches home.html logo-text exactly */
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 20px 24px;
+      flex: 1;
+    }
+
+    /* Pending Header */
+    .pending-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .pending-icon {
+      width: 80px;
+      height: 80px;
+      background: #fff5e6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      border: 2px solid #f5a623;
+    }
+
+    .pending-icon i {
+      font-size: 2.5rem;
+      color: #f5a623;
+    }
+
+    /* Matches reservation_summary.html .section-title size */
+    .pending-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #e67e22;
+      margin-bottom: 8px;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .pending-subtitle {
+      font-size: 1rem;
+      color: #6c7e8e;
+    }
+
+    /* Deadline Notice - matches reservation_summary.html .details-card style */
+    .deadline-notice {
+      background: #fff5e6;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid #f5a623;
+      text-align: center;
+    }
+
+    .deadline-icon {
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .deadline-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #b88b3a;
+    }
+
+    /* Matches reservation_summary.html .detail-value font-size */
+    .deadline-date {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #e67e22;
+      margin-top: 6px;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .deadline-warning {
+      font-size: 0.85rem;
+      color: #6c7e8e;
+      margin-top: 8px;
+    }
+
+    /* Contact Information Card - matches reservation_summary.html .details-card style */
+    .contact-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    /* Matches reservation_summary.html .section-title size */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title i {
+      color: #f5a623;
+    }
+
+    .autofill-badge {
+      background: #eef3fc;
+      padding: 4px 10px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin-left: 8px;
+    }
+
+    .contact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .contact-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+    }
+
+    /* Matches reservation_summary.html .detail-value font-size */
+    .contact-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+    }
+
+    /* Hotel Details Card - matches reservation_summary.html .details-card style */
+    .hotel-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .detail-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+    }
+
+    /* Matches reservation_summary.html .detail-value font-size */
+    .detail-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+      text-align: right;
+    }
+
+    /* Price Card - matches reservation_summary.html .total-card style */
+    .price-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      color: #1e2f3e;
+      border: 1px solid #edf2f7;
+    }
+
+    .price-label {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .price-amount small {
+      font-size: 0.9rem;
+      font-weight: normal;
+    }
+
+    /* Welcome Message - matches reservation_summary.html .total-card style */
+    .welcome-message {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border-radius: 28px;
+      padding: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+      color: white;
+    }
+
+    .welcome-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    /* Matches reservation_summary.html .total-label font-size */
+    .welcome-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    /* Matches reservation_summary.html .detail-label font-size */
+    .welcome-subtext {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    /* Back to Home Button Section - with bottom padding for gap */
+    .back-home-section {
+      padding-bottom: 40px;
+    }
+
+    /* Back to Home Button - matches reservation_summary.html .pay-btn style */
+    .back-home-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .back-home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - MATCHES reservation_summary.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .main-content {
+        padding: 16px 20px;
+      }
+
+      .pending-title {
+        font-size: 1.35rem;
+      }
+
+      .pending-subtitle {
+        font-size: 0.9rem;
+      }
+
+      .deadline-date {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .contact-label, .detail-label {
+        font-size: 0.9rem;
+      }
+
+      .contact-value, .detail-value {
+        font-size: 1.2rem;
+      }
+
+      .price-amount {
+        font-size: 1.8rem;
+      }
+
+      .welcome-text {
+        font-size: 1.35rem;
+      }
+
+      .welcome-subtext {
+        font-size: 0.85rem;
+      }
+
+      .back-home-section {
+        padding-bottom: 35px;
+      }
+
+      .back-home-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .main-content {
+        padding: 14px 16px;
+      }
+
+      .pending-title {
+        font-size: 1.25rem;
+      }
+
+      .pending-subtitle {
+        font-size: 0.85rem;
+      }
+
+      .deadline-date {
+        font-size: 1.1rem;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+      }
+
+      .contact-label, .detail-label {
+        font-size: 0.85rem;
+      }
+
+      .contact-value, .detail-value {
+        font-size: 1.1rem;
+      }
+
+      .price-amount {
+        font-size: 1.6rem;
+      }
+
+      .welcome-text {
+        font-size: 1.25rem;
+      }
+
+      .welcome-subtext {
+        font-size: 0.8rem;
+      }
+
+      .back-home-section {
+        padding-bottom: 30px;
+      }
+
+      .back-home-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .contact-row, .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .detail-value {
+        text-align: left;
+      }
+    }

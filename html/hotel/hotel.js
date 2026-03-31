@@ -18,11 +18,11 @@ const HOTELS_DATABASE = {
     amenities: ["Infinity Pool", "Free WiFi"],
     facilities: ["Infinity Pool", "Free WiFi", "Fitness Centre", "6 Restaurants", "Free Parking", "24hr Service", "Family Friendly", "Luxury Spa"],
     rooms: [
-      { id: 101, type: "Standard Room", typeValue: "standard", description: "Comfortable room with city view, queen bed", price: 750, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 102, type: "Deluxe King Room", typeValue: "deluxe", description: "Spacious room with city view, king bed, marble bathroom", price: 950, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 103, type: "Premier Suite", typeValue: "suite", description: "Luxury suite with separate living area, KLCC view", price: 1850, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 104, type: "Family Room", typeValue: "family", description: "Spacious family room with two queen beds, city view", price: 1350, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 105, type: "Presidential Suite", typeValue: "presidential", description: "Ultimate luxury with panoramic city views, butler service", price: 4500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
+      { id: 101, type: "Standard Room", typeValue: "standard", roomName: "Standard City View", description: "Comfortable room with city view, queen bed", price: 750, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 102, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Premier King City View", description: "Spacious room with city view, king bed, marble bathroom", price: 950, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 103, type: "Suite", typeValue: "suite", roomName: "Executive Suite with KLCC View", description: "Luxury suite with separate living area, KLCC view", price: 1850, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 104, type: "Family Room", typeValue: "family", roomName: "Family Suite with City View", description: "Spacious family room with two queen beds, city view", price: 1350, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 105, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Suite with Panoramic View", description: "Ultimate luxury with panoramic city views, butler service", price: 4500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   2: {
@@ -39,10 +39,11 @@ const HOTELS_DATABASE = {
     amenities: ["Rooftop Bar", "24hr Service"],
     facilities: ["Rooftop Bar", "24hr Service", "Infinity Pool", "Fitness Centre", "Spa", "Free WiFi", "Night Club", "Concierge"],
     rooms: [
-      { id: 201, type: "Wonderful Room", typeValue: "standard", description: "Stylish room with city view, king bed", price: 820, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 202, type: "Spectacular Room", typeValue: "deluxe", description: "Spacious room with KLCC view, king bed", price: 1050, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 203, type: "Marvellous Suite", typeValue: "suite", description: "Luxury suite with separate living area, KLCC view", price: 1650, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 204, type: "Family Studio", typeValue: "family", description: "Spacious family room with two queen beds", price: 1450, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" }
+      { id: 201, type: "Standard Room", typeValue: "standard", roomName: "Wonderful City View", description: "Stylish room with city view, king bed", price: 820, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 202, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Spectacular KLCC View", description: "Spacious room with KLCC view, king bed", price: 1050, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 203, type: "Suite", typeValue: "suite", roomName: "Marvellous Suite with City View", description: "Luxury suite with separate living area, KLCC view", price: 1650, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 204, type: "Family Room", typeValue: "family", roomName: "Family Studio with City View", description: "Spacious family room with two queen beds", price: 1450, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 205, type: "Presidential Suite", typeValue: "presidential", roomName: "EWOW Presidential Suite", description: "Ultimate luxury suite with panoramic views", price: 4500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   3: {
@@ -59,11 +60,11 @@ const HOTELS_DATABASE = {
     amenities: ["5 Restaurants", "Wellness Centre"],
     facilities: ["5 Restaurants", "Wellness Centre", "Infinity Pool", "Spa", "Fitness Centre", "Free WiFi", "Business Centre", "Kids Club"],
     rooms: [
-      { id: 301, type: "Standard Room", typeValue: "standard", description: "Elegant room with city view", price: 880, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 302, type: "Deluxe Room", typeValue: "deluxe", description: "Spacious room with KLCC view, king bed", price: 1100, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 303, type: "Executive Suite", typeValue: "suite", description: "Spacious suite with separate living area", price: 2200, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 304, type: "Family Suite", typeValue: "family", description: "Large family suite with two bedrooms", price: 1850, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 305, type: "Presidential Suite", typeValue: "presidential", description: "Ultimate luxury suite with panoramic views", price: 5800, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
+      { id: 301, type: "Standard Room", typeValue: "standard", roomName: "Elegant City View Room", description: "Elegant room with city view", price: 880, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 302, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe KLCC View Room", description: "Spacious room with KLCC view, king bed", price: 1100, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 303, type: "Suite", typeValue: "suite", roomName: "Executive Suite with City View", description: "Spacious suite with separate living area", price: 2200, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 304, type: "Family Room", typeValue: "family", roomName: "Family Suite with Two Bedrooms", description: "Large family room with two bedrooms", price: 1850, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 305, type: "Presidential Suite", typeValue: "presidential", roomName: "Four Seasons Presidential Suite", description: "Ultimate luxury suite with panoramic views", price: 5800, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   4: {
@@ -80,11 +81,11 @@ const HOTELS_DATABASE = {
     amenities: ["Fitness Centre", "Outdoor Pool"],
     facilities: ["Fitness Centre", "Outdoor Pool", "Spa", "Fine Dining", "24hr Service", "Business Centre", "Concierge", "Free WiFi"],
     rooms: [
-      { id: 401, type: "Standard Room", typeValue: "standard", description: "Comfortable room with city view", price: 550, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 402, type: "Deluxe King Room", typeValue: "deluxe", description: "Elegant room with city view, king bed, marble bathroom", price: 750, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 403, type: "Club Suite", typeValue: "suite", description: "Luxury suite with club lounge access, separate living area", price: 1350, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 404, type: "Family Room", typeValue: "family", description: "Spacious family room with two queen beds", price: 1100, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 405, type: "Presidential Suite", typeValue: "presidential", description: "Ultimate luxury with panoramic city views, butler service", price: 4500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
+      { id: 401, type: "Standard Room", typeValue: "standard", roomName: "Standard City View", description: "Comfortable room with city view", price: 550, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 402, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Club Deluxe King Room", description: "Elegant room with city view, king bed, marble bathroom", price: 750, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 403, type: "Suite", typeValue: "suite", roomName: "Ritz-Carlton Suite", description: "Luxury suite with club lounge access, separate living area", price: 1350, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 404, type: "Family Room", typeValue: "family", roomName: "Family Room with City View", description: "Spacious family room with two queen beds", price: 1100, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 405, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Suite with Panoramic View", description: "Ultimate luxury with panoramic city views, butler service", price: 4500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   5: {
@@ -101,11 +102,11 @@ const HOTELS_DATABASE = {
     amenities: ["Private Beach", "Free WiFi"],
     facilities: ["Private Beach", "Free WiFi", "Rainforest Experience", "Spa", "Infinity Pool", "Fitness Centre", "Fine Dining", "Kids Club"],
     rooms: [
-      { id: 501, type: "Standard Room", typeValue: "standard", description: "Comfortable room with garden view", price: 690, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 502, type: "Deluxe Rainforest Room", typeValue: "deluxe", description: "Spacious room with rainforest view, king bed, private balcony", price: 890, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 503, type: "Datai Suite", typeValue: "suite", description: "Luxury suite with ocean view, separate living area, private pool", price: 1850, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 504, type: "Family Rainforest Room", typeValue: "family", description: "Spacious family room with two bedrooms, rainforest view", price: 1450, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 505, type: "Beach Villa", typeValue: "presidential", description: "Private villa steps from the beach, plunge pool, butler service", price: 3200, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
+      { id: 501, type: "Standard Room", typeValue: "standard", roomName: "Garden View Room", description: "Comfortable room with garden view", price: 690, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 502, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Rainforest Deluxe Room", description: "Spacious room with rainforest view, king bed, private balcony", price: 890, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 503, type: "Suite", typeValue: "suite", roomName: "Datai Suite with Ocean View", description: "Luxury suite with ocean view, separate living area, private pool", price: 1850, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 504, type: "Family Room", typeValue: "family", roomName: "Family Rainforest Room", description: "Spacious family room with two bedrooms, rainforest view", price: 1450, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 505, type: "Presidential Suite", typeValue: "presidential", roomName: "Beach Villa with Private Pool", description: "Private villa steps from the beach, plunge pool, butler service", price: 3200, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   6: {
@@ -122,9 +123,11 @@ const HOTELS_DATABASE = {
     amenities: ["Tea Plantation View", "Cool Climate"],
     facilities: ["Tea Plantation View", "Cool Climate", "Spa", "Fine Dining", "Golf Course", "Garden Walk", "Afternoon Tea", "Free WiFi"],
     rooms: [
-      { id: 601, type: "Standard Room", typeValue: "standard", description: "Comfortable room with garden view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 602, type: "Deluxe Room", typeValue: "deluxe", description: "Cozy room with garden view, king bed, fireplace", price: 520, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 603, type: "Family Suite", typeValue: "family", description: "Spacious suite with valley view, separate living area, two bedrooms", price: 880, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" }
+      { id: 601, type: "Standard Room", typeValue: "standard", roomName: "Garden View Room", description: "Comfortable room with garden view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 602, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Valley View Room", description: "Cozy room with garden view, king bed, fireplace", price: 520, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 603, type: "Suite", typeValue: "suite", roomName: "Cameron Suite with Fireplace", description: "Spacious suite with valley view, separate living area", price: 880, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 604, type: "Family Room", typeValue: "family", roomName: "Family Suite with Garden View", description: "Spacious family room with two bedrooms, garden view", price: 780, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 605, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Valley View Suite", description: "Ultimate luxury suite with panoramic valley views", price: 2500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   7: {
@@ -141,10 +144,11 @@ const HOTELS_DATABASE = {
     amenities: ["Beachfront", "Infinity Pool"],
     facilities: ["Beachfront", "Infinity Pool", "Spa", "Fitness Centre", "Multiple Restaurants", "Kids Club", "Free WiFi", "Parking"],
     rooms: [
-      { id: 701, type: "Standard Room", typeValue: "standard", description: "Comfortable room with partial sea view", price: 550, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 702, type: "Deluxe Ocean View", typeValue: "deluxe", description: "Spacious room with full ocean view, king bed", price: 680, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 703, type: "Executive Suite", typeValue: "suite", description: "Luxury suite with sea view, separate living area", price: 1200, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 704, type: "Family Room", typeValue: "family", description: "Spacious family room with two queen beds", price: 950, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" }
+      { id: 701, type: "Standard Room", typeValue: "standard", roomName: "Partial Sea View Room", description: "Comfortable room with partial sea view", price: 550, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 702, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Ocean View Room", description: "Spacious room with full ocean view, king bed", price: 680, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 703, type: "Suite", typeValue: "suite", roomName: "Executive Suite with Sea View", description: "Luxury suite with sea view, separate living area", price: 1200, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 704, type: "Family Room", typeValue: "family", roomName: "Family Room with Ocean View", description: "Spacious family room with two queen beds", price: 950, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 705, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Ocean View Suite", description: "Ultimate luxury suite with panoramic ocean view", price: 3800, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   8: {
@@ -161,10 +165,11 @@ const HOTELS_DATABASE = {
     amenities: ["Golf Course", "Spa", "Kids Club"],
     facilities: ["Golf Course", "Spa", "Kids Club", "Swimming Pool", "Fitness Centre", "Multiple Dining", "Free WiFi", "Business Centre"],
     rooms: [
-      { id: 801, type: "Standard Room", typeValue: "standard", description: "Comfortable room with garden view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 802, type: "Deluxe Room", typeValue: "deluxe", description: "Spacious room with pool view, king bed", price: 450, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 803, type: "Club Suite", typeValue: "suite", description: "Luxury suite with club lounge access", price: 750, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 804, type: "Family Room", typeValue: "family", description: "Spacious family room with two queen beds", price: 650, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" }
+      { id: 801, type: "Standard Room", typeValue: "standard", roomName: "Garden View Room", description: "Comfortable room with garden view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 802, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Pool View Room", description: "Spacious room with pool view, king bed", price: 450, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 803, type: "Suite", typeValue: "suite", roomName: "Club Suite with Lounge Access", description: "Luxury suite with club lounge access", price: 750, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 804, type: "Family Room", typeValue: "family", roomName: "Family Room with Garden View", description: "Spacious family room with two queen beds", price: 650, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 805, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Suite with Panoramic View", description: "Ultimate luxury suite with panoramic views", price: 2800, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   9: {
@@ -181,9 +186,11 @@ const HOTELS_DATABASE = {
     amenities: ["Rooftop Pool", "Sky Bar"],
     facilities: ["Rooftop Pool", "Sky Bar", "Spa", "Fitness Centre", "Fine Dining", "Concierge", "Free WiFi", "Valet Parking"],
     rooms: [
-      { id: 901, type: "Sanctuary Room", typeValue: "standard", description: "Elegant room with city view", price: 850, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 902, type: "Deluxe Sanctuary", typeValue: "deluxe", description: "Spacious room with panoramic city view", price: 980, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 903, type: "Signature Suite", typeValue: "suite", description: "Luxury suite with separate living area", price: 1650, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" }
+      { id: 901, type: "Standard Room", typeValue: "standard", roomName: "Sanctuary City View", description: "Elegant room with city view", price: 850, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 902, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Sanctuary with City View", description: "Spacious room with panoramic city view", price: 980, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 903, type: "Suite", typeValue: "suite", roomName: "Signature Suite with Panoramic View", description: "Luxury suite with separate living area", price: 1650, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 904, type: "Family Room", typeValue: "family", roomName: "Family Sanctuary Room", description: "Spacious family room with two queen beds", price: 1450, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 905, type: "Presidential Suite", typeValue: "presidential", roomName: "Banyan Tree Presidential Suite", description: "Ultimate luxury suite with panoramic views", price: 5500, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   10: {
@@ -200,10 +207,11 @@ const HOTELS_DATABASE = {
     amenities: ["Private Beach", "Rainforest Experience"],
     facilities: ["Private Beach", "Rainforest Experience", "Spa", "Infinity Pool", "Fitness Centre", "Fine Dining", "Kids Club", "Free WiFi"],
     rooms: [
-      { id: 1001, type: "Standard Room", typeValue: "standard", description: "Comfortable room with garden view", price: 620, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 1002, type: "Deluxe Rainforest", typeValue: "deluxe", description: "Spacious room with rainforest view", price: 760, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 1003, type: "Ocean Suite", typeValue: "suite", description: "Luxury suite with ocean view, private balcony", price: 1350, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 1004, type: "Family Villa", typeValue: "family", description: "Spacious villa with two bedrooms", price: 1950, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" }
+      { id: 1001, type: "Standard Room", typeValue: "standard", roomName: "Garden View Room", description: "Comfortable room with garden view", price: 620, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1002, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Rainforest View", description: "Spacious room with rainforest view", price: 760, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 1003, type: "Suite", typeValue: "suite", roomName: "Ocean Suite with Private Balcony", description: "Luxury suite with ocean view, private balcony", price: 1350, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 1004, type: "Family Room", typeValue: "family", roomName: "Family Villa with Two Bedrooms", description: "Spacious villa with two bedrooms", price: 1950, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1005, type: "Presidential Suite", typeValue: "presidential", roomName: "Andaman Presidential Suite", description: "Ultimate luxury suite with panoramic ocean view", price: 4200, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   11: {
@@ -220,9 +228,11 @@ const HOTELS_DATABASE = {
     amenities: ["Heritage Building", "Rooftop Bar"],
     facilities: ["Heritage Building", "Rooftop Bar", "Swimming Pool", "Restaurant", "Free WiFi", "24hr Service", "Parking"],
     rooms: [
-      { id: 1101, type: "Standard Room", typeValue: "standard", description: "Comfortable room with heritage view", price: 320, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 1102, type: "Deluxe Suite", typeValue: "deluxe", description: "Spacious suite with city view", price: 380, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 1103, type: "Family Suite", typeValue: "family", description: "Large suite with two bedrooms", price: 550, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" }
+      { id: 1101, type: "Standard Room", typeValue: "standard", roomName: "Heritage View Room", description: "Comfortable room with heritage view", price: 320, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1102, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Suite with City View", description: "Spacious suite with city view", price: 380, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 1103, type: "Suite", typeValue: "suite", roomName: "Straits Suite with Heritage View", description: "Large suite with separate living area", price: 550, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 1104, type: "Family Room", typeValue: "family", roomName: "Family Suite with Two Bedrooms", description: "Spacious family room with two queen beds", price: 480, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1105, type: "Presidential Suite", typeValue: "presidential", roomName: "Presidential Suite with Heritage View", description: "Ultimate luxury suite with heritage view", price: 1200, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   },
   12: {
@@ -239,10 +249,11 @@ const HOTELS_DATABASE = {
     amenities: ["Ocean View", "Infinity Pool"],
     facilities: ["Ocean View", "Infinity Pool", "Fitness Centre", "Restaurant", "Free WiFi", "Parking", "Business Centre"],
     rooms: [
-      { id: 1201, type: "Standard Room", typeValue: "standard", description: "Comfortable room with city view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
-      { id: 1202, type: "Deluxe Ocean View", typeValue: "deluxe", description: "Spacious room with ocean view", price: 420, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
-      { id: 1203, type: "Executive Suite", typeValue: "suite", description: "Luxury suite with panoramic ocean view", price: 780, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
-      { id: 1204, type: "Family Room", typeValue: "family", description: "Spacious family room with two queen beds", price: 620, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" }
+      { id: 1201, type: "Standard Room", typeValue: "standard", roomName: "City View Room", description: "Comfortable room with city view", price: 380, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1202, type: "Deluxe King Room", typeValue: "deluxe", roomName: "Deluxe Ocean View Room", description: "Spacious room with ocean view", price: 420, image: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&h=400&fit=crop" },
+      { id: 1203, type: "Suite", typeValue: "suite", roomName: "Executive Suite with Ocean View", description: "Luxury suite with panoramic ocean view", price: 780, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=400&fit=crop" },
+      { id: 1204, type: "Family Room", typeValue: "family", roomName: "Family Room with Ocean View", description: "Spacious family room with two queen beds", price: 620, image: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=600&h=400&fit=crop" },
+      { id: 1205, type: "Presidential Suite", typeValue: "presidential", roomName: "Zenith Presidential Suite", description: "Ultimate luxury suite with panoramic ocean view", price: 2200, image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" }
     ]
   }
 };

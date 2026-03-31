@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Booking Details</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/history/detail.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <script src="../hotel/hotel.js"></script>
+  <script src="../hotel/room.js"></script>
+  <script src="../login_register/data.js"></script>
+  <script>
+    // Check if database loaded successfully
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof HOTELS_DATABASE === 'undefined') {
+        console.error('ERROR: HOTELS_DATABASE not loaded!');
+        console.log('Make sure hotel.js is in the same folder as this HTML file');
+        document.getElementById('hotelName').textContent = 'Database Error';
+        document.getElementById('hotelLocation').textContent = 'Failed to load hotel database';
+      } else {
+        console.log('SUCCESS: Database loaded with ' + Object.keys(HOTELS_DATABASE).length + ' hotels');
+      }
+    });
+  </script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='../nav/history.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Booking Details</div>
+  </div>
+
+  <!-- Booking Details Section -->
+  <div class="booking-details-section">
+    
+    <!-- Hotel Image and Hotel Name & Location - LARGER IMAGE -->
+    <div class="hotel-info-card">
+      <div class="hotel-header">
+        <div class="hotel-image">
+          <img id="hotelImage" src="" alt="Hotel">
+        </div>
+        <div class="hotel-info">
+          <div class="hotel-name" id="hotelName">Loading...</div>
+          <div class="hotel-location" id="hotelLocation">
+            <i class="fas fa-map-marker-alt"></i> Loading...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guest Information Card -->
+    <div class="info-card">
+      <div class="section-title">
+        <i class="fas fa-user-circle"></i>
+        Guest Information
+      </div>
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value" id="guestName">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Phone Number:</span>
+        <span class="info-value" id="guestPhone">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Booking ID:</span>
+        <span class="info-value" id="bookingId">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Check-In Date:</span>
+        <span class="info-value" id="checkIn">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Check-Out Date:</span>
+        <span class="info-value" id="checkOut">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Room Type Booking Card -->
+    <div class="room-card">
+      <div class="section-title">
+        <i class="fas fa-bed"></i>
+        Room Type Booking
+      </div>
+      <div class="info-row">
+        <span class="info-label">Room Type:</span>
+        <span class="info-value" id="roomType">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Room Name:</span>
+        <span class="info-value" id="roomName">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Amenities:</span>
+        <span class="info-value">
+          <div class="amenities-list" id="amenitiesList">
+            Loading amenities...
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <!-- Payment Method and Total Amount Card -->
+    <div class="payment-card">
+      <div class="section-title">
+        <i class="fas fa-credit-card"></i>
+        Payment Information
+      </div>
+      <div class="info-row">
+        <span class="info-label">Payment Method:</span>
+        <span class="info-value" id="paymentMethod">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Transaction ID:</span>
+        <span class="info-value" id="transactionId">Loading...</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Payment Status:</span>
+        <span class="info-value" id="paymentStatus">Loading...</span>
+      </div>
+      <div class="divider"></div>
+      <div class="info-row">
+        <span class="info-label">Total Paid Amount:</span>
+        <span class="total-amount" id="totalAmount">RM 0 <small>including tax</small></span>
+      </div>
+    </div>
+
+    <!-- Cancel Booking Button Section -->
+    <div class="cancel-section">
+      <button class="cancel-btn" onclick="cancelBooking()">
+        <i class="fas fa-trash-alt"></i>
+        Click Here to Cancel Booking
+      </button>
+    </div>
+  </div>
+
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  let currentBooking = null;
+  let bookingType = null; // 'completed' or 'pending'
+
+  // Function to get URL parameters
+  function getUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return {
+      bookingId: urlParams.get('bookingId'),
+      type: urlParams.get('type') // 'completed' or 'pending'
+    };
+  }
+
+  // Function to format date with time
+  function formatDateWithTime(dateString, isCheckIn) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const time = isCheckIn ? '3:00 PM' : '12:00 PM';
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} (${time})`;
+  }
+
+  // Function to format date only
+  function formatDateOnly(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  }
+
+  // Function to get amenities HTML from room data
+  function getAmenitiesHTML(hotelId, roomTypeValue) {
+    if (typeof getRoomAmenities === 'function') {
+      const amenities = getRoomAmenities(hotelId, roomTypeValue);
+      if (amenities && amenities.length > 0) {
+        return amenities.map(amenity => 
+          `<span class="amenity-tag"><i class="fas ${amenity.icon}"></i> ${amenity.name}</span>`
+        ).join('');
+      }
+    }
+    
+    // Fallback amenities
+    return `
+      <span class="amenity-tag"><i class="fas fa-tv"></i> Smart TV</span>
+      <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+      <span class="amenity-tag"><i class="fas fa-coffee"></i> Coffee Maker</span>
+      <span class="amenity-tag"><i class="fas fa-bath"></i> Private Bathroom</span>
+      <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Room Service</span>
+    `;
+  }
+
+  // Function to load booking details
+  function loadBookingDetails() {
+    const params = getUrlParams();
+    const bookingId = params.bookingId;
+    bookingType = params.type || 'completed';
+    
+    if (!bookingId) {
+      showErrorMessage('No booking ID provided');
+      return;
+    }
+    
+    // Try to find booking in paymentHistory
+    let booking = null;
+    let source = null;
+    
+    // Check completed payments
+    const paymentHistory = localStorage.getItem('paymentHistory');
+    if (paymentHistory) {
+      const completedPayments = JSON.parse(paymentHistory);
+      booking = completedPayments.find(b => b.bookingId === bookingId);
+      if (booking) {
+        source = 'completed';
+      }
+    }
+    
+    // Check pending payments if not found
+    if (!booking) {
+      const pendingPayments = localStorage.getItem('pendingPayments');
+      if (pendingPayments) {
+        const pendingPaymentsList = JSON.parse(pendingPayments);
+        booking = pendingPaymentsList.find(b => b.bookingId === bookingId);
+        if (booking) {
+          source = 'pending';
+          bookingType = 'pending';
+        }
+      }
+    }
+    
+    if (!booking) {
+      showErrorMessage('Booking not found');
+      return;
+    }
+    
+    currentBooking = booking;
+    
+    // Get hotel info from database if available
+    let hotelImage = booking.hotelImage;
+    let hotelName = booking.hotelName;
+    let hotelLocation = booking.location || booking.hotelLocation;
+    let roomTypeValue = booking.roomTypeValue || 'standard';
+    let hotelId = null;
+    
+    // Try to find hotel in database to get image and proper location
+    if (typeof HOTELS_DATABASE !== 'undefined') {
+      for (const id in HOTELS_DATABASE) {
+        const hotel = HOTELS_DATABASE[id];
+        if (hotel.name === booking.hotelName) {
+          hotelId = hotel.id;
+          hotelImage = hotel.image;
+          if (!hotelLocation || hotelLocation === hotelName) {
+            hotelLocation = hotel.location;
+          }
+          break;
+        }
+      }
+    }
+    
+    // Set default image if not found
+    if (!hotelImage) {
+      hotelImage = 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=300&h=300&fit=crop';
+    }
+    
+    // Get current user info
+    let userName = 'Guest User';
+    let userPhone = 'Not provided';
+    if (typeof UserDB !== 'undefined') {
+      const currentUser = UserDB.getCurrentUser();
+      if (currentUser) {
+        userName = currentUser.fullName || currentUser.name || 'Guest User';
+        userPhone = currentUser.phone || 'Not provided';
+      }
+    }
+    
+    // Use booking user info if available
+    if (booking.userName && booking.userName !== 'Guest') {
+      userName = booking.userName;
+    }
+    if (booking.userPhone && booking.userPhone !== '+60XXXXXXXXX') {
+      userPhone = booking.userPhone;
+    }
+    
+    // Update the page
+    document.getElementById('hotelImage').src = hotelImage;
+    document.getElementById('hotelImage').alt = hotelName;
+    document.getElementById('hotelName').textContent = hotelName;
+    document.getElementById('hotelLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${hotelLocation || 'Location not available'}`;
+    
+    document.getElementById('guestName').textContent = userName;
+    document.getElementById('guestPhone').textContent = userPhone;
+    document.getElementById('bookingId').textContent = booking.bookingId || bookingId;
+    document.getElementById('checkIn').textContent = booking.checkIn ? formatDateWithTime(booking.checkIn, true) : 'N/A';
+    document.getElementById('checkOut').textContent = booking.checkOut ? formatDateWithTime(booking.checkOut, false) : 'N/A';
+    
+    document.getElementById('roomType').textContent = booking.roomType || 'N/A';
+    document.getElementById('roomName').textContent = booking.roomName || booking.roomType || 'N/A';
+    
+    // Get amenities
+    if (hotelId && roomTypeValue) {
+      const amenitiesHTML = getAmenitiesHTML(hotelId, roomTypeValue);
+      document.getElementById('amenitiesList').innerHTML = amenitiesHTML;
+    } else {
+      document.getElementById('amenitiesList').innerHTML = `
+        <span class="amenity-tag"><i class="fas fa-tv"></i> Smart TV</span>
+        <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+        <span class="amenity-tag"><i class="fas fa-coffee"></i> Coffee Maker</span>
+      `;
+    }
+    
+    document.getElementById('paymentMethod').textContent = booking.paymentMethod || 'Not specified';
+    
+    // Generate transaction ID if not present
+    const transactionId = booking.transactionId || `TXN-${booking.bookingId?.substring(0, 12) || Date.now()}`;
+    document.getElementById('transactionId').textContent = transactionId;
+    
+    // Set payment status
+    const statusText = bookingType === 'completed' ? 'Paid' : (booking.paymentStatus === 'pending' ? 'Pending' : 'Completed');
+    const statusColor = statusText === 'Paid' ? '#2e7d32' : (statusText === 'Pending' ? '#ed6c02' : '#2e7d32');
+    const statusBg = statusText === 'Paid' ? '#e8f5e9' : (statusText === 'Pending' ? '#fff3e0' : '#e8f5e9');
+    document.getElementById('paymentStatus').innerHTML = `<span style="color: ${statusColor}; background: ${statusBg}; padding: 6px 14px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;">${statusText}</span>`;
+    
+    document.getElementById('totalAmount').innerHTML = `${booking.totalAmount || 'RM 0'} <small>including tax</small>`;
+  }
+  
+  // Function to show error message
+  function showErrorMessage(message) {
+    const sections = document.querySelectorAll('.hotel-info-card, .info-card, .room-card, .payment-card, .cancel-section');
+    sections.forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.padding = '60px 20px';
+    errorDiv.style.color = '#666';
+    errorDiv.innerHTML = `
+      <i class="fas fa-exclamation-circle" style="font-size: 64px; color: #ccc; margin-bottom: 20px; display: block;"></i>
+      <h3>${message || 'Booking Not Found'}</h3>
+      <p>Please go back to your booking history and try again.</p>
+      <button onclick="window.location.href='history.html'" style="margin-top: 20px; padding: 12px 24px; background: #1e3a5f; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        Back to History
+      </button>
+    `;
+    document.querySelector('.booking-details-section').prepend(errorDiv);
+  }
+  
+  // Function to cancel booking
+  function cancelBooking() {
+    if (!currentBooking) {
+      alert('Booking information not found');
+      return;
+    }
+    
+    const confirmCancel = confirm('Are you sure you want to cancel this booking?\n\nThis action cannot be undone.');
+    
+    if (confirmCancel) {
+      // Remove from payment history or pending payments
+      if (bookingType === 'completed') {
+        const paymentHistory = localStorage.getItem('paymentHistory');
+        if (paymentHistory) {
+          let bookings = JSON.parse(paymentHistory);
+          const index = bookings.findIndex(b => b.bookingId === currentBooking.bookingId);
+          if (index !== -1) {
+            bookings.splice(index, 1);
+            localStorage.setItem('paymentHistory', JSON.stringify(bookings));
+            alert('Booking cancelled successfully.');
+          }
+        }
+      } else {
+        const pendingPayments = localStorage.getItem('pendingPayments');
+        if (pendingPayments) {
+          let bookings = JSON.parse(pendingPayments);
+          const index = bookings.findIndex(b => b.bookingId === currentBooking.bookingId);
+          if (index !== -1) {
+            bookings.splice(index, 1);
+            localStorage.setItem('pendingPayments', JSON.stringify(bookings));
+            alert('Pending booking cancelled successfully.');
+          }
+        }
+      }
+      
+      window.location.href = 'history.html';
+    }
+  }
+  
+  // Service button handler
+  const serviceBtn = document.getElementById('serviceBtn');
+  if (serviceBtn) {
+    serviceBtn.addEventListener('click', function() {
+      alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available');
+    });
+  }
+  
+  // Load booking details when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    loadBookingDetails();
+  });
+  
+  // Make cancelBooking available globally
+  window.cancelBooking = cancelBooking;
+
+   fetch('nav.html')
+    .then(response => response.ok ? response.text() : Promise.reject())
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      loadHotelDetails();
+    })
+    .catch(() => {
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="../nav/history.html" class="nav-item"><i class="fas fa-clock-rotate-left"></i><span>History</span></a>
+            <a href="../nav/profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn"><i class="fas fa-headset"></i><span>Service</span></a>
+          </div>
+        </div>`;
+      loadHotelDetails();
+    });
+</script>
+</body>
+</html>

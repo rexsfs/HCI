@@ -161,6 +161,15 @@
     return null;
   }
 
+  // FUNCTION: Get room name from room object (uses roomName if available, otherwise type)
+  function getRoomDisplayName(room) {
+    // Use roomName if available, otherwise fall back to type
+    if (room.roomName && room.roomName !== '') {
+      return room.roomName;
+    }
+    return room.type;
+  }
+
   // FUNCTION: Filter rooms based on user selection
   function filterRoomsByUserSelection(rooms, selectedRoomType) {
     if (!selectedRoomType) {
@@ -171,7 +180,7 @@
     );
   }
 
-  // FUNCTION: Render rooms
+  // FUNCTION: Render rooms - DISPLAYS ROOM NAME INSTEAD OF ROOM TYPE
   function renderRooms(rooms, hotelId) {
     const roomContainer = document.getElementById('roomContainer');
     const noRoomsMessage = document.getElementById('noRoomsMessage');
@@ -188,13 +197,16 @@
     
     let roomsHTML = '';
     rooms.forEach(room => {
+      // Get the room display name (roomName or type)
+      const roomDisplayName = getRoomDisplayName(room);
+      
       roomsHTML += `
         <div class="room-card">
           <div class="room-image">
-            <img src="${room.image}" alt="${room.type}">
+            <img src="${room.image}" alt="${roomDisplayName}">
           </div>
           <div class="room-info">
-            <div class="room-type">${room.type}</div>
+            <div class="room-type">${roomDisplayName}</div>
             <div class="room-example">${room.description}</div>
             <div class="room-price">RM ${room.price} <small>/ night including tax</small></div>
             <button class="select-room-btn" onclick="selectRoom(${hotelId}, ${room.id})">
@@ -289,6 +301,12 @@
       
       // Pass hotelId to renderRooms
       renderRooms(filteredRooms, currentHotelId);
+      
+      // Log room names for debugging
+      console.log(`Rooms for ${hotel.name}:`);
+      filteredRooms.forEach(room => {
+        console.log(`  - ${getRoomDisplayName(room)} (${room.type})`);
+      });
     }
   }
 

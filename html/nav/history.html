@@ -7,6 +7,8 @@
   <!-- Font Awesome 6 (free icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="/css/nav/history.css">
+  <script src="../login_register/data.js"></script>
+  <script src="../hotel/hotel.js"></script>
 </head>
 <body>
 <div class="app-container">
@@ -29,166 +31,222 @@
       </span>
     </div>
     
-    <!-- Booking 1 - Completed -->
-    <div class="booking-card">
-      <div class="booking-image">
-        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=400&fit=crop" alt="Mandarin Oriental">
-      </div>
-      <div class="booking-details">
-        <div class="booking-info">
-          <div class="info-row">
-            <span class="info-label">Hotel Name:</span>
-            <span class="info-value">Mandarin Oriental Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Location:</span>
-            <span class="info-value">Kuala Lumpur City Centre</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Room Name:</span>
-            <span class="info-value">Deluxe King City View</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-In Date:</span>
-            <span class="info-value">15 April 2026 (3:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-Out Date:</span>
-            <span class="info-value">18 April 2026 (12:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Total Price:</span>
-            <span class="info-value">RM 3,135</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status:</span>
-            <span class="info-value"><span class="status-badge status-completed">Completed</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Booking 2 - Confirmed -->
-    <div class="booking-card">
-      <div class="booking-image">
-        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop" alt="W Kuala Lumpur">
-      </div>
-      <div class="booking-details">
-        <div class="booking-info">
-          <div class="info-row">
-            <span class="info-label">Hotel Name:</span>
-            <span class="info-value">W Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Location:</span>
-            <span class="info-value">Jalan Ampang, KLCC</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Room Name:</span>
-            <span class="info-value">Wonderful Room with City View</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-In Date:</span>
-            <span class="info-value">20 May 2026 (3:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-Out Date:</span>
-            <span class="info-value">23 May 2026 (12:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Total Price:</span>
-            <span class="info-value">RM 2,460</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status:</span>
-            <span class="info-value"><span class="status-badge status-confirmed">Confirmed</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Booking 3 - Pending -->
-    <div class="booking-card">
-      <div class="booking-image">
-        <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&h=400&fit=crop" alt="Four Seasons">
-      </div>
-      <div class="booking-details">
-        <div class="booking-info">
-          <div class="info-row">
-            <span class="info-label">Hotel Name:</span>
-            <span class="info-value">Four Seasons Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Location:</span>
-            <span class="info-value">KLCC, Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Room Name:</span>
-            <span class="info-value">Premier Suite with Park View</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-In Date:</span>
-            <span class="info-value">10 June 2026 (3:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-Out Date:</span>
-            <span class="info-value">15 June 2026 (12:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Total Price:</span>
-            <span class="info-value">RM 9,250</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status:</span>
-            <span class="info-value"><span class="status-badge status-pending">Pending Payment</span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Booking 4 - Cancelled -->
-    <div class="booking-card">
-      <div class="booking-image">
-        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&h=400&fit=crop" alt="The Ritz-Carlton">
-      </div>
-      <div class="booking-details">
-        <div class="booking-info">
-          <div class="info-row">
-            <span class="info-label">Hotel Name:</span>
-            <span class="info-value">The Ritz-Carlton Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Location:</span>
-            <span class="info-value">Bukit Bintang, Kuala Lumpur</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Room Name:</span>
-            <span class="info-value">Deluxe Room with City View</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-In Date:</span>
-            <span class="info-value">5 July 2026 (3:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Check-Out Date:</span>
-            <span class="info-value">8 July 2026 (12:00 PM)</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Total Price:</span>
-            <span class="info-value">RM 2,670</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Status:</span>
-            <span class="info-value"><span class="status-badge status-cancelled">Cancelled</span></span>
-          </div>
-        </div>
-      </div>
+    <!-- Dynamic Booking Container -->
+    <div id="bookingContainer"></div>
+    
+    <!-- No Bookings Message -->
+    <div id="noBookingsMessage" style="display: none; text-align: center; padding: 60px 20px; color: #666;">
+      <i class="fas fa-calendar-alt" style="font-size: 64px; color: #ccc; margin-bottom: 20px; display: block;"></i>
+      <h3 style="margin-bottom: 10px;">No Booking History</h3>
+      <p>You haven't made any bookings yet.<br>Start your first booking by searching for hotels!</p>
     </div>
   </div>
 
   <div id="nav-container"></div>
 </div>
+
 <script>
+  // Function to get hotel image from database
+  function getHotelImage(hotelName) {
+    if (typeof HOTELS_DATABASE !== 'undefined') {
+      for (const id in HOTELS_DATABASE) {
+        const hotel = HOTELS_DATABASE[id];
+        if (hotel.name === hotelName) {
+          return hotel.image;
+        }
+      }
+    }
+    // Return default image if not found
+    return 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&h=400&fit=crop';
+  }
+
+  // Function to get hotel location from database
+  function getHotelLocation(hotelName) {
+    if (typeof HOTELS_DATABASE !== 'undefined') {
+      for (const id in HOTELS_DATABASE) {
+        const hotel = HOTELS_DATABASE[id];
+        if (hotel.name === hotelName) {
+          return hotel.location;
+        }
+      }
+    }
+    return null;
+  }
+
+  // Function to format date with time
+  function formatDateWithTime(dateString, isCheckIn) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const time = isCheckIn ? '3:00 PM' : '12:00 PM';
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} (${time})`;
+  }
+
+  // Function to get status badge class
+  function getStatusClass(status) {
+    switch(status) {
+      case 'completed':
+        return 'status-completed';
+      case 'confirmed':
+        return 'status-confirmed';
+      case 'pending':
+        return 'status-pending';
+      case 'cancelled':
+        return 'status-cancelled';
+      default:
+        return 'status-pending';
+    }
+  }
+
+  // Function to get status text
+  function getStatusText(status) {
+    switch(status) {
+      case 'completed':
+        return 'Completed';
+      case 'confirmed':
+        return 'Confirmed';
+      case 'pending':
+        return 'Pending Payment';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return status || 'Unknown';
+    }
+  }
+
+  // Function to load booking history from localStorage only
+  function loadBookingHistory() {
+    const container = document.getElementById('bookingContainer');
+    const noBookingsMessage = document.getElementById('noBookingsMessage');
+    
+    // Get payment history from localStorage
+    let paymentHistory = localStorage.getItem('paymentHistory');
+    let pendingPayments = localStorage.getItem('pendingPayments');
+    
+    let allBookings = [];
+    
+    // Add completed payments from localStorage
+    if (paymentHistory) {
+      const completed = JSON.parse(paymentHistory);
+      completed.forEach(booking => {
+        allBookings.push({
+          ...booking,
+          status: 'completed',
+          displayStatus: 'Completed'
+        });
+      });
+    }
+    
+    // Add pending payments from localStorage
+    if (pendingPayments) {
+      const pending = JSON.parse(pendingPayments);
+      pending.forEach(booking => {
+        allBookings.push({
+          ...booking,
+          status: 'pending',
+          displayStatus: 'Pending Payment'
+        });
+      });
+    }
+    
+    // Sort by payment date (newest first)
+    allBookings.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate));
+    
+    if (allBookings.length === 0) {
+      container.innerHTML = '';
+      noBookingsMessage.style.display = 'block';
+      return;
+    }
+    
+    noBookingsMessage.style.display = 'none';
+    
+    let bookingsHTML = '';
+    
+    allBookings.forEach(booking => {
+      // Get hotel image from database
+      let hotelImage = getHotelImage(booking.hotelName);
+      let hotelLocation = booking.location || booking.hotelLocation || getHotelLocation(booking.hotelName) || 'Location';
+      
+      const hotelName = booking.hotelName || 'Hotel Name';
+      const roomType = booking.roomType || 'Room Type';
+      const roomName = booking.roomName || booking.roomType || roomType;
+      const checkIn = booking.checkIn;
+      const checkOut = booking.checkOut;
+      const totalAmount = booking.totalAmount || 'RM 0';
+      const status = booking.status || 'pending';
+      const statusText = getStatusText(status);
+      const statusClass = getStatusClass(status);
+      const bookingId = booking.bookingId;
+      const bookingType = status === 'completed' ? 'completed' : 'pending';
+      
+      bookingsHTML += `
+        <div class="booking-card" onclick="viewBookingDetails('${bookingId}', '${bookingType}')" style="cursor: pointer;">
+          <div class="booking-image">
+            <img src="${hotelImage}" alt="${hotelName}">
+          </div>
+          <div class="booking-details">
+            <div class="booking-info">
+              <div class="info-row">
+                <span class="info-label">Hotel Name:</span>
+                <span class="info-value">${escapeHtml(hotelName)}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Location:</span>
+                <span class="info-value">${escapeHtml(hotelLocation)}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Room Name:</span>
+                <span class="info-value">${escapeHtml(roomName)}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Check-In Date:</span>
+                <span class="info-value">${checkIn ? formatDateWithTime(checkIn, true) : 'N/A'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Check-Out Date:</span>
+                <span class="info-value">${checkOut ? formatDateWithTime(checkOut, false) : 'N/A'}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Total Price:</span>
+                <span class="info-value">${escapeHtml(totalAmount)}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Booking ID:</span>
+                <span class="info-value">${escapeHtml(bookingId || 'N/A')}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value"><span class="status-badge ${statusClass}">${statusText}</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    
+    container.innerHTML = bookingsHTML;
+  }
+  
+  // Function to view booking details
+  function viewBookingDetails(bookingId, bookingType) {
+    if (bookingId) {
+      window.location.href = `../history/detail.html?bookingId=${bookingId}&type=${bookingType}`;
+    } else {
+      alert('Booking details not available');
+    }
+  }
+  
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Make viewBookingDetails available globally
+  window.viewBookingDetails = viewBookingDetails;
+
   // Load navigation component from external file
   fetch('nav.html')
     .then(response => {
@@ -201,7 +259,7 @@
       document.getElementById('nav-container').innerHTML = html;
       
       // After loading nav, set active state
-      const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+      const currentPage = window.location.pathname.split('/').pop() || 'history.html';
       const navItems = document.querySelectorAll('.nav-item');
       
       navItems.forEach(item => {
@@ -210,6 +268,9 @@
           item.classList.add('active');
         }
       });
+      
+      // Load booking history after navigation is loaded
+      loadBookingHistory();
     })
     .catch(error => {
       console.error('Error loading navigation:', error);
@@ -238,7 +299,7 @@
       `;
       
       // Set active state for fallback
-      const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+      const currentPage = window.location.pathname.split('/').pop() || 'history.html';
       const navItems = document.querySelectorAll('.nav-item');
       navItems.forEach(item => {
         const href = item.getAttribute('href');
@@ -246,6 +307,8 @@
           item.classList.add('active');
         }
       });
+      
+      loadBookingHistory();
     });
 </script>
 </body>

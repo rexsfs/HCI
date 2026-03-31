@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Payment Failed</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <link rel="stylesheet" href="/css/payment_status/fail.css">
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button and Logo - matches home.html style -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='../nav/home.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="logo-area">
+      <div class="logo-text">Payment Failed</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Error Header -->
+    <div class="error-header">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="error-title">Sorry, Your payment didn't go through.</div>
+      <div class="error-subtitle">We encountered an issue processing your payment</div>
+    </div>
+
+    <!-- Error Message Card -->
+    <div class="error-message-card">
+      <div class="error-message" id="errorMessage">
+        <strong>Please Check & Make Sure everything is correct,</strong><br>
+        including payment methods chosen.
+      </div>
+    </div>
+
+    <!-- Friendly Emotional Message -->
+    <div class="friendly-message">
+      <div class="friendly-icon">
+        <i class="fas fa-smile-wink"></i>
+      </div>
+      <div class="friendly-text">"It's okay to make mistake"</div>
+      <div class="friendly-subtext">Don't worry, you can try again or contact us for assistance</div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+      <a href="contact.html" style="text-decoration: none; display: block;">
+        <button class="contact-btn">
+          <i class="fas fa-headset"></i>
+          Still Confusing on error? Click Here to Contact Us
+        </button>
+      </a>
+    </div>
+
+    <!-- Try Again Button with bottom padding for gap from navbar -->
+    <div class="try-again-section">
+      <a href="pay.html" style="text-decoration: none; display: block;">
+        <button class="try-again-btn">
+          <i class="fas fa-redo-alt"></i>
+          Try Again
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Function to get error message based on payment method
+  function getErrorMessage() {
+    const paymentResult = localStorage.getItem('paymentResult');
+    
+    if (paymentResult) {
+      const data = JSON.parse(paymentResult);
+      const paymentMethod = data.paymentMethod || 'selected method';
+      
+      const errorMessages = {
+        'tng': 'Your Touch \'n Go eWallet payment could not be processed. Please ensure you have sufficient balance and try again.',
+        'fpx': 'Bank transfer (FPX) failed. Please verify your bank account details and try again.',
+        'card': 'Credit/Debit card payment declined. Please check your card details or use a different card.',
+        'cash': 'Cash payment selected. Please proceed to hotel reception for payment.'
+      };
+      
+      if (paymentMethod.includes('Touch')) {
+        return errorMessages.tng;
+      } else if (paymentMethod.includes('Bank')) {
+        return errorMessages.fpx;
+      } else if (paymentMethod.includes('Card') || paymentMethod.includes('Credit')) {
+        return errorMessages.card;
+      } else if (paymentMethod.includes('Cash')) {
+        return errorMessages.cash;
+      }
+    }
+    
+    return '<strong>Please Check & Make Sure everything is correct,</strong><br>including payment methods chosen.';
+  }
+
+  // Load error message
+  function loadErrorMessage() {
+    const errorMessageDiv = document.getElementById('errorMessage');
+    if (errorMessageDiv) {
+      errorMessageDiv.innerHTML = getErrorMessage();
+    }
+  }
+
+  // Load navigation and initialize page
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'fail.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+      
+      loadErrorMessage();
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="../nav/history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="../nav/profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      loadErrorMessage();
+    });
+</script>
+</body>
+</html>

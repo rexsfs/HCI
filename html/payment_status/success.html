@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Payment Successful</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <link rel="stylesheet" href="/css/payment_status/success.css">
+  <script src="../login_register/data.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button and Logo - matches home.html style -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='../nav/home.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="logo-area">
+      <div class="logo-text">Payment Successful</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Success Header -->
+    <div class="success-header">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="success-title">Thank You! Payment Successful</div>
+      <div class="success-subtitle">Your reservation has been confirmed</div>
+    </div>
+
+    <!-- Booking ID Card -->
+    <div class="booking-id-card">
+      <div class="booking-id-label">BOOKING ID</div>
+      <div class="booking-id-value" id="bookingId">Loading...</div>
+    </div>
+
+    <!-- Room Details Card -->
+    <div class="details-card">
+      <div class="section-title">Room Details</div>
+      <div class="detail-row">
+        <span class="detail-label">Hotel Name:</span>
+        <span class="detail-value" id="hotelName">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Location:</span>
+        <span class="detail-value" id="hotelLocation">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Room Type:</span>
+        <span class="detail-value" id="roomType">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Room Name:</span>
+        <span class="detail-value" id="roomName">Loading...</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Total Paid:</span>
+        <span class="detail-value" id="totalPaid">Loading...</span>
+      </div>
+      <div class="date-row">
+        <div class="date-item">
+          <div class="date-label">Check-In Date</div>
+          <div class="date-value" id="checkIn">Loading...</div>
+        </div>
+        <div class="date-item">
+          <div class="date-label">Check-Out Date</div>
+          <div class="date-value" id="checkOut">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- E-Receipt Button -->
+    <div class="receipt-section">
+      <button class="receipt-btn" onclick="downloadReceipt()">
+        <i class="fas fa-file-pdf"></i>
+        Click Here to get E-Receipt
+      </button>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+      <div class="contact-title">
+        <i class="fas fa-question-circle"></i>
+        Any Curiosity? Contact Us
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <i class="fas fa-phone-alt"></i>
+        </div>
+        <div class="contact-info">  
+          <div class="contact-label">Phone Number</div>
+          <div class="contact-value">+603 2380 8888</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="contact-info">
+          <div class="contact-label">Email Address</div>
+          <div class="contact-value">reservations@luxestay.com.my</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons Section -->
+    <div class="action-section">
+      <a href="../nav/home.html" style="width: 100%; text-decoration: none;">
+        <button class="back-home-btn">
+          <i class="fas fa-home"></i>
+          Back to Home
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Function to format date with time
+  function formatDateWithTime(dateString, isCheckIn) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const time = isCheckIn ? '3:00 PM' : '12:00 PM';
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} · ${time}`;
+  }
+
+  // Function to format date only
+  function formatDateOnly(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  }
+
+  // Function to get room display name
+  function getRoomDisplayName(roomType, roomName) {
+    // If roomName exists and is not empty, use it
+    if (roomName && roomName !== '' && roomName !== roomType) {
+      return roomName;
+    }
+    // Otherwise return roomType
+    return roomType;
+  }
+
+  // Load payment result data
+  function loadPaymentResult() {
+    const paymentResult = localStorage.getItem('paymentResult');
+    
+    if (paymentResult) {
+      const data = JSON.parse(paymentResult);
+      
+      // Update booking ID
+      document.getElementById('bookingId').textContent = data.bookingId || 'N/A';
+      
+      // Update hotel details
+      document.getElementById('hotelName').textContent = data.hotelName || 'N/A';
+      const locationText = data.location || data.hotelLocation || data.hotelName || 'N/A';
+      document.getElementById('hotelLocation').textContent = locationText;
+      
+      // Room Type and Room Name - use proper display
+      const roomTypeText = data.roomType || 'N/A';
+      const roomNameText = getRoomDisplayName(roomTypeText, data.roomName);
+      
+      document.getElementById('roomType').textContent = roomTypeText;
+      document.getElementById('roomName').textContent = roomNameText;
+      document.getElementById('totalPaid').textContent = data.totalAmount || 'RM 0';
+      
+      // Update dates
+      document.getElementById('checkIn').textContent = formatDateWithTime(data.checkIn, true);
+      document.getElementById('checkOut').textContent = formatDateWithTime(data.checkOut, false);
+      
+      console.log('Payment Result Loaded:', {
+        roomType: roomTypeText,
+        roomName: roomNameText,
+        dataRoomName: data.roomName
+      });
+      
+    } else {
+      // Try to get from finalBooking if paymentResult not found
+      const finalBooking = localStorage.getItem('finalBooking');
+      if (finalBooking) {
+        const booking = JSON.parse(finalBooking);
+        document.getElementById('bookingId').textContent = 'BK-' + Date.now();
+        document.getElementById('hotelName').textContent = booking.hotelName || 'N/A';
+        const locationText = booking.location || booking.hotelLocation || booking.hotelName || 'N/A';
+        document.getElementById('hotelLocation').textContent = locationText;
+        
+        // Room Type and Room Name from booking
+        const roomTypeText = booking.roomType || 'N/A';
+        const roomNameText = getRoomDisplayName(roomTypeText, booking.roomName);
+        
+        document.getElementById('roomType').textContent = roomTypeText;
+        document.getElementById('roomName').textContent = roomNameText;
+        document.getElementById('totalPaid').textContent = booking.totalPrice || 'RM 0';
+        document.getElementById('checkIn').textContent = formatDateWithTime(booking.checkIn, true);
+        document.getElementById('checkOut').textContent = formatDateWithTime(booking.checkOut, false);
+        
+        console.log('Final Booking Loaded:', {
+          roomType: roomTypeText,
+          roomName: roomNameText,
+          bookingRoomName: booking.roomName
+        });
+      }
+    }
+  }
+
+  // Download receipt function
+  function downloadReceipt() {
+    const paymentResult = localStorage.getItem('paymentResult');
+    if (paymentResult) {
+      const data = JSON.parse(paymentResult);
+      
+      // Get room name for receipt
+      const roomDisplayName = getRoomDisplayName(data.roomType, data.roomName);
+      
+      // Create receipt content
+      let receiptContent = 'LUXESTAY - PAYMENT RECEIPT\n';
+      receiptContent += '=' . repeat(40) + '\n\n';
+      receiptContent += `Booking ID: ${data.bookingId}\n`;
+      receiptContent += `Hotel: ${data.hotelName}\n`;
+      receiptContent += `Location: ${data.location || data.hotelLocation || data.hotelName}\n`;
+      receiptContent += `Room Name: ${roomDisplayName}\n`;
+      receiptContent += `Room Type: ${data.roomType || 'N/A'}\n`;
+      receiptContent += `Check-In: ${formatDateOnly(data.checkIn)} (3:00 PM)\n`;
+      receiptContent += `Check-Out: ${formatDateOnly(data.checkOut)} (12:00 PM)\n`;
+      receiptContent += `Nights: ${data.nights || 0}\n`;
+      receiptContent += `Guests: ${data.guests || 'N/A'}\n`;
+      receiptContent += `Total Amount: ${data.totalAmount}\n`;
+      receiptContent += `Payment Method: ${data.paymentMethod || 'N/A'}\n`;
+      receiptContent += `Payment Date: ${new Date().toLocaleString()}\n\n`;
+      receiptContent += 'Thank you for booking with LuxeStay!\n';
+      receiptContent += 'We look forward to welcoming you.';
+      
+      // Create and download file
+      const blob = new Blob([receiptContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `receipt_${data.bookingId}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('Receipt downloaded successfully!');
+    } else {
+      alert('No booking data found. Unable to generate receipt.');
+    }
+  }
+
+  // Make functions available globally
+  window.downloadReceipt = downloadReceipt;
+
+  // Load navigation and initialize page
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'success.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+      
+      loadPaymentResult();
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="../nav/history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="../nav/profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      loadPaymentResult();
+    });
+</script>
+</body>
+</html>
