@@ -1,0 +1,353 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    /* Mobile-first container */
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* ===== HEADER: Logo only - matches guideline.html ===== */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* ===== SEARCH SECTION ===== */
+    .search-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .search-section a {
+      text-decoration: none;
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .search-button {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .search-button i {
+      font-size: 1.6rem;
+      color: white;
+    }
+
+    .search-button span {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.5px;
+    }
+
+    .search-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    .search-chips {
+      display: flex;
+      gap: 14px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* Matches guideline.html .amenity-tag style */
+    .chip {
+      background: #f0f4fa;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chip i {
+      font-size: 0.95rem;
+    }
+
+    .chip:hover {
+      background: #1e3a5f;
+      color: white;
+    }
+
+    /* ===== HOTEL LIST ===== */
+    .hotel-list {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-bottom: 40px;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .hotel-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid #edf2f7;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .hotel-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .hotel-image {
+      width: 100%;
+      height: 220px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .hotel-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hotel-info {
+      padding: 20px;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .hotel-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Matches guideline.html .amenity-tag style */
+    .hotel-name span {
+      font-size: 1rem;
+      font-weight: 600;
+      background: #eef3fc;
+      padding: 6px 14px;
+      border-radius: 30px;
+      color: #1e3a5f;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .hotel-details {
+      display: flex;
+      gap: 20px;
+      margin-top: 10px;
+      font-size: 1rem;
+      color: #6c7e8e;
+      flex-wrap: wrap;
+    }
+
+    .hotel-details i {
+      margin-right: 6px;
+      color: #f5a623;
+      font-size: 0.9rem;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) with bold */
+    .price {
+      margin-top: 16px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+    }
+
+    .price small {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #7c8b9a;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .search-section {
+        padding: 16px 20px;
+      }
+
+      .search-button {
+        padding: 18px 20px;
+      }
+
+      .search-button i {
+        font-size: 1.4rem;
+      }
+
+      .search-button span {
+        font-size: 1.2rem;
+      }
+
+      .chip {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+      }
+
+      .hotel-list {
+        padding: 16px 20px;
+        gap: 24px;
+        padding-bottom: 40px;
+      }
+
+      .hotel-image {
+        height: 200px;
+      }
+
+      .hotel-info {
+        padding: 18px;
+      }
+
+      .hotel-name {
+        font-size: 1.35rem;
+      }
+
+      .hotel-name span {
+        font-size: 0.9rem;
+        padding: 5px 12px;
+      }
+
+      .hotel-details {
+        font-size: 0.9rem;
+        gap: 16px;
+      }
+
+      .price {
+        font-size: 1.2rem;
+      }
+
+      .price small {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .hotel-image {
+        height: 180px;
+      }
+      
+      .hotel-name {
+        font-size: 1.25rem;
+      }
+      
+      .hotel-details {
+        font-size: 0.85rem;
+        gap: 12px;
+      }
+      
+      .price {
+        font-size: 1.1rem;
+      }
+
+      .price small {
+        font-size: 0.85rem;
+      }
+    }

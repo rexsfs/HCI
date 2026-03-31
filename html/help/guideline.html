@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | EULA & Guideline</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-container {
+      max-width: 540px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header with Logo - Centered */
+    .header {
+      padding: 48px 24px 32px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Matches successful.html logo-text exactly */
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Main Content - EULA Section */
+    .eula-container {
+      flex: 1;
+      padding: 20px 24px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* EULA Title - matches successful.html .success-title (1.5rem) */
+    .eula-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin-bottom: 24px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .eula-title i {
+      color: #f5a623;
+      font-size: 1.3rem;
+    }
+
+    /* EULA Card - matches successful.html .details-card */
+    .eula-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 28px;
+      border: 1px solid #edf2f7;
+      margin-bottom: 20px;
+    }
+
+    .eula-section {
+      margin-bottom: 24px;
+    }
+
+    /* Section title - matches successful.html .section-title (1.5rem) */
+    .eula-section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .eula-section-title i {
+      color: #f5a623;
+      font-size: 1.3rem;
+    }
+
+    /* Text content - matches successful.html .detail-value (1.3rem) */
+    .eula-text {
+      color: #1e2f3e;
+      line-height: 1.5;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    /* List items - matches successful.html .detail-value */
+    .eula-list {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .eula-list li {
+      color: #1e2f3e;
+      line-height: 1.5;
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #eef2f8;
+      margin: 20px 0;
+    }
+
+    /* Important Note - matches successful.html .contact-note style */
+    .important-note {
+      background: #fff9ef;
+      border-radius: 28px;
+      padding: 16px 20px;
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .important-note i {
+      color: #f5a623;
+      font-size: 1.2rem;
+      margin-top: 2px;
+    }
+
+    .important-note p {
+      color: #6c7e8e;
+      font-size: 1rem;
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .important-note strong {
+      color: #c62828;
+    }
+
+    /* Bottom Button Container */
+    .bottom-button-container {
+      padding: 20px 24px 40px 24px;
+      background: white;
+    }
+
+    /* Back Button - matches successful.html .back-home-btn (1.3rem) */
+    .back-btn {
+      background: transparent;
+      border: 2px solid #1e3a5f;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .back-btn i {
+      font-size: 1.1rem;
+      color: #1e3a5f;
+      transition: color 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .back-btn:hover i {
+      color: white;
+    }
+
+    .back-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches successful.html ===== */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+      }
+
+      .header {
+        padding: 40px 20px 28px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .eula-container {
+        padding: 16px 20px;
+      }
+
+      .eula-title {
+        font-size: 1.35rem;
+        margin-bottom: 20px;
+      }
+
+      .eula-title i {
+        font-size: 1.2rem;
+      }
+
+      .eula-card {
+        padding: 24px;
+      }
+
+      .eula-section-title {
+        font-size: 1.35rem;
+        margin-bottom: 12px;
+      }
+
+      .eula-section-title i {
+        font-size: 1.2rem;
+      }
+
+      .eula-text, .eula-list li {
+        font-size: 1.2rem;
+      }
+
+      .important-note {
+        padding: 14px 16px;
+      }
+
+      .important-note p {
+        font-size: 0.9rem;
+      }
+
+      .bottom-button-container {
+        padding: 16px 20px 32px 20px;
+      }
+
+      .back-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .header {
+        padding: 32px 16px 24px 16px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .eula-container {
+        padding: 12px 16px;
+      }
+
+      .eula-title {
+        font-size: 1.25rem;
+      }
+
+      .eula-title i {
+        font-size: 1.1rem;
+      }
+
+      .eula-card {
+        padding: 20px;
+      }
+
+      .eula-section-title {
+        font-size: 1.25rem;
+      }
+
+      .eula-section-title i {
+        font-size: 1.1rem;
+      }
+
+      .eula-text, .eula-list li {
+        font-size: 1.1rem;
+      }
+
+      .important-note {
+        padding: 12px 14px;
+      }
+
+      .important-note p {
+        font-size: 0.85rem;
+      }
+
+      .bottom-button-container {
+        padding: 12px 16px 28px 16px;
+      }
+
+      .back-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Logo - Centered on Top -->
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+  <!-- Main Content - EULA Section in the Middle -->
+  <div class="eula-container">
+    <div class="eula-title">
+      <i class="fas fa-gavel"></i>
+      EULA
+    </div>
+
+    <div class="eula-card">
+      <!-- Section 1: Agreement -->
+      <div class="eula-section">
+        <div class="eula-section-title">
+          <i class="fas fa-check-circle"></i>
+          End User License Agreement
+        </div>
+        <div class="eula-text">
+          By using LuxeStay services, you agree to comply with these terms and conditions. 
+          LuxeStay provides a platform for hotel reservations and bookings. All bookings are 
+          subject to hotel availability and confirmation. Users are responsible for providing 
+          accurate information during registration and payment.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section 2: Booking Terms -->
+      <div class="eula-section">
+        <div class="eula-section-title">
+          <i class="fas fa-calendar-check"></i>
+          Booking Terms
+        </div>
+        <ul class="eula-list">
+          <li>All reservations must be confirmed with full payment</li>
+          <li>Booking confirmation will be sent via SMS and email</li>
+          <li>Present booking ID and identification at check-in</li>
+          <li>Room rates are inclusive of applicable taxes</li>
+          <li>Extra bed charges apply for additional guests</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section 3: Cancellation Policy -->
+      <div class="eula-section">
+        <div class="eula-section-title">
+          <i class="fas fa-ban"></i>
+          Cancellation Policy
+        </div>
+        <div class="eula-text">
+          Free cancellation is available up to 24 hours before check-in. Cancellations within 
+          24 hours may incur a charge equal to one night's stay. To cancel, go to Booking History, 
+          select the booking, and click "Cancel Booking". Refunds will be processed within 5-7 
+          business days.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section 4: Privacy Policy -->
+      <div class="eula-section">
+        <div class="eula-section-title">
+          <i class="fas fa-lock"></i>
+          Privacy & Data Protection
+        </div>
+        <div class="eula-text">
+          Your personal information is protected under our Privacy Policy. We do not share your 
+          data with third parties without consent. You may request data deletion by contacting 
+          our support team. All payment information is encrypted and securely processed.
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Section 5: Liability -->
+      <div class="eula-section">
+        <div class="eula-section-title">
+          <i class="fas fa-shield-alt"></i>
+          Limitation of Liability
+        </div>
+        <div class="eula-text">
+          LuxeStay acts as a booking intermediary. We are not liable for any issues arising from 
+          the hotel's services, including but not limited to room quality, amenities, or hotel 
+          policies. Any disputes regarding the stay must be addressed directly with the hotel.
+        </div>
+      </div>
+
+      <!-- Important Note -->
+      <div class="important-note">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p><strong>Important:</strong> Please ensure your phone number is active and accessible as 
+        all booking confirmations and updates will be sent via SMS. LuxeStay is not responsible 
+        for missed communications due to incorrect contact information.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Button - Back to Login -->
+  <div class="bottom-button-container">
+    <button class="back-btn" onclick="window.location.href='login.html'">
+      <i class="fas fa-arrow-left"></i>
+      Back to Login
+    </button>
+  </div>
+</div>
+</body>
+</html>

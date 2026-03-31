@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Register</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/login_register/register.css">
+  <script src="data.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Logo -->
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+  <!-- Register Section -->
+  <div class="register-section">
+    <h1 class="register-title">Register</h1>
+
+    <!-- Phone Input -->
+    <div class="form-group">
+      <label class="input-label">Phone number</label>
+      <input type="tel" class="phone-input" placeholder="Enter your phone number">
+      <div class="error-message" id="phoneError">Please enter a valid Malaysia phone number</div>
+    </div>
+
+    <!-- Continue Button -->
+    <button class="continue-btn">
+      <i class="fas fa-arrow-right"></i>
+      Continue
+    </button>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>or</span>
+    </div>
+
+    <!-- Direct to Login Big Button -->
+    <button class="login-direct-btn">
+      <i class="fas fa-sign-in-alt"></i>
+      Direct to Login
+    </button>
+
+    <!-- Help & Guideline Buttons at Bottom -->
+    <div class="bottom-buttons-container">
+      <button class="help-btn">
+        <i class="fas fa-question-circle"></i>
+        Help
+      </button>
+      <button class="guideline-btn">
+        <i class="fas fa-file-alt"></i>
+        Guideline
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+    // Malaysia phone number validation function
+    function validateMalaysiaPhone(phone) {
+        // Remove all spaces, dashes, and special characters for validation
+        const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+        
+        // Malaysia phone number patterns:
+        // 1. Starts with 01 (mobile) - 010, 011, 012, 013, 014, 015, 016, 017, 018, 019
+        // 2. Total length should be 10-11 digits including the leading 0
+        // 3. Alternative: +60 format (e.g., +60123456789)
+        
+        // Pattern for 01X format (local format)
+        const localPattern = /^01[0-9]{8,9}$/;
+        
+        // Pattern for +60 format (international format)
+        const internationalPattern = /^\+60[0-9]{9,10}$/;
+        
+        // Pattern for 60 format (without +)
+        const intlWithoutPlus = /^60[0-9]{9,10}$/;
+        
+        if (localPattern.test(cleanPhone)) {
+            return { valid: true, message: '' };
+        }
+        
+        if (internationalPattern.test(cleanPhone)) {
+            return { valid: true, message: '' };
+        }
+        
+        if (intlWithoutPlus.test(cleanPhone)) {
+            return { valid: true, message: '' };
+        }
+        
+        return { 
+            valid: false, 
+            message: 'Please enter a valid Malaysia phone number (e.g., 0123456789 or +60123456789)' 
+        };
+    }
+    
+    // Function to show error message
+    function showError(message) {
+        const errorDiv = document.getElementById('phoneError');
+        const phoneInputField = document.querySelector('.phone-input');
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+        phoneInputField.classList.add('error');
+    }
+    
+    // Function to hide error message
+    function hideError() {
+        const errorDiv = document.getElementById('phoneError');
+        const phoneInputField = document.querySelector('.phone-input');
+        errorDiv.classList.remove('show');
+        phoneInputField.classList.remove('error');
+    }
+    
+    // Register page functionality
+    const continueBtn = document.querySelector('.continue-btn');
+    const loginDirectBtn = document.querySelector('.login-direct-btn');
+    const helpBtn = document.querySelector('.help-btn');
+    const guidelineBtn = document.querySelector('.guideline-btn');
+    const phoneInput = document.querySelector('.phone-input');
+    
+    // Clear error when user starts typing
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            hideError();
+        });
+    }
+    
+    // Check if phone was passed from login page
+    const urlParams = new URLSearchParams(window.location.search);
+    const passedPhone = urlParams.get('phone');
+    if (passedPhone && phoneInput) {
+        phoneInput.value = passedPhone;
+    }
+    
+    // Continue button - save phone number to database and login
+    if (continueBtn) {
+        continueBtn.addEventListener('click', function() {
+            const phone = phoneInput ? phoneInput.value.trim() : '';
+            
+            if (!phone) {
+                showError('Please enter your phone number');
+                phoneInput.focus();
+                return;
+            }
+            
+            // Validate Malaysia phone number
+            const validation = validateMalaysiaPhone(phone);
+            if (!validation.valid) {
+                showError(validation.message);
+                phoneInput.focus();
+                return;
+            }
+            
+            // Hide error if valid
+            hideError();
+            
+            // Standardize phone format for storage (use +60 format)
+            let standardizedPhone = phone;
+            const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+            
+            if (cleanPhone.match(/^01[0-9]{8,9}$/)) {
+                // Convert local format to international format
+                standardizedPhone = '+6' + cleanPhone;
+            } else if (cleanPhone.match(/^60[0-9]{9,10}$/)) {
+                // Add + prefix
+                standardizedPhone = '+' + cleanPhone;
+            }
+            
+            // Check if phone already exists
+            const existingUser = UserDB.findUserByPhone(standardizedPhone);
+            
+            if (existingUser) {
+                // User already exists - just login
+                UserDB.setCurrentUser(existingUser);
+                alert('Welcome back! Login successful.');
+                window.location.href = '../nav/home.html';
+            } else {
+                // Create new user and login with standardized phone
+                const newUser = UserDB.addUser(standardizedPhone);
+                UserDB.setCurrentUser(newUser);
+                alert('Registration successful! Welcome to LuxeStay.');
+                window.location.href = '../nav/home.html';
+            }
+        });
+    }
+    
+    // Direct to Login button - go to login page
+    if (loginDirectBtn) {
+        loginDirectBtn.addEventListener('click', function() {
+            window.location.href = 'login.html';
+        });
+    }
+    
+    // Help button
+    if (helpBtn) {
+        helpBtn.addEventListener('click', function() {
+            alert('Need help? Contact our customer support at support@luxestay.com or call +6012-345-6789');
+        });
+    }
+    
+    // Guideline button
+    if (guidelineBtn) {
+        guidelineBtn.addEventListener('click', function() {
+            alert('Guidelines:\n1. Enter your Malaysia phone number (e.g., 0123456789 or +60123456789)\n2. After registration, you can login anytime\n3. Complete your profile information\n4. Contact support if you face any issues');
+        });
+    }
+</script>
+</body>
+</html>

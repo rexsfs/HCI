@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Cancel Booking</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header with Logo - matches successful.html header styling */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+
+    .header-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+    /* Cancel Confirmation Section */
+    .cancel-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 30px 24px;
+      background: white;
+      text-align: center;
+    }
+
+    /* Warning Icon */
+    .warning-icon {
+      width: 100px;
+      height: 100px;
+      background: #fff5e6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      border: 2px solid #f5a623;
+    }
+
+    .warning-icon i {
+      font-size: 3.5rem;
+      color: #f5a623;
+    }
+
+    /* question-text matches successful.html .success-title (1.5rem) */
+    .question-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .question-text span {
+      color: #c62828;
+    }
+
+    /* booking-info matches successful.html .details-card */
+    .booking-info {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 32px;
+      width: 100%;
+      text-align: left;
+      border: 1px solid #edf2f7;
+    }
+
+    /* booking-info-title matches successful.html .section-title style but smaller variant */
+    .booking-info-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .booking-info-title i {
+      color: #f5a623;
+      font-size: 1rem;
+    }
+
+    .booking-detail-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* booking-detail-label matches successful.html .detail-label (1rem) */
+    .booking-detail-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+    }
+
+    /* booking-detail-value matches successful.html .detail-value (1.3rem) */
+    .booking-detail-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+      text-align: right;
+    }
+
+    /* Action Buttons Section - added margin-bottom for gap with navbar */
+    .action-buttons-section {
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+    }
+
+    /* yes-btn matches successful.html .back-home-btn styling */
+    .yes-btn {
+      background: #c62828;
+      border: none;
+      flex: 1;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 16px rgba(198, 40, 40, 0.3);
+    }
+
+    .yes-btn:hover {
+      background: #b71c1c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(198, 40, 40, 0.4);
+    }
+
+    /* no-btn matches successful.html .back-home-btn but with transparent background */
+    .no-btn {
+      background: transparent;
+      border: 2px solid #1e3a5f;
+      flex: 1;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .no-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    /* Bottom Navigation - matches successful.html exactly */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-top: 2px solid #eef2f8;
+      padding: 14px 16px 24px 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 2.2rem;
+      color: #8a99aa;
+      margin-bottom: 8px;
+    }
+
+    .nav-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8a99aa;
+    }
+
+    .nav-item:hover {
+      background: #f0f4fa;
+    }
+
+    .nav-item:hover i,
+    .nav-item:hover span {
+      color: #1e3a5f;
+    }
+
+    .nav-item:active {
+      transform: scale(0.96);
+    }
+
+    .nav-item.active i,
+    .nav-item.active span {
+      color: #1e3a5f;
+    }
+
+    /* Remove default link styling inside nav-item */
+    .nav-item a {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: inherit;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - exactly matching successful.html breakpoints ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.7rem;
+      }
+
+      .cancel-section {
+        padding: 30px 20px 25px 20px;
+      }
+
+      .warning-icon {
+        width: 80px;
+        height: 80px;
+      }
+
+      .warning-icon i {
+        font-size: 2.8rem;
+      }
+
+      .question-text {
+        font-size: 1.35rem;
+      }
+
+      .booking-info {
+        padding: 16px;
+        margin-bottom: 28px;
+      }
+
+      .booking-info-title {
+        font-size: 0.9rem;
+      }
+
+      .booking-detail-label {
+        font-size: 0.9rem;
+      }
+
+      .booking-detail-value {
+        font-size: 1.2rem;
+      }
+
+      .action-buttons-section {
+        margin-bottom: 25px;
+      }
+
+      .action-buttons {
+        gap: 12px;
+      }
+
+      .yes-btn, .no-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .bottom-nav {
+        padding: 12px 12px 20px 12px;
+      }
+
+      .nav-item i {
+        font-size: 1.9rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px - matches successful.html */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+      }
+
+
+      .cancel-section {
+        padding: 24px 16px 20px 16px;
+      }
+
+      .warning-icon {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 20px;
+      }
+
+      .warning-icon i {
+        font-size: 2.4rem;
+      }
+
+      .question-text {
+        font-size: 1.25rem;
+      }
+
+      .booking-info {
+        padding: 14px;
+        margin-bottom: 24px;
+      }
+
+      .booking-info-title {
+        font-size: 0.85rem;
+      }
+
+      .booking-detail-label {
+        font-size: 0.85rem;
+      }
+
+      .booking-detail-value {
+        font-size: 1.1rem;
+      }
+
+      /* Column stacking for narrow screens */
+      .booking-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .booking-detail-value {
+        text-align: left;
+      }
+
+      .action-buttons-section {
+        margin-bottom: 20px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .yes-btn, .no-btn {
+        width: 100%;
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .nav-item i {
+        font-size: 1.7rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Logo -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='inside_history.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Cancel Booking</div>
+  </div>
+
+  <!-- Cancel Confirmation Section -->
+  <div class="cancel-section">
+    <!-- Warning Icon -->
+    <div class="warning-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+
+    <!-- Question Text -->
+    <div class="question-text">
+      Are you sure to cancel your<br>
+      <span>hotel reservation booking?</span>
+    </div>
+
+    <!-- Booking Information Summary -->
+    <div class="booking-info">
+      <div class="booking-info-title">
+        <i class="fas fa-receipt"></i>
+        Booking Details
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Name:</span>
+        <span class="booking-detail-value">Ahmad Bin Abdullah</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Phone Number:</span>
+        <span class="booking-detail-value">+6012 345 6789</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Booking-ID:</span>
+        <span class="booking-detail-value">LXS-2026-0415-8A3F</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Hotel Name:</span>
+        <span class="booking-detail-value">Mandarin Oriental Kuala Lumpur</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Hotel Location:</span>
+        <span class="booking-detail-value">Kuala Lumpur</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Room Type:</span>
+        <span class="booking-detail-value">Deluxe King Room</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Room Name:</span>
+        <span class="booking-detail-value">Deluxe King City View</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Check-In:</span>
+        <span class="booking-detail-value">15 April 2026</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Check-Out:</span>
+        <span class="booking-detail-value">18 April 2026</span>
+      </div>
+      <div class="booking-detail-item">
+        <span class="booking-detail-label">Total Amount:</span>
+        <span class="booking-detail-value">RM 3,135</span>
+      </div>
+    </div>
+
+    <!-- Action Buttons Section with gap from navbar -->
+    <div class="action-buttons-section">
+      <div class="action-buttons">
+        <button class="yes-btn" onclick="if(confirm('Are you absolutely sure? This action cannot be undone.')) { alert('Your booking has been cancelled successfully.'); window.location.href='history.html'; }">
+          <i class="fas fa-check-circle"></i>
+          Yes, Cancel Booking
+        </button>
+        <button class="no-btn" onclick="window.location.href='booking_details.html'">
+          <i class="fas fa-arrow-left"></i>
+          No, Keep Booking
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-buttons">
+      <a href="home.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="history.html" class="nav-item active">
+        <i class="fas fa-clock-rotate-left"></i>
+        <span>History</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <button class="nav-item" id="serviceBtn">
+        <i class="fas fa-headset"></i>
+        <span>Service</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Service button handler
+  const serviceBtn = document.getElementById('serviceBtn');
+  if (serviceBtn) {
+    serviceBtn.addEventListener('click', function() {
+      alert('Customer Service: +603 2380 8888\nEmail: reservations@mandarinoriental.com.my');
+    });
+  }
+</script>
+</body>
+</html>

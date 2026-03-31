@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Room Details</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/hotel/room.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  
+  <!-- Include external hotel database -->
+  <script src="hotel.js"></script>
+  <script src="room.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Room Details</div>
+  </div>
+
+  <!-- Room Image -->
+  <div class="room-image-section">
+    <div class="main-room-image">
+      <img id="mainRoomImage" src="" alt="Room Image">
+    </div>
+  </div>
+
+  <!-- Room Info Section -->
+  <div class="room-info-section">
+    <div class="room-type" id="roomType">Loading...</div>
+    <div class="suitable-for" id="suitableFor">
+      <i class="fas fa-users"></i> Loading...
+    </div>
+    
+    <!-- AMENITIES -->
+    <div class="amenities-section">
+      <div class="amenities-title">✨ Room Amenities</div>
+      <div class="amenities-list" id="amenitiesList">
+        Loading amenities...
+      </div>
+    </div>
+  </div>
+
+  <!-- Inside Room Facilities - Image Gallery -->
+  <div class="gallery-section">
+    <div class="gallery-title">📸 Inside Room Facilities</div>
+    
+    <!-- Table & Work Desk Provided -->
+    <div class="gallery-item">
+      <div class="gallery-image">
+        <img id="galleryDesk" src="" alt="Work desk">
+      </div>
+      <div class="gallery-caption">
+        <i class="fas fa-table"></i> Work Desk & Ergonomic Chair
+      </div>
+    </div>
+
+    <!-- Overview of Whole Room -->
+    <div class="gallery-item">
+      <div class="gallery-image">
+        <img id="galleryOverview" src="" alt="Room overview">
+      </div>
+      <div class="gallery-caption">
+        <i class="fas fa-camera"></i> Spacious Room Overview
+      </div>
+    </div>
+
+    <!-- Washroom Provided -->
+    <div class="gallery-item">
+      <div class="gallery-image">
+        <img id="galleryBathroom" src="" alt="Bathroom">
+      </div>
+      <div class="gallery-caption">
+        <i class="fas fa-bath"></i> Luxury Bathroom with Rain Shower
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section - Room Details Information -->
+  <div class="table-section">
+    <div class="table-title">📋 Room Details</div>
+    <table class="info-table" id="infoTable">
+      <tr><td colspan="2">Loading room details...</td></tr>
+    </table>
+  </div>
+
+  <!-- Action Buttons Section -->
+  <div class="action-section">
+    <button class="pay-now-btn" id="payNowBtn" onclick="proceedToPayment()">
+      <i class="fas fa-credit-card"></i> PAY NOW - Loading...
+    </button>
+    <button class="compare-btn" onclick="compareRoom()">
+      <i class="fas fa-chart-line"></i> CLICK HERE TO COMPARE
+    </button>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Function to proceed to payment
+  function proceedToPayment() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelId = urlParams.get('hotelId');
+    const roomId = urlParams.get('roomId');
+    
+    if (hotelId && roomId) {
+      window.location.href = `payment.html?hotelId=${hotelId}&roomId=${roomId}`;
+    } else {
+      window.location.href = 'payment.html';
+    }
+  }
+  
+  // Function to compare rooms
+  function compareRoom() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelId = urlParams.get('hotelId');
+    const roomId = urlParams.get('roomId');
+    
+    if (hotelId && roomId) {
+      window.location.href = `comparison.html?hotelId=${hotelId}&roomId=${roomId}`;
+    } else {
+      window.location.href = 'comparison.html';
+    }
+  }
+  
+  // Load room details when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof initRoomPage === 'function') {
+      initRoomPage();
+    } else {
+      console.error('room.js not loaded properly');
+    }
+  });
+  
+  // Load navigation component
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'room.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <button class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </button>
+          </div>
+        </div>
+      `;
+    });
+</script>
+</body>
+</html>

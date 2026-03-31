@@ -1,0 +1,355 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header - matches guideline.html header styling */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Matches guideline.html logo-text exactly */
+    .header-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Room Grid */
+    .room-grid {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding-bottom: 40px;
+    }
+
+    /* Room Card - matches guideline.html .eula-card style */
+    .room-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid #edf2f7;
+      transition: transform 0.2s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .room-image {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .room-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .room-info {
+      padding: 20px;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .room-type {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 10px;
+    }
+
+    .room-facilities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    /* Matches guideline.html .facility-item style */
+    .facility-badge {
+      background: #f0f4fa;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .facility-badge i {
+      font-size: 0.9rem;
+      color: #f5a623;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .room-name {
+      font-size: 1.3rem;
+      color: #1e2f3e;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .room-name strong {
+      color: #1e3a5f;
+      font-weight: 800;
+    }
+
+    /* Additional facilities */
+    .room-additional-facilities {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    /* Matches guideline.html .facility-item style with smaller padding */
+    .additional-facility {
+      background: #f0f4fa;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .additional-facility i {
+      font-size: 0.85rem;
+      color: #f5a623;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) with bold */
+    .room-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin-bottom: 16px;
+    }
+
+    .room-price small {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #7c8b9a;
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .view-details-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .view-details-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.7rem;
+      }
+
+      .room-grid {
+        padding: 16px 20px;
+        gap: 24px;
+        padding-bottom: 40px;
+      }
+
+      .room-image {
+        height: 200px;
+      }
+
+      .room-info {
+        padding: 18px;
+      }
+
+      .room-type {
+        font-size: 1.35rem;
+      }
+
+      .facility-badge {
+        padding: 6px 14px;
+        font-size: 0.9rem;
+      }
+
+      .room-name {
+        font-size: 1.2rem;
+      }
+
+      .additional-facility {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+
+      .room-price {
+        font-size: 1.2rem;
+      }
+
+      .room-price small {
+        font-size: 0.9rem;
+      }
+
+      .view-details-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+      }
+
+      .room-grid {
+        padding: 14px 16px;
+        gap: 22px;
+        padding-bottom: 40px;
+      }
+
+      .room-image {
+        height: 180px;
+      }
+
+      .room-info {
+        padding: 16px;
+      }
+
+      .room-type {
+        font-size: 1.25rem;
+      }
+
+      .facility-badge {
+        padding: 5px 12px;
+        font-size: 0.85rem;
+      }
+
+      .room-name {
+        font-size: 1.1rem;
+      }
+
+      .additional-facility {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
+
+      .room-price {
+        font-size: 1.1rem;
+      }
+
+      .room-price small {
+        font-size: 0.85rem;
+      }
+
+      .view-details-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+    }

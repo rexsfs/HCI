@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Room Selection</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  <link rel="stylesheet" href="/css/hotel/more.css">
+  <script src="hotel.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="window.history.back()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">View All Available Rooms</div>
+  </div>
+
+  <!-- Room Grid - Dynamic content -->
+  <div class="room-grid" id="roomGrid">
+    <!-- Rooms will be loaded here dynamically -->
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Get hotel ID from URL parameter
+  function getHotelIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    return id ? parseInt(id) : null;
+  }
+
+  // Function to handle room selection
+  function selectRoom(hotelId, roomId) {
+    window.location.href = `room.html?hotelId=${hotelId}&roomId=${roomId}`;
+  }
+
+  // Function to display all rooms
+  function displayAllRooms() {
+    const hotelId = getHotelIdFromUrl();
+    
+    if (!hotelId) {
+      document.getElementById('roomGrid').innerHTML = '<p style="text-align:center;padding:40px;">No hotel selected. Please go back and select a hotel.</p>';
+      return;
+    }
+    
+    const hotel = HOTELS_DATABASE[hotelId];
+    
+    if (!hotel) {
+      document.getElementById('roomGrid').innerHTML = '<p style="text-align:center;padding:40px;">Hotel not found.</p>';
+      return;
+    }
+    
+    // Update page title
+    document.title = `${hotel.name} | Room Selection`;
+    
+    const rooms = hotel.rooms;
+    
+    if (!rooms || rooms.length === 0) {
+      document.getElementById('roomGrid').innerHTML = '<p style="text-align:center;padding:40px;">No rooms available for this hotel.</p>';
+      return;
+    }
+    
+    // Generate HTML for all rooms matching the exact pattern
+    let roomsHTML = '';
+    
+    rooms.forEach(room => {
+      // Determine additional facilities based on room type
+      let additionalFacilities = '';
+      
+      if (room.typeValue === 'deluxe') {
+        additionalFacilities = `
+          <span class="additional-facility"><i class="fas fa-tv"></i> 55" Smart TV</span>
+          <span class="additional-facility"><i class="fas fa-wifi"></i> Free WiFi</span>
+          <span class="additional-facility"><i class="fas fa-bath"></i> Marble Bathroom</span>
+          <span class="additional-facility"><i class="fas fa-coffee"></i> Coffee Machine</span>
+        `;
+      } else if (room.typeValue === 'suite') {
+        additionalFacilities = `
+          <span class="additional-facility"><i class="fas fa-couch"></i> Living Area</span>
+          <span class="additional-facility"><i class="fas fa-tv"></i> 65" Smart TV</span>
+          <span class="additional-facility"><i class="fas fa-coffee"></i> Nespresso</span>
+          <span class="additional-facility"><i class="fas fa-bath"></i> Jacuzzi Tub</span>
+        `;
+      } else if (room.typeValue === 'family') {
+        additionalFacilities = `
+          <span class="additional-facility"><i class="fas fa-child"></i> Kids Friendly</span>
+          <span class="additional-facility"><i class="fas fa-tv"></i> 2 Smart TVs</span>
+          <span class="additional-facility"><i class="fas fa-wifi"></i> Free WiFi</span>
+          <span class="additional-facility"><i class="fas fa-couch"></i> Living Area</span>
+          <span class="additional-facility"><i class="fas fa-baby-carriage"></i> Baby Cot</span>
+        `;
+      } else if (room.typeValue === 'presidential') {
+        additionalFacilities = `
+          <span class="additional-facility"><i class="fas fa-couch"></i> Spacious Living Area</span>
+          <span class="additional-facility"><i class="fas fa-tv"></i> 75" Smart TV</span>
+          <span class="additional-facility"><i class="fas fa-coffee"></i> Premium Nespresso</span>
+          <span class="additional-facility"><i class="fas fa-bath"></i> Jacuzzi + Steam</span>
+          <span class="additional-facility"><i class="fas fa-champagne-glasses"></i> Complimentary Champagne</span>
+        `;
+      } else {
+        additionalFacilities = `
+          <span class="additional-facility"><i class="fas fa-tv"></i> Smart TV</span>
+          <span class="additional-facility"><i class="fas fa-wifi"></i> Free WiFi</span>
+          <span class="additional-facility"><i class="fas fa-bath"></i> Private Bathroom</span>
+          <span class="additional-facility"><i class="fas fa-coffee"></i> Coffee Maker</span>
+        `;
+      }
+      
+      // Determine if room name should be shown (for family and executive types)
+      let roomNameHtml = '';
+      if (room.typeValue === 'family') {
+        roomNameHtml = `<div class="room-name"><strong>Room Name:</strong> ${room.type} with Two Bedrooms</div>`;
+      } else if (room.typeValue === 'suite') {
+        roomNameHtml = `<div class="room-name"><strong>Room Name:</strong> ${room.type} with Separate Living Area</div>`;
+      } else {
+        roomNameHtml = '';
+      }
+      
+      roomsHTML += `
+        <div class="room-card">
+          <div class="room-image">
+            <img src="${room.image}" alt="${room.type}">
+          </div>
+          <div class="room-info">
+            <div class="room-type">${room.type}</div>
+            <div class="room-facilities">
+              <span class="facility-badge"><i class="fas fa-utensils"></i> Breakfast</span>
+              <span class="facility-badge"><i class="fas fa-concierge-bell"></i> Room Service</span>
+              ${room.typeValue === 'suite' ? '<span class="facility-badge"><i class="fas fa-champagne-glasses"></i> Minibar</span>' : ''}
+              ${room.typeValue === 'presidential' ? '<span class="facility-badge"><i class="fas fa-champagne-glasses"></i> Minibar</span>' : ''}
+            </div>
+            ${roomNameHtml}
+            <div class="room-additional-facilities">
+              ${additionalFacilities}
+            </div>
+            <div class="room-price">RM ${room.price.toLocaleString()} <small>/ night including tax</small></div>
+            <button class="view-details-btn" onclick="selectRoom(${hotel.id}, ${room.id})">View Details →</button>
+          </div>
+        </div>
+      `;
+    });
+    
+    document.getElementById('roomGrid').innerHTML = roomsHTML;
+  }
+
+  // Load navigation and display rooms
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'more.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+      
+      displayAllRooms();
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="../nav/history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="../nav/profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      displayAllRooms();
+    });
+</script>
+</body>
+</html>

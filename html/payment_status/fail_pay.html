@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Payment Failed</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header - matches home.html exactly with back button */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Logo area styling - matches home.html logo-text exactly */
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Matches home.html logo-text exactly */
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 20px 24px;
+      flex: 1;
+    }
+
+    /* Error Header */
+    .error-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      background: #fef4e6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px auto;
+      border: 2px solid #f5a623;
+    }
+
+    .error-icon i {
+      font-size: 2.5rem;
+      color: #f5a623;
+    }
+
+    /* Matches home.html .hotel-name size */
+    .error-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #e67e22;
+      margin-bottom: 8px;
+    }
+
+    /* Matches home.html .hotel-details font-size */
+    .error-subtitle {
+      font-size: 0.95rem;
+      color: #6c7e8e;
+    }
+
+    /* Error Message Card - matches home.html .hotel-card style */
+    .error-message-card {
+      background: #fef9f0;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #f5e6d0;
+      text-align: center;
+    }
+
+    /* Matches home.html .hotel-details font-size */
+    .error-message {
+      font-size: 0.95rem;
+      color: #6c7e8e;
+      line-height: 1.6;
+    }
+
+    .error-message strong {
+      color: #e67e22;
+    }
+
+    /* Friendly Emotional Message - matches home.html .hotel-card style */
+    .friendly-message {
+      background: #f0f4fa;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+      border-left: 4px solid #f5a623;
+    }
+
+    .friendly-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    /* Matches home.html .hotel-name size */
+    .friendly-text {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin-bottom: 8px;
+    }
+
+    /* Matches home.html .hotel-details font-size */
+    .friendly-subtext {
+      font-size: 0.9rem;
+      color: #6c7e8e;
+    }
+
+    /* Contact Button - matches home.html .chip style */
+    .contact-section {
+      margin-bottom: 16px;
+    }
+
+    .contact-btn {
+      background: #f0f4fa;
+      border: none;
+      width: 100%;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .contact-btn i {
+      font-size: 1rem;
+    }
+
+    .contact-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Try Again Button - matches home.html .search-button style with bottom padding for gap */
+    .try-again-section {
+      padding-bottom: 40px;
+    }
+
+    .try-again-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .try-again-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* Navigation Container */
+    #nav-container {
+      margin-top: auto;
+    }
+
+    /* Bottom Navigation Styles - matches home.html exactly */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-top: 2px solid #eef2f8;
+      padding: 14px 16px 24px 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 2.2rem;
+      color: #8a99aa;
+      margin-bottom: 8px;
+    }
+
+    .nav-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8a99aa;
+    }
+
+    .nav-item:hover {
+      background: #f0f4fa;
+    }
+
+    .nav-item:hover i,
+    .nav-item:hover span {
+      color: #1e3a5f;
+    }
+
+    .nav-item:active {
+      transform: scale(0.96);
+    }
+
+    .nav-item.active i,
+    .nav-item.active span {
+      color: #1e3a5f;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - MATCHES home.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .main-content {
+        padding: 16px 20px;
+      }
+
+      .error-title {
+        font-size: 1.35rem;
+      }
+
+      .error-subtitle {
+        font-size: 0.85rem;
+      }
+
+      .error-message {
+        font-size: 0.85rem;
+      }
+
+      .friendly-text {
+        font-size: 1.2rem;
+      }
+
+      .friendly-subtext {
+        font-size: 0.85rem;
+      }
+
+      .contact-btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+      }
+
+      .try-again-section {
+        padding-bottom: 35px;
+      }
+
+      .try-again-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .bottom-nav {
+        padding: 12px 12px 20px 12px;
+      }
+
+      .nav-item i {
+        font-size: 1.9rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .main-content {
+        padding: 14px 16px;
+      }
+
+      .error-title {
+        font-size: 1.25rem;
+      }
+
+      .error-subtitle {
+        font-size: 0.8rem;
+      }
+
+      .error-message {
+        font-size: 0.8rem;
+      }
+
+      .friendly-text {
+        font-size: 1.1rem;
+      }
+
+      .friendly-subtext {
+        font-size: 0.8rem;
+      }
+
+      .contact-btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+      }
+
+      .try-again-section {
+        padding-bottom: 30px;
+      }
+
+      .try-again-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .nav-item i {
+        font-size: 1.7rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button and Logo - matches home.html style -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='pay_by.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="logo-area">
+      <div class="logo-text">Payment Failed</div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Error Header -->
+    <div class="error-header">
+      <div class="error-icon">
+        <i class="fas fa-exclamation-circle"></i>
+      </div>
+      <div class="error-title">Sorry, Your payment didn't go through.</div>
+      <div class="error-subtitle">We encountered an issue processing your payment</div>
+    </div>
+
+    <!-- Error Message Card -->
+    <div class="error-message-card">
+      <div class="error-message">
+        <strong>Please Check & Make Sure everything is correct,</strong><br>
+        including payment methods chosen.
+      </div>
+    </div>
+
+    <!-- Friendly Emotional Message -->
+    <div class="friendly-message">
+      <div class="friendly-icon">
+        <i class="fas fa-smile-wink"></i>
+      </div>
+      <div class="friendly-text">"It's okay to make mistake"</div>
+      <div class="friendly-subtext">Don't worry, you can try again or contact us for assistance</div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+      <a href="contact.html" style="text-decoration: none; display: block;">
+        <button class="contact-btn">
+          <i class="fas fa-headset"></i>
+          Still Confusing on error? Click Here to Contact Us
+        </button>
+      </a>
+    </div>
+
+    <!-- Try Again Button with bottom padding for gap from navbar -->
+    <div class="try-again-section">
+      <a href="pay_by.html" style="text-decoration: none; display: block;">
+        <button class="try-again-btn">
+          <i class="fas fa-redo-alt"></i>
+          Try Again
+        </button>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'payment_failed.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <button class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'payment_failed.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    });
+</script>
+</body>
+</html>

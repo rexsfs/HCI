@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | User Profile</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/profile.css">
+  <script src="../login_register/data.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Logo - matches home.html style -->
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+  <!-- Profile Section with NEW Title -->
+  <div class="profile-section">
+    <!-- NEW: Profile Title - "My Profile" above the profile image -->
+    <div class="profile-title-wrapper">
+      <div class="profile-title">
+        My Profile
+      </div>
+    </div>
+
+    <!-- Profile Image -->
+    <div class="profile-image">
+      <i class="fas fa-user-circle"></i>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="profile-details">
+      <div class="detail-item">
+        <span class="detail-label">Full Name</span>
+        <span class="detail-value">Ahmad Bin Abdullah</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Phone Number</span>
+        <span class="detail-value">+6012 345 6789</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email Address</span>
+        <span class="detail-value">ahmad.abdullah@email.com</span>
+      </div>
+    </div>
+
+    <!-- Edit Profile Button - Larger -->
+    <button class="edit-profile-btn">
+      <i class="fas fa-edit"></i>
+      Edit Profile
+    </button>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+    // Function to generate random username (number between 100000 and 999999)
+    function generateRandomUsername() {
+        return 'User' + Math.floor(Math.random() * 900000 + 100000);
+    }
+    
+    // Profile page functionality
+    let currentUser = UserDB.getCurrentUser();
+    
+    // If user is logged in but has no fullName, generate a random one
+    if (currentUser && (!currentUser.fullName || currentUser.fullName === '')) {
+        const randomName = generateRandomUsername();
+        const updatedUser = UserDB.updateUser(currentUser.phone, {
+            fullName: randomName
+        });
+        if (updatedUser) {
+            currentUser = updatedUser;
+            UserDB.setCurrentUser(updatedUser);
+        }
+    }
+    
+    // Get profile elements
+    const fullNameSpan = document.querySelector('.detail-item:first-child .detail-value');
+    const phoneSpan = document.querySelector('.detail-item:nth-child(2) .detail-value');
+    const emailSpan = document.querySelector('.detail-item:nth-child(3) .detail-value');
+    const editBtn = document.querySelector('.edit-profile-btn');
+    
+    if (currentUser) {
+        // User is logged in - show profile data
+        if (fullNameSpan) fullNameSpan.textContent = currentUser.fullName || generateRandomUsername();
+        if (phoneSpan) phoneSpan.textContent = currentUser.phone;
+        if (emailSpan) emailSpan.textContent = currentUser.email || 'Not set';
+    } else {
+        // User is not logged in - show empty values
+        if (fullNameSpan) fullNameSpan.textContent = '';
+        if (phoneSpan) phoneSpan.textContent = '';
+        if (emailSpan) emailSpan.textContent = '';
+    }
+    
+    // Edit profile button click handler
+    if (editBtn) {
+        editBtn.addEventListener('click', function() {
+            if (UserDB.isLoggedIn()) {
+                // Get current user again to ensure we have latest data
+                const user = UserDB.getCurrentUser();
+                
+                // If user has no name, generate a random one as default
+                const currentName = user?.fullName || generateRandomUsername();
+                const currentEmail = user?.email || '';
+                
+                const newName = prompt('Enter your full name:', currentName);
+                const newEmail = prompt('Enter your email address:', currentEmail);
+                
+                if (newName !== null || newEmail !== null) {
+                    const updatedUser = UserDB.updateUser(user.phone, {
+                        fullName: newName !== null ? newName : user.fullName,
+                        email: newEmail !== null ? newEmail : user.email
+                    });
+                    
+                    if (updatedUser) {
+                        UserDB.setCurrentUser(updatedUser);
+                        if (fullNameSpan) fullNameSpan.textContent = updatedUser.fullName || generateRandomUsername();
+                        if (emailSpan) emailSpan.textContent = updatedUser.email || 'Not set';
+                        alert('Profile updated successfully!');
+                    }
+                }
+            } else {
+                // If not logged in, redirect to login page
+                window.location.href = 'login.html';
+            }
+        });
+    }
+
+    // Load navigation component from external file
+    fetch('nav.html')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Navigation file not found');
+            }
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('nav-container').innerHTML = html;
+            
+            // After loading nav, set active state
+            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
+                    item.classList.add('active');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error loading navigation:', error);
+            // Fallback navigation in case file doesn't load
+            document.getElementById('nav-container').innerHTML = `
+                <div class="bottom-nav">
+                    <div class="nav-buttons">
+                        <a href="home.html" class="nav-item">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                        <a href="history.html" class="nav-item">
+                            <i class="fas fa-clock-rotate-left"></i>
+                            <span>History</span>
+                        </a>
+                        <a href="profile.html" class="nav-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="cs.html" class="nav-item">
+                            <i class="fas fa-headset"></i>
+                            <span>Service</span>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            // Set active state for fallback
+            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                const href = item.getAttribute('href');
+                if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
+                    item.classList.add('active');
+                }
+            });
+        });
+</script>
+</body>
+</html>

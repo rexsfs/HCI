@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Customer Service</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/nav/cs.css">
+</head>
+<body>
+<div class="app-container">
+
+  <!-- Logo Section - Centered at Top -->
+  <div class="header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+  <!-- Customer Service Section -->
+  <div class="service-section">
+    <!-- Service Title -->
+    <div class="service-title-wrapper">
+      <div class="service-title">
+        Customer Service
+      </div>
+    </div>
+
+    <!-- Welcome Message Card -->
+    <div class="welcome-card">
+      <div class="welcome-title">We're here to help!</div>
+      <div class="welcome-message">Ask us anything about your booking</div>
+    </div>
+
+    <!-- Frequently Asked Questions -->
+    <div class="faq-section">
+      <div class="faq-title">
+        <i class="fas fa-question-circle"></i>
+        Frequently Asked Question
+      </div>
+      <div class="faq-item">
+        <span class="faq-question">Request Early Check-In or Late Check-Out</span>
+        <i class="fas fa-chevron-right faq-icon"></i>
+      </div>
+      <div class="faq-item">
+        <span class="faq-question">Is Breakfast Included?</span>
+        <i class="fas fa-chevron-right faq-icon"></i>
+      </div>
+      <div class="faq-item">
+        <span class="faq-question">How to Cancel Booking?</span>
+        <i class="fas fa-chevron-right faq-icon"></i>
+      </div>
+    </div>
+
+    <!-- Ask Your Question Title -->
+    <div class="ask-question-title">
+      <div class="ask-question-title-text">
+        <i class="fas fa-pen"></i>
+        Ask Your Question
+      </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div class="chat-section">
+      <div class="chat-message">
+        <div class="chat-avatar">
+          <i class="fas fa-headset"></i>
+        </div>
+        <div class="chat-bubble">
+          <div class="chat-text">Hello! Welcome to LuxeStay Customer Service. How can I help you today?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="input-container">
+        <input type="text" class="message-input" placeholder="Type your question here...">
+        <button class="send-btn">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+   // Load navigation component from external file
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      // After loading nav, set active state
+      const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
+          item.classList.add('active');
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      // Fallback navigation in case file doesn't load
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <a href="cs.html" class="nav-item">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </a>
+          </div>
+        </div>
+      `;
+      
+      // Set active state for fallback
+      const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && (href.includes(currentPage) || href.endsWith(currentPage))) {
+          item.classList.add('active');
+        }
+      });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Compare Rooms</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header - matches guideline.html header styling */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Matches guideline.html logo-text exactly */
+    .header-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Selection Section */
+    .selection-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .selection-row {
+      margin-bottom: 24px;
+    }
+
+    .selection-row:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .selection-label {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* Matches guideline.html .back-btn style for dropdown */
+    .select-dropdown {
+      width: 100%;
+      padding: 20px 24px;
+      font-size: 1.3rem;
+      font-family: inherit;
+      font-weight: 700;
+      border: 2px solid #edf2f7;
+      border-radius: 60px;
+      background: #f8fafd;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%231e3a5f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+      background-repeat: no-repeat;
+      background-position: right 24px center;
+      background-size: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .select-dropdown:focus {
+      border-color: #1e3a5f;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+    }
+
+    /* Compare Grid */
+    .compare-grid {
+      display: flex;
+      gap: 16px;
+      padding: 20px 24px;
+      background: white;
+      padding-bottom: 50px;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .compare-column {
+      flex: 1;
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid #edf2f7;
+      transition: transform 0.2s ease;
+    }
+
+    .compare-column:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Matches guideline.html .eula-section-title style */
+    .hotel-name-badge {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      color: white;
+      padding: 16px 12px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+
+    .room-image {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+    }
+
+    .room-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .room-details {
+      padding: 20px;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .room-type {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      text-align: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .amenities-section {
+      margin-bottom: 20px;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .amenities-label {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 12px;
+    }
+
+    .amenities-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Matches guideline.html .facility-item style with room_details.html icons */
+    .amenity-tag {
+      background: #f0f4fa;
+      padding: 8px 14px;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .amenity-tag i {
+      font-size: 0.9rem;
+      color: #f5a623;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) with bold */
+    .room-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin: 18px 0;
+      padding-top: 14px;
+      border-top: 2px solid #eef2f8;
+      text-align: center;
+    }
+
+    .room-price small {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #7c8b9a;
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .confirm-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .confirm-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* Navigation Container */
+    #nav-container {
+      margin-top: auto;
+    }
+
+    /* Bottom Navigation Styles */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-top: 2px solid #eef2f8;
+      padding: 14px 16px 24px 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 2.2rem;
+      color: #8a99aa;
+      margin-bottom: 8px;
+    }
+
+    .nav-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8a99aa;
+    }
+
+    .nav-item:hover {
+      background: #f0f4fa;
+    }
+
+    .nav-item:hover i,
+    .nav-item:hover span {
+      color: #1e3a5f;
+    }
+
+    .nav-item:active {
+      transform: scale(0.96);
+    }
+
+    .nav-item.active i,
+    .nav-item.active span {
+      color: #1e3a5f;
+    }
+
+    .nav-item a {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: inherit;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.7rem;
+      }
+
+      .selection-section {
+        padding: 16px 20px;
+      }
+
+      .selection-label {
+        font-size: 1.35rem;
+      }
+
+      .select-dropdown {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+        background-position: right 20px center;
+        background-size: 18px;
+      }
+
+      .compare-grid {
+        gap: 12px;
+        padding: 16px 20px;
+        padding-bottom: 45px;
+      }
+
+      .hotel-name-badge {
+        padding: 14px 10px;
+        font-size: 1.2rem;
+      }
+
+      .room-image {
+        height: 150px;
+      }
+
+      .room-details {
+        padding: 16px;
+      }
+
+      .room-type {
+        font-size: 1.35rem;
+      }
+
+      .amenities-label {
+        font-size: 1.2rem;
+      }
+
+      .amenity-tag {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+      }
+
+      .amenity-tag i {
+        font-size: 0.8rem;
+      }
+
+      .room-price {
+        font-size: 1.2rem;
+      }
+
+      .room-price small {
+        font-size: 0.9rem;
+      }
+
+      .confirm-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .bottom-nav {
+        padding: 12px 12px 20px 12px;
+      }
+
+      .nav-item i {
+        font-size: 1.9rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+      }
+
+      .selection-section {
+        padding: 14px 16px;
+      }
+
+      .selection-label {
+        font-size: 1.25rem;
+      }
+
+      .select-dropdown {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+        background-position: right 18px center;
+        background-size: 16px;
+      }
+
+      .compare-grid {
+        gap: 10px;
+        padding: 14px 16px;
+        padding-bottom: 40px;
+      }
+
+      .hotel-name-badge {
+        padding: 12px 8px;
+        font-size: 1rem;
+      }
+
+      .room-image {
+        height: 130px;
+      }
+
+      .room-details {
+        padding: 14px;
+      }
+
+      .room-type {
+        font-size: 1.25rem;
+      }
+
+      .amenities-label {
+        font-size: 1.1rem;
+      }
+
+      .amenity-tag {
+        padding: 5px 10px;
+        font-size: 0.85rem;
+      }
+
+      .amenity-tag i {
+        font-size: 0.75rem;
+      }
+
+      .room-price {
+        font-size: 1.1rem;
+      }
+
+      .room-price small {
+        font-size: 0.85rem;
+      }
+
+      .confirm-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .nav-item i {
+        font-size: 1.7rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='room_details.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Compare Rooms</div>
+  </div>
+
+  <!-- Selection Section -->
+  <div class="selection-section">
+    <div class="selection-row">
+      <label class="selection-label">Select Hotel to Compare</label>
+      <select class="select-dropdown">
+        <option value="mandarin">Mandarin Oriental Kuala Lumpur</option>
+        <option value="four">Four Seasons Kuala Lumpur</option>
+        <option value="w" selected>W Kuala Lumpur</option>
+        <option value="ritz">The Ritz-Carlton Kuala Lumpur</option>
+      </select>
+    </div>
+    <div class="selection-row">
+      <label class="selection-label">Select Room Type</label>
+      <select class="select-dropdown">
+        <option value="deluxe" selected>Deluxe King Room</option>
+        <option value="premier">Premier Suite</option>
+        <option value="family">Family Suite</option>
+        <option value="executive">Executive Room</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Compare Grid - Two Columns with matching room_details.html amenity icons -->
+  <div class="compare-grid">
+    
+    <!-- Left Column - Mandarin Oriental -->
+    <div class="compare-column">
+      <div class="hotel-name-badge">Mandarin Oriental Kuala Lumpur</div>
+      <div class="room-image">
+        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop" alt="Deluxe King Room - Mandarin Oriental">
+      </div>
+      <div class="room-details">
+        <div class="room-type">Deluxe King Room</div>
+        <div class="amenities-section">
+          <div class="amenities-label">✨ Room Amenities</div>
+          <div class="amenities-list">
+            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
+            <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Room Service</span>
+            <span class="amenity-tag"><i class="fas fa-swimming-pool"></i> Infinity Pool</span>
+            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+            <span class="amenity-tag"><i class="fas fa-tv"></i> 55" Smart TV</span>
+            <span class="amenity-tag"><i class="fas fa-coffee"></i> Nespresso Machine</span>
+            <span class="amenity-tag"><i class="fas fa-bath"></i> Marble Bathroom</span>
+            <span class="amenity-tag"><i class="fas fa-spa"></i> Spa Access</span>
+          </div>
+        </div>
+        <div class="room-price">RM 950 <small>/ night including tax</small></div>
+        <button class="confirm-btn" onclick="window.location.href='reservation_summary.html'">Confirm Selection</button>
+      </div>
+    </div>
+
+    <!-- Right Column - W Kuala Lumpur -->
+    <div class="compare-column">
+      <div class="hotel-name-badge">W Kuala Lumpur</div>
+      <div class="room-image">
+        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop" alt="Deluxe King Room - W Kuala Lumpur">
+      </div>
+      <div class="room-details">
+        <div class="room-type">Deluxe King Room</div>
+        <div class="amenities-section">
+          <div class="amenities-label">✨ Room Amenities</div>
+          <div class="amenities-list">
+            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast</span>
+            <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Room Service</span>
+            <span class="amenity-tag"><i class="fas fa-swimming-pool"></i> Rooftop Pool</span>
+            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+            <span class="amenity-tag"><i class="fas fa-tv"></i> 55" Smart TV</span>
+            <span class="amenity-tag"><i class="fas fa-wine-bottle"></i> Minibar</span>
+            <span class="amenity-tag"><i class="fas fa-music"></i> Sound System</span>
+            <span class="amenity-tag"><i class="fas fa-eye"></i> City View</span>
+          </div>
+        </div>
+        <div class="room-price">RM 820 <small>/ night including tax</small></div>
+        <button class="confirm-btn" onclick="window.location.href='reservation_summary.html'">Confirm Selection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'comparison.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <button class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'comparison.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    });
+</script>
+</body>
+</html>

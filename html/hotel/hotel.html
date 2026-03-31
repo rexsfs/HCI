@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Hotel Details</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/hotel/hotel.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  
+  <!-- Include external hotel database -->
+  <script src="hotel.js"></script>
+  <script src="room.js"></script>
+  
+  <!-- Debug script to verify database loaded -->
+  <script>
+    // Check if database loaded successfully
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof HOTELS_DATABASE === 'undefined') {
+        console.error('ERROR: HOTELS_DATABASE not loaded!');
+        document.getElementById('hotelName').textContent = 'Database Error';
+        document.getElementById('hotelLocation').textContent = 'Failed to load hotel database';
+      } else {
+        console.log('SUCCESS: Database loaded with ' + Object.keys(HOTELS_DATABASE).length + ' hotels');
+      }
+    });
+  </script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="goBackToResults()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Hotel Details</div>
+  </div>
+
+  <!-- Hotel Hero Section -->
+  <div class="hotel-hero">
+    <div class="hotel-main-image">
+      <img id="hotelMainImage" src="" alt="Hotel Image">
+    </div>
+  </div>
+
+  <!-- Hotel Info Section -->
+  <div class="hotel-info-section">
+    <div class="hotel-name" id="hotelName">Loading...</div>
+    <div class="hotel-location">
+      <i class="fas fa-map-marker-alt"></i> <span id="hotelLocation">Loading...</span>
+      <span><i class="fas fa-info-circle"></i></span>
+    </div>
+    <div class="reviews">
+      <div class="rating-badge" id="hotelRating">
+        <i class="fas fa-star"></i> 0.0
+      </div>
+      <div class="review-text" id="hotelReviewText">
+        <strong>Loading...</strong> · Loading reviews
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Section -->
+  <div class="map-section">
+    <div class="section-title">
+      <i class="fas fa-map-location-dot"></i>
+      Location Map
+    </div>
+    <div class="map-container">
+      <div class="map-image">
+        <iframe id="hotelMap" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="map-overlay">
+          <div class="map-address" id="mapAddress">
+            <i class="fas fa-location-dot"></i>
+            Loading address...
+          </div>
+        </div>
+      </div>
+      <div class="map-info">
+        <div class="address-full" id="fullAddress">
+          <i class="fas fa-building"></i>
+          Loading address...
+        </div>
+        <button class="open-map-btn" id="openMapBtn">
+          <i class="fas fa-directions"></i>
+          Open in Google Maps
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facility Section -->
+  <div class="facility-section">
+    <div class="section-title">
+      <i class="fas fa-concierge-bell"></i>
+      Hotel Facilities
+    </div>
+    <div class="facility-list" id="facilityList">
+      Loading facilities...
+    </div>
+  </div>
+
+  <!-- Room Section -->
+  <div class="room-section">
+    <div class="section-title">
+      <i class="fas fa-bed"></i>
+      Select Your Room
+    </div>
+
+    <!-- Room Container -->
+    <div id="roomContainer"></div>
+
+    <!-- No Rooms Message -->
+    <div id="noRoomsMessage" style="display: none; text-align: center; padding: 40px; color: #666;">
+      <i class="fas fa-bed" style="font-size: 48px; color: #ccc; margin-bottom: 15px; display: block;"></i>
+      <h3>No rooms available for your selected room type</h3>
+      <p>Please try a different room type or check other hotels.</p>
+      <button class="search-button" onclick="window.location.href='search.html'" style="margin-top: 20px;">
+        <i class="fas fa-search"></i> Modify Search
+      </button>
+    </div>
+
+    <!-- View All Rooms Button -->
+    <a href="#" id="viewAllBtn" class="view-all-btn" style="display: none; text-decoration: none;">View All Available Rooms</a>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Store the search results page URL when coming from search
+  let searchResultsUrl = localStorage.getItem('searchResultsUrl');
+  
+  // Function to go back to search results
+  function goBackToResults() {
+    if (searchResultsUrl) {
+      // Go back to search results page
+      window.location.href = searchResultsUrl;
+    } else {
+      // Fallback to history back
+      window.history.back();
+    }
+  }
+  
+  // FUNCTION: Get hotel ID from URL
+  function getHotelIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    return id ? parseInt(id) : null;
+  }
+
+  // FUNCTION: Get user's selected room type from search
+  function getUserSelectedRoomType() {
+    const searchParams = localStorage.getItem('searchParams');
+    if (searchParams) {
+      const params = JSON.parse(searchParams);
+      return params.roomTypeValue || null;
+    }
+    return null;
+  }
+
+  // FUNCTION: Filter rooms based on user selection
+  function filterRoomsByUserSelection(rooms, selectedRoomType) {
+    if (!selectedRoomType) {
+      return rooms;
+    }
+    return rooms.filter(room => 
+      room.typeValue && room.typeValue.toLowerCase() === selectedRoomType.toLowerCase()
+    );
+  }
+
+  // FUNCTION: Render rooms
+  function renderRooms(rooms, hotelId) {
+    const roomContainer = document.getElementById('roomContainer');
+    const noRoomsMessage = document.getElementById('noRoomsMessage');
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    
+    if (!rooms || rooms.length === 0) {
+      roomContainer.innerHTML = '';
+      noRoomsMessage.style.display = 'block';
+      viewAllBtn.style.display = 'none';
+      return;
+    }
+    
+    noRoomsMessage.style.display = 'none';
+    
+    let roomsHTML = '';
+    rooms.forEach(room => {
+      roomsHTML += `
+        <div class="room-card">
+          <div class="room-image">
+            <img src="${room.image}" alt="${room.type}">
+          </div>
+          <div class="room-info">
+            <div class="room-type">${room.type}</div>
+            <div class="room-example">${room.description}</div>
+            <div class="room-price">RM ${room.price} <small>/ night including tax</small></div>
+            <button class="select-room-btn" onclick="selectRoom(${hotelId}, ${room.id})">
+              Select This Room
+            </button>
+          </div>
+        </div>
+      `;
+    });
+    
+    roomContainer.innerHTML = roomsHTML;
+    
+    const hotel = HOTELS_DATABASE[hotelId];
+    // Show View All button if there are more rooms than displayed
+    if (hotel && hotel.rooms.length > rooms.length) {
+      viewAllBtn.style.display = 'block';
+      // Set the href to more.html with hotel ID
+      viewAllBtn.href = `more.html?id=${hotelId}`;
+    } else {
+      viewAllBtn.style.display = 'none';
+    }
+  }
+
+  // FUNCTION: Handle room selection - Navigate to room.html
+  function selectRoom(hotelId, roomId) {
+    // Save current page URL before leaving
+    localStorage.setItem('returnToHotelUrl', window.location.href);
+    window.location.href = `room.html?hotelId=${hotelId}&roomId=${roomId}`;
+  }
+
+  // FUNCTION: Load hotel data and display details
+  function loadHotelDetails() {
+    // Check if database is loaded
+    if (typeof HOTELS_DATABASE === 'undefined') {
+      console.error('HOTELS_DATABASE not loaded!');
+      return;
+    }
+    
+    const hotelId = getHotelIdFromUrl();
+    let hotel = hotelId && HOTELS_DATABASE[hotelId] ? HOTELS_DATABASE[hotelId] : HOTELS_DATABASE[1];
+    const currentHotelId = hotel.id;
+    
+    if (hotel) {
+      const selectedRoomType = getUserSelectedRoomType();
+      const filteredRooms = filterRoomsByUserSelection(hotel.rooms, selectedRoomType);
+      
+      document.title = `${hotel.name} | LuxeStay`;
+      document.querySelector('.header-title').textContent = hotel.name;
+      document.getElementById('hotelMainImage').src = hotel.image;
+      document.getElementById('hotelMainImage').alt = hotel.name;
+      document.getElementById('hotelName').textContent = hotel.name;
+      document.getElementById('hotelLocation').textContent = hotel.location;
+      document.getElementById('hotelRating').innerHTML = `<i class="fas fa-star"></i> ${hotel.rating}`;
+      document.getElementById('hotelReviewText').innerHTML = `<strong>${hotel.reviewText}</strong> · ${hotel.reviewCount.toLocaleString()} reviews`;
+      
+      document.getElementById('hotelMap').src = hotel.mapEmbed;
+      document.getElementById('mapAddress').innerHTML = `<i class="fas fa-location-dot"></i> ${hotel.location}`;
+      document.getElementById('fullAddress').innerHTML = `<i class="fas fa-building"></i> ${hotel.fullAddress}`;
+      
+      const openMapBtn = document.getElementById('openMapBtn');
+      openMapBtn.onclick = () => window.open(`https://maps.google.com/?q=${hotel.mapCoords}`, '_blank');
+      
+      const facilityList = document.getElementById('facilityList');
+      let facilitiesHTML = '';
+      hotel.facilities.forEach(facility => {
+        let icon = 'fa-hotel';
+        if (facility.includes('Pool')) icon = 'fa-swimming-pool';
+        else if (facility.includes('WiFi')) icon = 'fa-wifi';
+        else if (facility.includes('Restaurant') || facility.includes('Dining')) icon = 'fa-utensils';
+        else if (facility.includes('Bar')) icon = 'fa-cocktail';
+        else if (facility.includes('Service')) icon = 'fa-concierge-bell';
+        else if (facility.includes('Spa')) icon = 'fa-spa';
+        else if (facility.includes('Fitness')) icon = 'fa-dumbbell';
+        else if (facility.includes('Beach')) icon = 'fa-umbrella-beach';
+        else if (facility.includes('View')) icon = 'fa-leaf';
+        else if (facility.includes('Climate')) icon = 'fa-snowflake';
+        else if (facility.includes('Golf')) icon = 'fa-golf-ball';
+        else if (facility.includes('Kids')) icon = 'fa-child';
+        facilitiesHTML += `<span class="facility-item"><i class="fas ${icon}"></i> ${facility}</span>`;
+      });
+      facilityList.innerHTML = facilitiesHTML;
+      
+      // Always keep the title as "Select Your Room"
+      const roomSectionTitle = document.querySelector('.room-section .section-title');
+      if (roomSectionTitle) {
+        roomSectionTitle.innerHTML = `<i class="fas fa-bed"></i> Select Your Room`;
+      }
+      
+      // Remove any existing notification message
+      const existingMessage = document.querySelector('.match-message');
+      if (existingMessage) existingMessage.remove();
+      
+      // Pass hotelId to renderRooms
+      renderRooms(filteredRooms, currentHotelId);
+    }
+  }
+
+  // Make selectRoom available globally
+  window.selectRoom = selectRoom;
+  window.goBackToResults = goBackToResults;
+
+  // Store the referrer URL when coming from search results page
+  if (document.referrer && (document.referrer.includes('search.html') || document.referrer.includes('result.html'))) {
+    localStorage.setItem('searchResultsUrl', document.referrer);
+  }
+
+  fetch('nav.html')
+    .then(response => response.ok ? response.text() : Promise.reject())
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      loadHotelDetails();
+    })
+    .catch(() => {
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="../nav/history.html" class="nav-item"><i class="fas fa-clock-rotate-left"></i><span>History</span></a>
+            <a href="../nav/profile.html" class="nav-item"><i class="fas fa-user-circle"></i><span>Profile</span></a>
+            <a href="../nav/cs.html" class="nav-item" id="serviceBtn"><i class="fas fa-headset"></i><span>Service</span></a>
+          </div>
+        </div>`;
+      loadHotelDetails();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Booking Details</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header with Back Button - matches successful.html header sizing */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Header title - matches successful.html .logo-text font size (1.9rem) */
+    .header-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Booking Details Section - padding matches successful.html main-content */
+    .booking-details-section {
+      padding: 20px 24px;
+      background: white;
+      flex: 1;
+      padding-bottom: 30px;
+    }
+
+    /* Hotel Info Card - matches successful.html .details-card styling */
+    .hotel-info-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    .hotel-header {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .hotel-image {
+      width: 130px;
+      height: 130px;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .hotel-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hotel-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* hotel-name matches .detail-value font size (1.3rem) */
+    .hotel-name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 8px;
+    }
+
+    /* hotel-location matches .detail-label font size (1rem) */
+    .hotel-location {
+      font-size: 1rem;
+      color: #6c7e8e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hotel-location i {
+      color: #f5a623;
+      font-size: 0.85rem;
+    }
+
+    /* Info Card - matches successful.html .details-card */
+    .info-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    /* section-title matches successful.html .section-title (1.5rem) */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: #f5a623;
+      font-size: 1.3rem;
+    }
+
+    /* info-row matches successful.html .detail-row */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* info-label matches successful.html .detail-label (1rem) */
+    .info-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+    }
+
+    /* info-value matches successful.html .detail-value (1.3rem) */
+    .info-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+      text-align: right;
+    }
+
+    /* Room Card - matches successful.html .details-card */
+    .room-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    /* Amenities styling - updated to match font sizes */
+    .amenities-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .amenity-tag {
+      background: white;
+      padding: 8px 16px;
+      border-radius: 35px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e2e9f0;
+    }
+
+    .amenity-tag i {
+      font-size: 0.85rem;
+      color: #f5a623;
+    }
+
+    /* Payment Card - matches successful.html .details-card */
+    .payment-card {
+      background: linear-gradient(135deg, #f8fafd, #ffffff);
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+    }
+
+    /* total-amount matches successful.html .detail-value size but larger emphasis */
+    .total-amount {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      text-align: right;
+    }
+
+    .total-amount small {
+      font-size: 0.85rem;
+      font-weight: normal;
+      color: #7c8b9a;
+    }
+
+    .divider {
+      height: 1px;
+      background: #eef2f8;
+      margin: 14px 0;
+    }
+
+    /* Cancel Button Section - increased gap for proper spacing from navbar */
+    .cancel-section {
+      margin-top: 16px;
+      margin-bottom: 40px;
+    }
+
+    /* Cancel Button - matches successful.html .back-home-btn styling */
+    .cancel-btn {
+      background: transparent;
+      border: 2px solid #c62828;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #c62828;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .cancel-btn:hover {
+      background: #c62828;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
+    }
+
+    /* Bottom Navigation - matches successful.html exactly */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-top: 2px solid #eef2f8;
+      padding: 14px 16px 24px 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 2.2rem;
+      color: #8a99aa;
+      margin-bottom: 8px;
+    }
+
+    .nav-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8a99aa;
+    }
+
+    .nav-item:hover {
+      background: #f0f4fa;
+    }
+
+    .nav-item:hover i,
+    .nav-item:hover span {
+      color: #1e3a5f;
+    }
+
+    .nav-item:active {
+      transform: scale(0.96);
+    }
+
+    .nav-item.active i,
+    .nav-item.active span {
+      color: #1e3a5f;
+    }
+
+    /* Remove default link styling inside nav-item */
+    .nav-item a {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: inherit;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - exactly matching successful.html breakpoints ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.7rem;
+      }
+
+      .booking-details-section {
+        padding: 16px 20px;
+        padding-bottom: 25px;
+      }
+
+      .hotel-header {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .hotel-image {
+        width: 110px;
+        height: 110px;
+      }
+
+      .hotel-name {
+        font-size: 1.2rem;
+      }
+
+      .hotel-location {
+        font-size: 0.9rem;
+      }
+
+      .info-card, .room-card, .payment-card {
+        padding: 16px;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .section-title i {
+        font-size: 1.2rem;
+      }
+
+      .info-label {
+        font-size: 0.9rem;
+      }
+
+      .info-value {
+        font-size: 1.2rem;
+      }
+
+      .amenity-tag {
+        padding: 6px 14px;
+        font-size: 0.85rem;
+      }
+
+      .total-amount {
+        font-size: 1.2rem;
+      }
+
+      .cancel-section {
+        margin-top: 12px;
+        margin-bottom: 35px;
+      }
+
+      .cancel-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .bottom-nav {
+        padding: 12px 12px 20px 12px;
+      }
+
+      .nav-item i {
+        font-size: 1.9rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px - matches successful.html */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+      }
+
+      .booking-details-section {
+        padding: 14px 16px;
+        padding-bottom: 20px;
+      }
+
+      .hotel-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 16px;
+      }
+
+      .hotel-info {
+        text-align: center;
+      }
+
+      .hotel-location {
+        justify-content: center;
+      }
+
+      .hotel-image {
+        width: 140px;
+        height: 140px;
+      }
+
+      .hotel-name {
+        font-size: 1.1rem;
+      }
+
+      .hotel-location {
+        font-size: 0.85rem;
+      }
+
+      .info-card, .room-card, .payment-card {
+        padding: 14px;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+      }
+
+      .section-title i {
+        font-size: 1.1rem;
+      }
+
+      .info-label {
+        font-size: 0.85rem;
+      }
+
+      .info-value {
+        font-size: 1.1rem;
+      }
+
+      /* Column stacking for narrow screens */
+      .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .info-value {
+        text-align: left;
+      }
+
+      .amenity-tag {
+        padding: 5px 12px;
+        font-size: 0.8rem;
+      }
+
+      .total-amount {
+        font-size: 1.1rem;
+      }
+
+      .cancel-section {
+        margin-top: 10px;
+        margin-bottom: 30px;
+      }
+
+      .cancel-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .nav-item i {
+        font-size: 1.7rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="window.location.href='history.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Booking Details</div>
+  </div>
+
+  <!-- Booking Details Section -->
+  <div class="booking-details-section">
+    
+    <!-- Hotel Image and Hotel Name & Location - LARGER IMAGE -->
+    <div class="hotel-info-card">
+      <div class="hotel-header">
+        <div class="hotel-image">
+          <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=300&h=300&fit=crop" alt="Mandarin Oriental">
+        </div>
+        <div class="hotel-info">
+          <div class="hotel-name">Mandarin Oriental Kuala Lumpur</div>
+          <div class="hotel-location">
+            <i class="fas fa-map-marker-alt"></i> Kuala Lumpur City Centre, Malaysia
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guest Information Card -->
+    <div class="info-card">
+      <div class="section-title">
+        <i class="fas fa-user-circle"></i>
+        Guest Information
+      </div>
+      <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value">Ahmad Bin Abdullah</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Phone Number:</span>
+        <span class="info-value">+6012 345 6789</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Booking ID:</span>
+        <span class="info-value">LXS-2026-0415-8A3F</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Check-In Date:</span>
+        <span class="info-value">15 April 2026 (3:00 PM)</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Check-Out Date:</span>
+        <span class="info-value">18 April 2026 (12:00 PM)</span>
+      </div>
+    </div>
+
+    <!-- Room Type Booking Card -->
+    <div class="room-card">
+      <div class="section-title">
+        <i class="fas fa-bed"></i>
+        Room Type Booking
+      </div>
+      <div class="info-row">
+        <span class="info-label">Room Type:</span>
+        <span class="info-value">Deluxe King Room</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Room Name:</span>
+        <span class="info-value">Deluxe King City View</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Amenities:</span>
+        <span class="info-value">
+          <div class="amenities-list">
+            <span class="amenity-tag"><i class="fas fa-tv"></i> 55" Smart TV</span>
+            <span class="amenity-tag"><i class="fas fa-wifi"></i> Free WiFi</span>
+            <span class="amenity-tag"><i class="fas fa-coffee"></i> Nespresso Machine</span>
+            <span class="amenity-tag"><i class="fas fa-bath"></i> Marble Bathroom</span>
+            <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Room Service</span>
+            <span class="amenity-tag"><i class="fas fa-utensils"></i> Breakfast Included</span>
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <!-- Payment Method and Total Amount Card -->
+    <div class="payment-card">
+      <div class="section-title">
+        <i class="fas fa-credit-card"></i>
+        Payment Information
+      </div>
+      <div class="info-row">
+        <span class="info-label">Payment Method:</span>
+        <span class="info-value">Touch 'n Go eWallet</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Transaction ID:</span>
+        <span class="info-value">TNG-20260415-8A3F92</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Payment Status:</span>
+        <span class="info-value"><span style="color: #2e7d32; background: #e8f5e9; padding: 6px 14px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;">Paid</span></span>
+      </div>
+      <div class="divider"></div>
+      <div class="info-row">
+        <span class="info-label">Total Paid Amount:</span>
+        <span class="total-amount">RM 3,135 <small>including tax</small></span>
+      </div>
+    </div>
+
+    <!-- Cancel Booking Button Section - Increased gap from navbar -->
+    <div class="cancel-section">
+      <button class="cancel-btn" onclick="if(confirm('Are you sure you want to cancel this booking?')) { alert('Booking cancelled successfully.'); window.location.href='history.html'; }">
+        <i class="fas fa-trash-alt"></i>
+        Click Here to Cancel Booking
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation - Only 4 Buttons (Home, History, Profile, Service) -->
+  <div class="bottom-nav">
+    <div class="nav-buttons">
+      <a href="home.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="history.html" class="nav-item active">
+        <i class="fas fa-clock-rotate-left"></i>
+        <span>History</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user-circle"></i>
+        <span>Profile</span>
+      </a>
+      <button class="nav-item" id="serviceBtn">
+        <i class="fas fa-headset"></i>
+        <span>Service</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Simple service button handler (no additional functions, just alert for demo)
+  const serviceBtn = document.getElementById('serviceBtn');
+  if (serviceBtn) {
+    serviceBtn.addEventListener('click', function() {
+      alert('Customer Service: +603 2380 8888\nEmail: reservations@mandarinoriental.com.my');
+    });
+  }
+</script>
+</body>
+</html>

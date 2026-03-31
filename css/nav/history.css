@@ -1,0 +1,324 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 85px;
+    }
+
+    /* Header with Back Button - matching successful.html header sizing */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Booking History Section - same padding as successful.html main-content */
+    .history-section {
+      padding: 20px 24px;
+      background: white;
+      flex: 1;
+    }
+
+    /* Section Title - CENTERED: elegant heading above booking cards */
+    .section-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    
+    .title-main {
+      font-size: 1.85rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .title-main i {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 1.6rem;
+    }
+    
+    /* Booking Card - same background & border-radius as .details-card in successful.html */
+    .booking-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      border: 1px solid #edf2f7;
+      transition: all 0.2s ease;
+    }
+
+    .booking-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-image {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+    }
+
+    .booking-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .booking-card:hover .booking-image img {
+      transform: scale(1.03);
+    }
+
+    .booking-details {
+      padding: 20px;
+    }
+
+    .booking-info {
+      margin-bottom: 0;
+    }
+
+    /* info-row uses same flex pattern as .detail-row in successful.html */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* .info-label matches .detail-label from successful.html (1rem, weight 600) */
+    .info-label {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6c7e8e;
+    }
+
+    /* .info-value matches .detail-value from successful.html (1.3rem, weight 700) */
+    .info-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+      text-align: right;
+    }
+
+    /* Status Badge - refined to match visual consistency, font size relative */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .status-completed {
+      background: #e6f7e6;
+      color: #2e7d32;
+    }
+
+    .status-confirmed {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .status-pending {
+      background: #fff3e0;
+      color: #ef6c00;
+    }
+
+    .status-cancelled {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - exactly matching successful.html breakpoints ===== */
+    
+    /* Breakpoint at max-width: 550px (matches successful media queries) */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .history-section {
+        padding: 16px 20px;
+      }
+      
+      .section-title {
+        margin-bottom: 20px;
+      }
+      
+      .title-main {
+        font-size: 1.6rem;
+      }
+      
+      .title-main i {
+        font-size: 1.4rem;
+      }
+
+      .booking-image {
+        height: 140px;
+      }
+
+      .booking-details {
+        padding: 16px;
+      }
+
+      .info-label {
+        font-size: 0.9rem;
+      }
+
+      .info-value {
+        font-size: 1.2rem;
+      }
+
+      .status-badge {
+        font-size: 0.8rem;
+        padding: 3px 10px;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px (matches successful.html tight adjustments) */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .history-section {
+        padding: 14px 16px;
+      }
+      
+      .section-title {
+        margin-bottom: 16px;
+      }
+      
+      .title-main {
+        font-size: 1.5rem;
+      }
+      
+      .title-main i {
+        font-size: 1.3rem;
+      }
+
+      .booking-image {
+        height: 120px;
+      }
+
+      .booking-details {
+        padding: 14px;
+      }
+
+      .info-label {
+        font-size: 0.85rem;
+      }
+
+      .info-value {
+        font-size: 1.1rem;
+      }
+
+      /* Responsive column stacking for narrow screens - same as successful.html .detail-row handling */
+      .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .info-value {
+        text-align: left;
+      }
+
+      .status-badge {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+      }
+    }
+  

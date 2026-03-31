@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Payment</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Logo Header - Centered at Top */
+    .logo-header {
+      padding: 32px 24px 24px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Header with Back Button and Title */
+    .back-header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #1e2f3e;
+    }
+
+    /* Total Price Section */
+    .total-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .total-card {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+      color: white;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .total-label {
+      font-size: 1.3rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      opacity: 0.9;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) with larger */
+    .total-amount {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .total-amount small {
+      font-size: 1rem;
+      font-weight: normal;
+    }
+
+    /* Payment Method Section */
+    .payment-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Payment Method Options */
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    /* Matches guideline.html .eula-card style */
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      background: #f8fafd;
+      border: 1px solid #edf2f7;
+      border-radius: 60px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .payment-option:hover {
+      border-color: #1e3a5f;
+      background: #f0f4fa;
+      transform: translateY(-2px);
+    }
+
+    .payment-radio {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .payment-icon {
+      width: 44px;
+      font-size: 1.5rem;
+      color: #1e3a5f;
+      text-align: center;
+    }
+
+    .payment-info {
+      flex: 1;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .payment-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1e2f3e;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .payment-desc {
+      font-size: 1rem;
+      color: #6c7e8e;
+      margin-top: 4px;
+    }
+
+    /* Cash Option Section - matches guideline.html .eula-card style */
+    .cash-section {
+      background: #fef4e6;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #f5e6d0;
+    }
+
+    .cash-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .cash-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #cbd5e1;
+      border-radius: 6px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .cash-label {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1e3a5f;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .cash-note {
+      font-size: 1rem;
+      color: #b88b3a;
+      margin-left: 36px;
+    }
+
+    /* Deadline Logic Section */
+    .deadline-section {
+      background: #fff5e6;
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 0;
+      border-left: 4px solid #f5a623;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .deadline-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #b88b3a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .deadline-message {
+      font-size: 1rem;
+      color: #6c7e8e;
+      line-height: 1.4;
+    }
+
+    .deadline-message strong {
+      color: #e67e22;
+    }
+
+    /* Action Buttons */
+    .action-section {
+      padding: 20px 24px 40px 24px;
+      background: white;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .action-section a {
+      text-decoration: none;
+    }
+
+    /* Matches guideline.html .amenity-tag style */
+    .help-btn {
+      background: #f0f4fa;
+      border: none;
+      padding: 18px 22px;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .help-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .confirm-pay-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex: 2;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .confirm-pay-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    .confirm-pay-btn a {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Bottom Navigation Styles */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 540px;
+      background: white;
+      border-top: 2px solid #eef2f8;
+      padding: 14px 16px 24px 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+      z-index: 1000;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 10px 0;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-decoration: none;
+    }
+
+    .nav-item i {
+      font-size: 2.2rem;
+      color: #8a99aa;
+      margin-bottom: 8px;
+    }
+
+    .nav-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #8a99aa;
+    }
+
+    .nav-item:hover {
+      background: #f0f4fa;
+    }
+
+    .nav-item:hover i,
+    .nav-item:hover span {
+      color: #1e3a5f;
+    }
+
+    .nav-item:active {
+      transform: scale(0.96);
+    }
+
+    .nav-item.active i,
+    .nav-item.active span {
+      color: #1e3a5f;
+    }
+
+    .nav-item a {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: inherit;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .logo-header {
+        padding: 24px 20px 20px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .back-header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.4rem;
+      }
+
+      .total-section {
+        padding: 16px 20px;
+      }
+
+      .total-card {
+        padding: 20px;
+      }
+
+      .total-label {
+        font-size: 1.2rem;
+      }
+
+      .total-amount {
+        font-size: 1.8rem;
+      }
+
+      .total-amount small {
+        font-size: 0.9rem;
+      }
+
+      .payment-section {
+        padding: 16px 20px;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .payment-option {
+        padding: 14px 18px;
+      }
+
+      .payment-icon {
+        font-size: 1.3rem;
+        width: 38px;
+      }
+
+      .payment-name {
+        font-size: 1.2rem;
+      }
+
+      .payment-desc {
+        font-size: 0.9rem;
+      }
+
+      .cash-section {
+        padding: 16px;
+      }
+
+      .cash-label {
+        font-size: 1.2rem;
+      }
+
+      .cash-note {
+        font-size: 0.9rem;
+        margin-left: 32px;
+      }
+
+      .deadline-section {
+        padding: 16px;
+      }
+
+      .deadline-title {
+        font-size: 1.2rem;
+      }
+
+      .deadline-message {
+        font-size: 0.9rem;
+      }
+
+      .action-section {
+        padding: 16px 20px 45px 20px;
+        gap: 12px;
+      }
+
+      .help-btn {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+      }
+
+      .confirm-pay-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .bottom-nav {
+        padding: 12px 12px 20px 12px;
+      }
+
+      .nav-item i {
+        font-size: 1.9rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.8rem;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .logo-header {
+        padding: 20px 16px 16px 16px;
+      }
+
+      .logo-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .back-header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.3rem;
+      }
+
+      .total-section {
+        padding: 14px 16px;
+      }
+
+      .total-card {
+        padding: 16px;
+      }
+
+      .total-label {
+        font-size: 1.1rem;
+      }
+
+      .total-amount {
+        font-size: 1.6rem;
+      }
+
+      .total-amount small {
+        font-size: 0.85rem;
+      }
+
+      .payment-section {
+        padding: 14px 16px;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+      }
+
+      .payment-option {
+        padding: 12px 16px;
+      }
+
+      .payment-icon {
+        font-size: 1.2rem;
+        width: 34px;
+      }
+
+      .payment-name {
+        font-size: 1.1rem;
+      }
+
+      .payment-desc {
+        font-size: 0.85rem;
+      }
+
+      .cash-section {
+        padding: 14px;
+      }
+
+      .cash-label {
+        font-size: 1.1rem;
+      }
+
+      .cash-note {
+        font-size: 0.85rem;
+        margin-left: 28px;
+      }
+
+      .deadline-section {
+        padding: 14px;
+      }
+
+      .deadline-title {
+        font-size: 1.1rem;
+      }
+
+      .deadline-message {
+        font-size: 0.85rem;
+      }
+
+      .action-section {
+        padding: 14px 16px 55px 16px;
+        gap: 10px;
+        flex-direction: column;
+      }
+
+      .help-btn, .confirm-pay-btn {
+        width: 100%;
+      }
+
+      .help-btn {
+        padding: 12px 14px;
+        font-size: 0.85rem;
+      }
+
+      .confirm-pay-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .nav-item i {
+        font-size: 1.7rem;
+      }
+      
+      .nav-item span {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+
+    <!-- Header with Back Button and Payment Title -->
+  <div class="back-header">
+    <button class="back-button" onclick="window.location.href='reservation_summary.html'">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Payment</div>
+  </div>
+  <!-- Logo Section - Centered at Top -->
+  <div class="logo-header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fas fa-hotel"></i>
+      </div>
+      <div class="logo-text">LuxeStay</div>
+    </div>
+  </div>
+
+
+
+  <!-- Total Price Section -->
+  <div class="total-section">
+    <div class="total-card">
+      <div class="total-label">TOTAL PRICE</div>
+      <div class="total-amount">RM 3,135 <small>including tax</small></div>
+    </div>
+  </div>
+
+  <!-- Payment Method Section -->
+  <div class="payment-section">
+    <div class="section-title">Select Your Payment Method</div>
+
+    <!-- Payment Method Options -->
+    <div class="payment-options">
+      <!-- Touch 'n Go -->
+      <div class="payment-option" onclick="selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Touch 'n Go eWallet</div>
+          <div class="payment-desc">Pay instantly using TNG eWallet</div>
+        </div>
+      </div>
+
+      <!-- Bank Transfer (FPX) -->
+      <div class="payment-option" onclick="selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-university"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Bank Transfer (FPX)</div>
+          <div class="payment-desc">Online banking from Maybank, CIMB, Public Bank & more</div>
+        </div>
+      </div>
+
+      <!-- Credit/Debit Card -->
+      <div class="payment-option" onclick="selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+        <div class="payment-info">
+          <div class="payment-name">Credit / Debit Card</div>
+          <div class="payment-desc">Visa, Mastercard, American Express</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional Pay with Cash -->
+    <div class="cash-section" onclick="toggleCash(this)">
+      <div class="cash-header">
+        <div class="cash-checkbox"></div>
+        <div class="cash-label">Pay with Cash (Optional)</div>
+      </div>
+      <div class="cash-note">Available for walk-in guests. Payment to be made at hotel reception.</div>
+    </div>
+
+    <!-- Deadline Logic Section -->
+    <div class="deadline-section">
+      <div class="deadline-title">
+        <i class="fas fa-clock"></i> Important Notice
+      </div>
+      <div class="deadline-message">
+        <strong>⏰ System shall cancel booking if unpaid after deadline.</strong><br>
+        Payment deadline: <strong>24 hours after booking confirmation</strong>. Please complete payment before the deadline to secure your reservation.
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-section">
+    <button class="help-btn" onclick="alert('Customer Service: +603 2380 8888\nEmail: reservations@mandarinoriental.com.my')">
+      <i class="fas fa-question-circle"></i>
+      Help
+    </button>
+    <button class="confirm-pay-btn">
+      <a href="successful.html">
+        <i class="fas fa-check-circle"></i>
+        Confirm & Pay
+      </a>
+    </button>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Simple payment selection functionality
+  function selectPayment(element) {
+    // Remove selected class from all payment options
+    const allOptions = document.querySelectorAll('.payment-option');
+    allOptions.forEach(option => {
+      option.style.borderColor = '#edf2f7';
+      option.style.background = '#f8fafd';
+      const radio = option.querySelector('.payment-radio');
+      if (radio) radio.innerHTML = '';
+    });
+    
+    // Highlight selected option
+    element.style.borderColor = '#1e3a5f';
+    element.style.background = '#f0f4fa';
+    const selectedRadio = element.querySelector('.payment-radio');
+    if (selectedRadio) {
+      selectedRadio.innerHTML = '<div style="width: 12px; height: 12px; background: #1e3a5f; border-radius: 50%;"></div>';
+    }
+  }
+
+  // Toggle cash option
+  function toggleCash(element) {
+    const checkbox = element.querySelector('.cash-checkbox');
+    if (checkbox.innerHTML === '') {
+      checkbox.innerHTML = '<i class="fas fa-check" style="font-size: 14px; color: #1e3a5f;"></i>';
+    } else {
+      checkbox.innerHTML = '';
+    }
+  }
+
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'pay_by.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <button class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </button>
+          </div>
+        </div>
+      `;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'pay_by.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+    });
+</script>
+</body>
+</html>

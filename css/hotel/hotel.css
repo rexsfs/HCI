@@ -1,0 +1,662 @@
+ * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 540px;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-bottom: 95px;
+    }
+
+    /* Header - matches guideline.html header styling */
+    .header {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .back-button {
+      background: #f0f4fa;
+      border: none;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button i {
+      font-size: 1.6rem;
+      color: #1e3a5f;
+    }
+
+    .back-button:hover {
+      background: #e4eaf2;
+      transform: scale(0.96);
+    }
+
+    /* Matches guideline.html logo-text exactly */
+    .header-title {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Hotel Hero Section */
+    .hotel-hero {
+      padding: 0;
+    }
+
+    .hotel-main-image {
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+    }
+
+    .hotel-main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Hotel Info Section */
+    .hotel-info-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-title (1.5rem) */
+    .hotel-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 10px;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .hotel-location {
+      font-size: 1rem;
+      color: #6c7e8e;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hotel-location i {
+      color: #f5a623;
+      font-size: 0.9rem;
+    }
+
+    .reviews {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .rating-badge {
+      background: #eef3fc;
+      color: #1e3a5f;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rating-badge i {
+      color: #f5a623;
+      font-size: 1.1rem;
+    }
+
+    /* Matches guideline.html .important-note p (1rem) */
+    .review-text {
+      font-size: 1rem;
+      color: #6c7e8e;
+    }
+
+    .review-text strong {
+      color: #1e3a5f;
+    }
+
+    /* Map Section */
+    .map-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .section-title i {
+      color: #f5a623;
+      font-size: 1.3rem;
+    }
+
+    .map-container {
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      background: #f8fafd;
+      border: 1px solid #edf2f7;
+    }
+
+    .map-image {
+      width: 100%;
+      height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-image iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .map-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      padding: 20px 16px 12px 16px;
+      color: white;
+      pointer-events: none;
+    }
+
+    .map-address {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .map-info {
+      padding: 16px;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .address-full {
+      font-size: 1.3rem;
+      color: #1e2f3e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .address-full i {
+      color: #f5a623;
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .open-map-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .open-map-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* Facility Section */
+    .facility-section {
+      padding: 20px 24px;
+      background: white;
+      border-bottom: 2px solid #eef2f8;
+    }
+
+    .facility-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .facility-item {
+      background: #f0f4fa;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: default;
+    }
+
+    .facility-item i {
+      font-size: 1.1rem;
+      color: #f5a623;
+    }
+
+    /* Room Section */
+    .room-section {
+      padding: 20px 24px;
+      background: white;
+      padding-bottom: 40px;
+    }
+
+    /* Matches guideline.html .eula-card */
+    .room-card {
+      background: #f8fafd;
+      border-radius: 28px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      border: 1px solid #edf2f7;
+      transition: all 0.2s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .room-card a {
+      text-decoration: none;
+    }
+
+    .room-image {
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .room-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .room-info {
+      padding: 20px;
+    }
+
+    /* Matches guideline.html .eula-section-title (1.5rem) */
+    .room-type {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 10px;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) */
+    .room-example {
+      font-size: 1.3rem;
+      color: #6c7e8e;
+      margin-bottom: 16px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Matches guideline.html .eula-text (1.3rem) with bold */
+    .room-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin-bottom: 16px;
+    }
+
+    .room-price small {
+      font-size: 1rem;
+      font-weight: normal;
+      color: #7c8b9a;
+    }
+
+    /* Matches guideline.html .back-btn (1.3rem) */
+    .select-room-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .select-room-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* View All Rooms Button */
+    .view-all-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 20px 24px;
+      border-radius: 60px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+      margin-top: 12px;
+      margin-bottom: 20px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .view-all-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 95, 0.4);
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS - matches guideline.html ===== */
+    
+    /* Breakpoint at max-width: 550px */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+        padding-bottom: 85px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .back-button {
+        width: 46px;
+        height: 46px;
+      }
+
+      .back-button i {
+        font-size: 1.4rem;
+      }
+
+      .header-title {
+        font-size: 1.7rem;
+      }
+
+      .hotel-main-image {
+        height: 200px;
+      }
+
+      .hotel-info-section {
+        padding: 16px 20px;
+      }
+
+      .hotel-name {
+        font-size: 1.35rem;
+      }
+
+      .hotel-location {
+        font-size: 0.9rem;
+      }
+
+      .rating-badge {
+        padding: 5px 12px;
+        font-size: 1.2rem;
+      }
+
+      .review-text {
+        font-size: 0.9rem;
+      }
+
+      .map-section {
+        padding: 16px 20px;
+      }
+
+      .section-title {
+        font-size: 1.35rem;
+      }
+
+      .section-title i {
+        font-size: 1.2rem;
+      }
+
+      .map-image {
+        height: 190px;
+      }
+
+      .address-full {
+        font-size: 1.2rem;
+      }
+
+      .open-map-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .facility-section {
+        padding: 16px 20px;
+      }
+
+      .facility-item {
+        padding: 10px 18px;
+        font-size: 1.2rem;
+      }
+
+      .room-section {
+        padding: 16px 20px;
+        padding-bottom: 35px;
+      }
+
+      .room-image {
+        height: 200px;
+      }
+
+      .room-info {
+        padding: 18px;
+      }
+
+      .room-type {
+        font-size: 1.35rem;
+      }
+
+      .room-example {
+        font-size: 1.2rem;
+      }
+
+      .room-price {
+        font-size: 1.2rem;
+      }
+
+      .room-price small {
+        font-size: 0.9rem;
+      }
+
+      .select-room-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+      }
+
+      .view-all-btn {
+        padding: 18px 20px;
+        font-size: 1.2rem;
+        margin-top: 10px;
+        margin-bottom: 18px;
+      }
+    }
+
+    /* Breakpoint at max-width: 400px */
+    @media (max-width: 400px) {
+      .app-container {
+        padding-bottom: 75px;
+      }
+
+      .header {
+        padding: 14px 16px;
+      }
+
+      .back-button {
+        width: 42px;
+        height: 42px;
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .header-title {
+        font-size: 1.5rem;
+      }
+
+      .hotel-main-image {
+        height: 180px;
+      }
+
+      .hotel-info-section {
+        padding: 14px 16px;
+      }
+
+      .hotel-name {
+        font-size: 1.25rem;
+      }
+
+      .hotel-location {
+        font-size: 0.85rem;
+      }
+
+      .rating-badge {
+        padding: 4px 10px;
+        font-size: 1.1rem;
+      }
+
+      .review-text {
+        font-size: 0.85rem;
+      }
+
+      .map-section {
+        padding: 14px 16px;
+      }
+
+      .section-title {
+        font-size: 1.25rem;
+      }
+
+      .section-title i {
+        font-size: 1.1rem;
+      }
+
+      .map-image {
+        height: 170px;
+      }
+
+      .address-full {
+        font-size: 1.1rem;
+      }
+
+      .open-map-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .facility-section {
+        padding: 14px 16px;
+      }
+
+      .facility-item {
+        padding: 8px 14px;
+        font-size: 1.05rem;
+      }
+
+      .room-section {
+        padding: 14px 16px;
+        padding-bottom: 30px;
+      }
+
+      .room-image {
+        height: 180px;
+      }
+
+      .room-info {
+        padding: 16px;
+      }
+
+      .room-type {
+        font-size: 1.25rem;
+      }
+
+      .room-example {
+        font-size: 1.05rem;
+      }
+
+      .room-price {
+        font-size: 1.1rem;
+      }
+
+      .room-price small {
+        font-size: 0.85rem;
+      }
+
+      .select-room-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+      }
+
+      .view-all-btn {
+        padding: 14px 18px;
+        font-size: 1.05rem;
+        margin-top: 8px;
+        margin-bottom: 15px;
+      }
+    }

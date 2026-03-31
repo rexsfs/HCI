@@ -1,0 +1,413 @@
+   * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1a2c3e;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-container {
+      max-width: 540px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Header with Logo */
+    .header {
+      padding: 40px 24px 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      background: #1e3a5f;
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-text {
+      font-size: 1.9rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f3e53, #2c5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* Login Section */
+    .login-section {
+      flex: 1;
+      padding: 40px 24px;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Title */
+    .login-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #1e2f3e;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    /* Form Group */
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .input-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #6c7e8e;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* Phone Input */
+    .phone-input {
+      width: 100%;
+      background: #f8fafd;
+      border: 1px solid #eef2f8;
+      border-radius: 28px;
+      padding: 16px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e2f3e;
+      outline: none;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .phone-input:focus {
+      border-color: #1e3a5f;
+      box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+    }
+
+    .phone-input::placeholder {
+      color: #b9c4ce;
+      font-weight: 400;
+    }
+
+    /* Continue Button */
+    .continue-btn {
+      background: linear-gradient(135deg, #1e3a5f, #2c5a7a);
+      border: none;
+      width: 100%;
+      padding: 18px 24px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 16px;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(30, 58, 95, 0.3);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #eef2f8;
+    }
+
+    .divider span {
+      padding: 0 16px;
+      color: #8a99aa;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Register Big Button */
+    .register-btn {
+      background: transparent;
+      border: 2px solid #1e3a5f;
+      width: 100%;
+      padding: 18px 24px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .register-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    }
+
+    .register-btn:hover i {
+      color: white;
+    }
+
+    .register-btn:active {
+      transform: translateY(0);
+    }
+
+    .register-btn i {
+      font-size: 1.1rem;
+      color: #1e3a5f;
+      transition: color 0.2s ease;
+    }
+
+    /* Help & Guideline Buttons Container - at bottom */
+    .bottom-buttons-container {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 24px;
+    }
+
+    /* Help Button - same style as register button */
+    .help-btn {
+      background: transparent;
+      border: 2px solid #1e3a5f;
+      width: 100%;
+      padding: 18px 24px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .help-btn i {
+      font-size: 1.1rem;
+      color: #1e3a5f;
+      transition: color 0.2s ease;
+    }
+
+    .help-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    }
+
+    .help-btn:hover i {
+      color: white;
+    }
+
+    /* Guideline Button - same style as register button */
+    .guideline-btn {
+      background: transparent;
+      border: 2px solid #1e3a5f;
+      width: 100%;
+      padding: 18px 24px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .guideline-btn i {
+      font-size: 1.1rem;
+      color: #1e3a5f;
+      transition: color 0.2s ease;
+    }
+
+    .guideline-btn:hover {
+      background: #1e3a5f;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 95, 0.2);
+    }
+
+    .guideline-btn:hover i {
+      color: white;
+    }
+
+    .help-btn:active,
+    .guideline-btn:active {
+      transform: translateY(0);
+    }
+
+   /* Error message styling - matches the "Please enter a destination" style from your image */
+    .error-message {
+      color: #e74c3c;
+      font-size: 1rem;
+      margin-top: 6px;
+      margin-bottom: 0;
+      display: none;
+      font-weight: 400;
+    }
+    
+    .error-message.show {
+      display: block;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    .phone-input.error {
+      border-color: #e74c3c;
+      background-color: #fff5f5;
+    }
+
+    /* ===== RESPONSIVE ADJUSTMENTS ===== */
+    @media (max-width: 550px) {
+      .app-container {
+        max-width: 100%;
+      }
+
+      .header {
+        padding: 30px 20px 16px 20px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.7rem;
+      }
+
+      .logo-text {
+        font-size: 1.7rem;
+      }
+
+      .login-section {
+        padding: 30px 20px;
+      }
+
+      .login-title {
+        font-size: 1.6rem;
+        margin-bottom: 28px;
+      }
+
+      .phone-input {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+      }
+
+      .continue-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+
+      .register-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+
+      .help-btn, .guideline-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+
+      .bottom-buttons-container {
+        gap: 14px;
+        padding-top: 20px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .login-section {
+        padding: 24px 16px;
+      }
+
+      .login-title {
+        font-size: 1.5rem;
+        margin-bottom: 24px;
+      }
+
+      .phone-input {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        border-radius: 24px;
+      }
+
+      .continue-btn {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+      }
+
+      .register-btn {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+      }
+
+      .help-btn, .guideline-btn {
+        padding: 14px 18px;
+        font-size: 0.95rem;
+      }
+
+      .bottom-buttons-container {
+        gap: 12px;
+        padding-top: 16px;
+      }
+    }
