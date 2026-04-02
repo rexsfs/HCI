@@ -475,6 +475,13 @@
 
   // Function to go back (direct, no pending modal)
   function goBack() {
+    // Save current booking data to localStorage before going back
+    if (currentBooking) {
+      localStorage.setItem('finalBooking', JSON.stringify(currentBooking));
+      localStorage.setItem('currentBooking', JSON.stringify(currentBooking));
+      localStorage.setItem('backFromPayment', 'true');
+    }
+    // Use history.back() but also prepare for reload on booking.html
     window.history.back();
   }
 

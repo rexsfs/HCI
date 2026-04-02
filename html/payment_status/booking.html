@@ -348,6 +348,25 @@
     
     console.log('URL Parameters:', params);
     
+    // CHECK: If coming back from payment page, prioritize currentBooking
+    const backFromPayment = localStorage.getItem('backFromPayment');
+    if (backFromPayment) {
+      const savedBooking = localStorage.getItem('currentBooking');
+      if (savedBooking) {
+        const booking = JSON.parse(savedBooking);
+        bookingData = { ...bookingData, ...booking };
+        
+        if (bookingData.hotelId && HOTELS_DATABASE[bookingData.hotelId]) {
+          hotel = HOTELS_DATABASE[bookingData.hotelId];
+          bookingData.location = hotel.location;
+          if (bookingData.roomId) {
+            room = hotel.rooms.find(r => r.id == bookingData.roomId);
+          }
+        }
+        localStorage.removeItem('backFromPayment');
+      }
+    }
+    
     // FIRST: Try to get from URL parameters (when coming from room.html)
     if (params.hotelId && params.roomId) {
       bookingData.hotelId = parseInt(params.hotelId);

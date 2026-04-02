@@ -167,6 +167,7 @@
   // FUNCTION: Go back to home
   // =====================================================
   function goBackToHome() {
+    localStorage.removeItem('selectedHotelId');
     sessionStorage.setItem('fromHome', 'true');
     window.location.href = '/html/nav/home.html';
   }
@@ -306,10 +307,11 @@
       
       if (selectedHotelId) {
         // Redirect to specific hotel with dates
-        localStorage.removeItem('selectedHotelId');
+        // Keep selectedHotelId in localStorage so user can modify dates and search again
         window.location.href = `../hotel/hotel_all.html?id=${selectedHotelId}&checkIn=${checkIn}&checkOut=${checkOut}&nights=${nights}`;
       } else {
         // Redirect to result page to show all hotels
+        localStorage.removeItem('selectedHotelId');
         window.location.href = '/html/search/result.html';
       }
     }
