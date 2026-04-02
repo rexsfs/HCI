@@ -473,42 +473,8 @@
     return false;
   }
 
-  // Handle beforeunload event (tab close, refresh)
-  function handleBeforeUnload(e) {
-    if (!isPaymentProcessed && navigationCheckEnabled) {
-      e.preventDefault();
-      e.returnValue = '';
-      return '';
-    }
-  }
-
-  // Handle navigation clicks (for nav bar items - SHOW MODAL FIRST)
-  function handleNavClick(e) {
-    if (!isPaymentProcessed && navigationCheckEnabled) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const target = e.currentTarget;
-      const href = target.getAttribute('href');
-      
-      // Show custom modal popup
-      showPendingModal(() => {
-        savePendingAndNavigate(href);
-      }, href);
-      
-      return false;
-    }
-    return true;
-  }
-
-  // Function to go back - SHOW MODAL FIRST
+  // Function to go back
   function goBack() {
-    if (!isPaymentProcessed && navigationCheckEnabled) {
-      showPendingModal(() => {
-        savePendingAndNavigate(null);
-      });
-      return;
-    }
     window.history.back();
   }
 
@@ -675,43 +641,9 @@
     }, 1000);
   }
 
-  // Set up navigation interceptors
-  function setupNavigationInterceptors() {
-    const navLinks = document.querySelectorAll('.nav-item');
-    navLinks.forEach(link => {
-      link.removeEventListener('click', handleNavClick);
-      link.addEventListener('click', handleNavClick);
-    });
-  }
-
   // Initialize page
   function initializePage() {
     loadBookingData();
-    
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    window.addEventListener('popstate', function() {
-      if (!isPaymentProcessed && navigationCheckEnabled) {
-        showPendingModal(() => {
-          savePendingAndNavigate(null);
-        });
-      }
-    });
-    
-    const observer = new MutationObserver(function(mutations) {
-      const navContainer = document.getElementById('nav-container');
-      if (navContainer && navContainer.innerHTML.trim() !== '') {
-        setupNavigationInterceptors();
-        observer.disconnect();
-      }
-    });
-    
-    observer.observe(document.getElementById('nav-container'), { childList: true, subtree: true });
-    
-    setTimeout(() => {
-      setupNavigationInterceptors();
-      observer.disconnect();
-    }, 1000);
   }
 
   // Make functions available globally
