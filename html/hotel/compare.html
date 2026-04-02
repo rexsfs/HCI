@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>LuxeStay | Compare Rooms</title>
+  <!-- Font Awesome 6 (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/hotel/compare.css">
+  <link rel="stylesheet" href="/css/nav/nav.css">
+  
+  <!-- Include hotel database and room helper functions -->
+  <script src="hotel.js"></script>
+  <script src="room.js"></script>
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with Back Button -->
+  <div class="header">
+    <button class="back-button" onclick="goBack()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Compare Rooms</div>
+  </div>
+
+  <!-- Selection Section -->
+  <div class="selection-section">
+    <div class="selection-row">
+      <label class="selection-label">Compare with another hotel</label>
+      <select id="hotelSelect" class="select-dropdown">
+        <option value="">-- Select Hotel to Compare --</option>
+      </select>
+    </div>
+    <div class="selection-row">
+      <label class="selection-label">Same room type</label>
+      <select id="roomTypeSelect" class="select-dropdown">
+        <option value="">-- Select Room Type --</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Compare Grid - Two Columns -->
+  <div class="compare-grid" id="compareGrid">
+    <!-- Left Column - Your Selected Room (From hotel.html) -->
+    <div class="compare-column" id="leftColumn">
+      <div class="hotel-name-badge" id="leftHotelName">Your Selected Hotel</div>
+      <div class="room-image">
+        <img id="leftRoomImage" src="" alt="Room">
+      </div>
+      <div class="room-details">
+        <div class="room-type" id="leftRoomType">---</div>
+        <div class="amenities-section">
+          <div class="amenities-label">✨ Room Amenities</div>
+          <div class="amenities-list" id="leftAmenitiesList">
+            <span class="amenity-tag">Loading your selected room...</span>
+          </div>
+        </div>
+        <div class="room-price" id="leftRoomPrice">RM 0 <small>/ night including tax</small></div>
+        <button class="confirm-btn" id="leftConfirmBtn" onclick="confirmSelection('left')">Book This Room</button>
+      </div>
+    </div>
+
+    <!-- Right Column - Comparison Hotel (User selects which hotel to compare) -->
+    <div class="compare-column" id="rightColumn">
+      <div class="hotel-name-badge" id="rightHotelName">Select a hotel to compare</div>
+      <div class="room-image">
+        <img id="rightRoomImage" src="" alt="Compare Room">
+      </div>
+      <div class="room-details">
+        <div class="room-type" id="rightRoomType">---</div>
+        <div class="amenities-section">
+          <div class="amenities-label">✨ Room Amenities</div>
+          <div class="amenities-list" id="rightAmenitiesList">
+            <span class="amenity-tag">Select a hotel and room type to compare</span>
+          </div>
+        </div>
+        <div class="room-price" id="rightRoomPrice">RM 0 <small>/ night including tax</small></div>
+        <button class="confirm-btn" id="rightConfirmBtn" onclick="confirmSelection('right')">Book This Room</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Container -->
+  <div id="nav-container"></div>
+</div>
+
+<script>
+  // Global variables
+  let originalHotel = null;      // The hotel user selected from hotel.html
+  let originalRoom = null;       // The room user selected from hotel.html
+  let currentRightHotel = null;  // Comparison hotel selected by user
+  let currentRightRoom = null;   // Comparison room (same room type as original)
+  let availableRoomTypes = [];    // Room types available in the comparison hotel
+
+  // Helper function to get room display name (roomName if available, otherwise type)
+  function getRoomDisplayName(room) {
+    if (room && room.roomName && room.roomName !== '') {
+      return room.roomName;
+    }
+    return room ? room.type : '---';
+  }
+
+  // Helper function to format price
+  function formatPrice(price) {
+    return 'RM ' + price.toLocaleString('en-MY');
+  }
+
+  // Helper function to get room amenities
+  function getRoomAmenitiesForRoom(hotelId, roomTypeValue) {
+    if (typeof getRoomAmenities === 'function') {
+      try {
+        return getRoomAmenities(hotelId, roomTypeValue);
+      } catch(e) {
+        console.warn('getRoomAmenities error:', e);
+      }
+    }
+    return [
+      { icon: "fa-wifi", name: "Free WiFi" },
+      { icon: "fa-tv", name: "Smart TV" },
+      { icon: "fa-wind", name: "Air Conditioning" },
+      { icon: "fa-coffee", name: "Coffee Machine" },
+      { icon: "fa-bath", name: "Private Bathroom" }
+    ];
+  }
+
+  // Helper function to get room image - FIXED to properly load images
+  function getRoomImage(room, hotelId) {
+    // First priority: room's own image
+    if (room && room.image && room.image !== '') {
+      return room.image;
+    }
+    
+    // Second priority: fallback images based on hotel ID and room type
+    const fallbackImages = {
+      1: { // Mandarin Oriental
+        default: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop",
+        standard: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        deluxe: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop",
+        suite: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
+        family: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        presidential: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop"
+      },
+      2: { // W Kuala Lumpur
+        default: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop",
+        standard: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        deluxe: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop",
+        suite: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
+        family: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        presidential: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop"
+      },
+      3: { // Four Seasons
+        default: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop",
+        standard: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        deluxe: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop",
+        suite: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
+        family: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        presidential: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop"
+      },
+      4: { // The Ritz-Carlton
+        default: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop",
+        standard: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        deluxe: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop",
+        suite: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
+        family: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        presidential: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop"
+      },
+      5: { // The Datai Langkawi
+        default: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop",
+        standard: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        deluxe: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=400&h=300&fit=crop",
+        suite: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400&h=300&fit=crop",
+        family: "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop",
+        presidential: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop"
+      }
+    };
+    
+    // Try to get hotel-specific fallback
+    if (fallbackImages[hotelId]) {
+      const hotelFallbacks = fallbackImages[hotelId];
+      if (room && room.typeValue && hotelFallbacks[room.typeValue]) {
+        return hotelFallbacks[room.typeValue];
+      }
+      return hotelFallbacks.default;
+    }
+    
+    // Ultimate fallback
+    return "https://images.unsplash.com/photo-1564501049412-61c2a3080a4b?w=400&h=300&fit=crop";
+  }
+
+  // Populate hotel dropdown (exclude the original hotel)
+  function populateHotelDropdown() {
+    const hotelSelect = document.getElementById('hotelSelect');
+    if (!hotelSelect) return;
+    
+    if (typeof HOTELS_DATABASE === 'undefined') {
+      console.error('HOTELS_DATABASE not loaded');
+      hotelSelect.innerHTML = '<option value="">Error loading hotels</option>';
+      return;
+    }
+    
+    const hotelsList = Object.values(HOTELS_DATABASE);
+    hotelSelect.innerHTML = '<option value="">-- Select Hotel to Compare --</option>';
+    
+    hotelsList.forEach(hotel => {
+      // Exclude the original hotel from comparison dropdown
+      if (originalHotel && hotel.id === originalHotel.id) return;
+      const option = document.createElement('option');
+      option.value = hotel.id;
+      option.textContent = hotel.name;
+      hotelSelect.appendChild(option);
+    });
+  }
+
+  // Get unique room types from a hotel
+  function getUniqueRoomTypesFromHotel(hotel) {
+    if (!hotel || !hotel.rooms) return [];
+    const typeMap = new Map();
+    hotel.rooms.forEach(room => {
+      if (!typeMap.has(room.typeValue)) {
+        typeMap.set(room.typeValue, {
+          typeValue: room.typeValue,
+          type: room.type,
+          exampleRoom: room
+        });
+      }
+    });
+    return Array.from(typeMap.values());
+  }
+
+  // Populate room type dropdown based on selected comparison hotel
+  function populateRoomTypeDropdown(hotelId) {
+    const roomTypeSelect = document.getElementById('roomTypeSelect');
+    if (!roomTypeSelect) return;
+    
+    if (!hotelId || typeof HOTELS_DATABASE === 'undefined' || !HOTELS_DATABASE[hotelId]) {
+      roomTypeSelect.innerHTML = '<option value="">-- Select Room Type --</option>';
+      availableRoomTypes = [];
+      return;
+    }
+    
+    const hotel = HOTELS_DATABASE[hotelId];
+    const roomTypes = getUniqueRoomTypesFromHotel(hotel);
+    availableRoomTypes = roomTypes;
+    
+    roomTypeSelect.innerHTML = '<option value="">-- Select Room Type --</option>';
+    roomTypes.forEach(rt => {
+      const option = document.createElement('option');
+      option.value = rt.typeValue;
+      option.textContent = rt.type;
+      roomTypeSelect.appendChild(option);
+    });
+  }
+
+  // Get room by type value from a hotel
+  function getRoomByTypeValue(hotel, typeValue) {
+    if (!hotel || !hotel.rooms) return null;
+    let room = hotel.rooms.find(r => r.typeValue === typeValue);
+    if (room) return room;
+    room = hotel.rooms.find(r => r.typeValue && r.typeValue.toLowerCase() === typeValue.toLowerCase());
+    if (room) return room;
+    return hotel.rooms[0] || null;
+  }
+
+  // Update left column with the original selected room
+  function updateLeftColumn() {
+    if (!originalHotel || !originalRoom) return;
+    
+    const hotelNameEl = document.getElementById('leftHotelName');
+    const roomTypeEl = document.getElementById('leftRoomType');
+    const roomImageEl = document.getElementById('leftRoomImage');
+    const amenitiesListEl = document.getElementById('leftAmenitiesList');
+    const roomPriceEl = document.getElementById('leftRoomPrice');
+    
+    if (hotelNameEl) hotelNameEl.textContent = originalHotel.name;
+    if (roomTypeEl) roomTypeEl.textContent = getRoomDisplayName(originalRoom);
+    if (roomImageEl) {
+      const imgSrc = getRoomImage(originalRoom, originalHotel.id);
+      roomImageEl.src = imgSrc;
+      roomImageEl.alt = `${originalHotel.name} - ${getRoomDisplayName(originalRoom)}`;
+      roomImageEl.style.display = 'block';
+    }
+    if (amenitiesListEl) {
+      const amenities = getRoomAmenitiesForRoom(originalHotel.id, originalRoom.typeValue);
+      if (amenities && amenities.length > 0) {
+        amenitiesListEl.innerHTML = amenities.map(amenity => 
+          `<span class="amenity-tag"><i class="fas ${amenity.icon || 'fa-check-circle'}"></i> ${amenity.name}</span>`
+        ).join('');
+      } else {
+        amenitiesListEl.innerHTML = '<span class="amenity-tag">Standard amenities included</span>';
+      }
+    }
+    if (roomPriceEl) {
+      roomPriceEl.innerHTML = `${formatPrice(originalRoom.price)} <small>/ night including tax</small>`;
+    }
+  }
+
+  // Update right column with comparison hotel and room - FIXED image loading
+  function updateRightColumn() {
+    const hotelNameEl = document.getElementById('rightHotelName');
+    const roomTypeEl = document.getElementById('rightRoomType');
+    const roomImageEl = document.getElementById('rightRoomImage');
+    const amenitiesListEl = document.getElementById('rightAmenitiesList');
+    const roomPriceEl = document.getElementById('rightRoomPrice');
+    
+    if (currentRightHotel && currentRightRoom) {
+      if (hotelNameEl) hotelNameEl.textContent = currentRightHotel.name;
+      if (roomTypeEl) roomTypeEl.textContent = getRoomDisplayName(currentRightRoom);
+      if (roomImageEl) {
+        const imgSrc = getRoomImage(currentRightRoom, currentRightHotel.id);
+        roomImageEl.src = imgSrc;
+        roomImageEl.alt = `${currentRightHotel.name} - ${getRoomDisplayName(currentRightRoom)}`;
+        roomImageEl.style.display = 'block';
+      }
+      if (amenitiesListEl) {
+        const amenities = getRoomAmenitiesForRoom(currentRightHotel.id, currentRightRoom.typeValue);
+        if (amenities && amenities.length > 0) {
+          amenitiesListEl.innerHTML = amenities.map(amenity => 
+            `<span class="amenity-tag"><i class="fas ${amenity.icon || 'fa-check-circle'}"></i> ${amenity.name}</span>`
+          ).join('');
+        } else {
+          amenitiesListEl.innerHTML = '<span class="amenity-tag">Standard amenities included</span>';
+        }
+      }
+      if (roomPriceEl) {
+        roomPriceEl.innerHTML = `${formatPrice(currentRightRoom.price)} <small>/ night including tax</small>`;
+      }
+    } else {
+      // Empty state - clear image
+      if (hotelNameEl) hotelNameEl.textContent = 'Select a hotel to compare';
+      if (roomTypeEl) roomTypeEl.textContent = '---';
+      if (roomImageEl) {
+        roomImageEl.src = "";
+        roomImageEl.alt = "No room selected";
+        roomImageEl.style.display = 'block';
+        // Add a placeholder background
+        roomImageEl.style.backgroundColor = '#f0f0f0';
+      }
+      if (amenitiesListEl) {
+        amenitiesListEl.innerHTML = '<span class="amenity-tag">Select a hotel and room type to compare</span>';
+      }
+      if (roomPriceEl) {
+        roomPriceEl.innerHTML = 'RM 0 <small>/ night including tax</small>';
+      }
+    }
+  }
+
+  // Reset right column to empty
+  function resetRightColumn() {
+    currentRightHotel = null;
+    currentRightRoom = null;
+    updateRightColumn();
+  }
+
+  // Handle hotel selection change for comparison
+  function onHotelChange() {
+    const hotelSelect = document.getElementById('hotelSelect');
+    const selectedHotelId = parseInt(hotelSelect.value);
+    
+    if (selectedHotelId && typeof HOTELS_DATABASE !== 'undefined' && HOTELS_DATABASE[selectedHotelId]) {
+      currentRightHotel = HOTELS_DATABASE[selectedHotelId];
+      
+      // Populate room types for this hotel
+      populateRoomTypeDropdown(selectedHotelId);
+      
+      // Reset room type selection
+      const roomTypeSelect = document.getElementById('roomTypeSelect');
+      if (roomTypeSelect) {
+        roomTypeSelect.value = '';
+      }
+      
+      currentRightRoom = null;
+      updateRightColumn();
+    } else {
+      currentRightHotel = null;
+      currentRightRoom = null;
+      populateRoomTypeDropdown(null);
+      updateRightColumn();
+    }
+  }
+
+  // Handle room type selection change for comparison - FIXED to load image immediately
+  function onRoomTypeChange() {
+    const roomTypeSelect = document.getElementById('roomTypeSelect');
+    const selectedTypeValue = roomTypeSelect.value;
+    
+    if (currentRightHotel && selectedTypeValue) {
+      const room = getRoomByTypeValue(currentRightHotel, selectedTypeValue);
+      if (room) {
+        currentRightRoom = room;
+        updateRightColumn();
+      } else {
+        currentRightRoom = null;
+        updateRightColumn();
+      }
+    } else {
+      currentRightRoom = null;
+      updateRightColumn();
+    }
+  }
+
+  // Auto-select the same room type as original when available
+  function autoSelectSameRoomType() {
+    if (!currentRightHotel || !originalRoom) return;
+    
+    // Try to find the same room type in the comparison hotel
+    const sameRoomType = getRoomByTypeValue(currentRightHotel, originalRoom.typeValue);
+    if (sameRoomType) {
+      currentRightRoom = sameRoomType;
+      // Update dropdown to show selected
+      const roomTypeSelect = document.getElementById('roomTypeSelect');
+      if (roomTypeSelect) {
+        roomTypeSelect.value = sameRoomType.typeValue;
+      }
+      updateRightColumn();
+    } else {
+      // If exact match not found, try to find similar by type name
+      const similarRoom = currentRightHotel.rooms.find(room => 
+        room.type.toLowerCase().includes(originalRoom.type.toLowerCase().split(' ')[0])
+      );
+      if (similarRoom) {
+        currentRightRoom = similarRoom;
+        const roomTypeSelect = document.getElementById('roomTypeSelect');
+        if (roomTypeSelect) {
+          roomTypeSelect.value = similarRoom.typeValue;
+        }
+        updateRightColumn();
+      }
+    }
+  }
+
+  // Confirm selection and proceed to booking
+  function confirmSelection(side) {
+    let hotel = null;
+    let room = null;
+    
+    if (side === 'left') {
+      hotel = originalHotel;
+      room = originalRoom;
+    } else {
+      hotel = currentRightHotel;
+      room = currentRightRoom;
+    }
+    
+    if (!hotel || !room) {
+      alert('Please select a hotel and room type first');
+      return;
+    }
+    
+    // Save booking data to localStorage for reservation summary
+    const bookingInfo = {
+      hotelId: hotel.id,
+      roomId: room.id,
+      hotelName: hotel.name,
+      roomType: room.type,
+      roomName: getRoomDisplayName(room),
+      roomPrice: room.price,
+      location: hotel.location,
+      roomImage: getRoomImage(room, hotel.id),
+      roomDescription: room.description || `${getRoomDisplayName(room)} at ${hotel.name}`
+    };
+    
+    localStorage.setItem('currentBooking', JSON.stringify(bookingInfo));
+    
+    // Navigate to booking summary
+    window.location.href = `../payment_status/booking.html?hotelId=${hotel.id}&roomId=${room.id}`;
+  }
+
+  // Go back to previous page (hotel.html)
+  function goBack() {
+    const returnUrl = localStorage.getItem('returnToHotelUrl');
+    if (returnUrl) {
+      window.location.href = returnUrl;
+    } else {
+      window.history.back();
+    }
+  }
+
+  // Load the original selected room from URL parameters
+  function loadOriginalSelectedRoom() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelIdParam = urlParams.get('hotelId');
+    const roomIdParam = urlParams.get('roomId');
+    
+    if (hotelIdParam && roomIdParam && typeof HOTELS_DATABASE !== 'undefined') {
+      const hotelId = parseInt(hotelIdParam);
+      const roomId = parseInt(roomIdParam);
+      
+      if (HOTELS_DATABASE[hotelId]) {
+        originalHotel = HOTELS_DATABASE[hotelId];
+        originalRoom = originalHotel.rooms.find(r => r.id === roomId);
+        
+        if (originalRoom) {
+          console.log('Loaded original room:', originalRoom.type, 'from', originalHotel.name);
+          updateLeftColumn();
+          return true;
+        }
+      }
+    }
+    
+    // Fallback: try to get from localStorage
+    const savedBooking = localStorage.getItem('currentBooking');
+    if (savedBooking) {
+      try {
+        const booking = JSON.parse(savedBooking);
+        if (booking.hotelId && booking.roomId && typeof HOTELS_DATABASE !== 'undefined') {
+          if (HOTELS_DATABASE[booking.hotelId]) {
+            originalHotel = HOTELS_DATABASE[booking.hotelId];
+            originalRoom = originalHotel.rooms.find(r => r.id === booking.roomId);
+            if (originalRoom) {
+              updateLeftColumn();
+              return true;
+            }
+          }
+        }
+      } catch(e) {}
+    }
+    
+    console.error('Could not load original room selection');
+    const leftAmenities = document.getElementById('leftAmenitiesList');
+    if (leftAmenities) {
+      leftAmenities.innerHTML = '<span class="amenity-tag">Error: No room selected. Please go back and select a room first.</span>';
+    }
+    return false;
+  }
+
+  // Initialize the compare page
+  function initComparePage() {
+    if (typeof HOTELS_DATABASE === 'undefined') {
+      console.error('HOTELS_DATABASE not loaded!');
+      const hotelSelect = document.getElementById('hotelSelect');
+      if (hotelSelect) {
+        hotelSelect.innerHTML = '<option value="">Error: Database not loaded</option>';
+      }
+      return;
+    }
+    
+    // Load the original selected room
+    const loaded = loadOriginalSelectedRoom();
+    
+    if (loaded && originalHotel && originalRoom) {
+      // Populate hotel dropdown (excluding original hotel)
+      populateHotelDropdown();
+      
+      // Set up event listeners
+      const hotelSelect = document.getElementById('hotelSelect');
+      if (hotelSelect) {
+        hotelSelect.addEventListener('change', onHotelChange);
+      }
+      
+      const roomTypeSelect = document.getElementById('roomTypeSelect');
+      if (roomTypeSelect) {
+        roomTypeSelect.addEventListener('change', onRoomTypeChange);
+      }
+      
+      // Reset right column to empty initially
+      resetRightColumn();
+    }
+  }
+
+  // Load navigation component
+  fetch('nav.html')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Navigation file not found');
+      }
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById('nav-container').innerHTML = html;
+      
+      const currentPage = window.location.pathname.split('/').pop() || 'compare.html';
+      const navItems = document.querySelectorAll('.nav-item');
+      
+      navItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (href && href === currentPage) {
+          item.classList.add('active');
+        }
+      });
+      
+      initComparePage();
+    })
+    .catch(error => {
+      console.error('Error loading navigation:', error);
+      document.getElementById('nav-container').innerHTML = `
+        <div class="bottom-nav">
+          <div class="nav-buttons">
+            <a href="../nav/home.html" class="nav-item">
+              <i class="fas fa-home"></i>
+              <span>Home</span>
+            </a>
+            <a href="../nav/history.html" class="nav-item">
+              <i class="fas fa-clock-rotate-left"></i>
+              <span>History</span>
+            </a>
+            <a href="../nav/profile.html" class="nav-item">
+              <i class="fas fa-user-circle"></i>
+              <span>Profile</span>
+            </a>
+            <button class="nav-item" id="serviceBtn">
+              <i class="fas fa-headset"></i>
+              <span>Service</span>
+            </button>
+          </div>
+        </div>
+      `;
+      initComparePage();
+    });
+</script>
+</body>
+</html>
