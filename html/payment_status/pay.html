@@ -473,9 +473,32 @@
     return false;
   }
 
-  // Function to go back
+  // Function to go back (direct, no pending modal)
   function goBack() {
     window.history.back();
+  }
+
+  // Handle bottom-nav item click (show pending modal when leaving)
+  function handleNavClick(e) {
+    if (!isPaymentProcessed && navigationCheckEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      showPendingModal(() => {
+        savePendingBooking();
+      });
+      return false;
+    }
+    return true;
+  }
+
+  // Setup nav interceptors for bottom nav links
+  function setupNavigationInterceptors() {
+    const navLinks = document.querySelectorAll('.nav-item');
+    navLinks.forEach(link => {
+      link.removeEventListener('click', handleNavClick);
+      link.addEventListener('click', handleNavClick);
+    });
   }
 
   // Function to show help
@@ -644,6 +667,7 @@
   // Initialize page
   function initializePage() {
     loadBookingData();
+    setupNavigationInterceptors();
   }
 
   // Make functions available globally
