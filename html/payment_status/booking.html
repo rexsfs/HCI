@@ -97,29 +97,32 @@
   <div class="contact-section">
     <div class="section-title">Contact Information</div>
     
-    <div class="contact-note">
+    <div class="contact-note" id="loginStatusNote">
       <i class="fas fa-user-circle"></i>
-      Autofilled with logged-in user information
+      <span id="loginStatusText">Loading user information...</span>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Full Name</label>
-      <input type="text" class="form-input autofilled" id="fullName" readonly>
+      <label class="form-label">Full Name <span class="required-star">*</span></label>
+      <input type="text" class="form-input" id="fullName" placeholder="Enter your full name">
+      <div class="error-message" id="fullNameError"></div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input type="email" class="form-input autofilled" id="email" readonly>
+      <label class="form-label">Email Address <span class="required-star">*</span></label>
+      <input type="email" class="form-input" id="email" placeholder="your@email.com">
+      <div class="error-message" id="emailError"></div>
     </div>
 
     <div class="form-group">
-      <label class="form-label">Phone Number</label>
-      <input type="tel" class="form-input autofilled" id="phone" readonly>
+      <label class="form-label">Phone Number <span class="required-star">*</span></label>
+      <input type="tel" class="form-input" id="phone" placeholder="+60 XX XXX XXXX">
+      <div class="error-message" id="phoneError"></div>
     </div>
 
-    <div class="contact-note" style="background: #f0f4fa; color: #6c7e8e;">
+    <div class="contact-note" style="background: #f0f4fa; color: #6c7e8e; margin-top: 10px;">
       <i class="fas fa-info-circle"></i>
-      If not logged in, please fill out all information manually
+      Your contact information will be used for booking confirmation and emergency contact.
     </div>
   </div>
 
@@ -129,7 +132,7 @@
       <i class="fas fa-question-circle"></i>
       Help
     </button>
-    <button class="pay-btn" onclick="proceedToPayment()">
+    <button class="pay-btn" onclick="validateAndProceed()">
       <i class="fas fa-credit-card"></i>
       Click to Pay
     </button>
@@ -164,6 +167,9 @@
     children: 0
   };
 
+  let isLoggedIn = false;
+  let loggedInUser = null;
+
   // Function to get URL parameters
   function getUrlParams() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -197,14 +203,6 @@
     return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} (${time})`;
   }
 
-  // Function to format date for display
-  function formatDate(dateString) {
-    if (!dateString) return 'Not selected';
-    const date = new Date(dateString);
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-  }
-
   // Function to get guest display text
   function getGuestDisplay(roomTypeValue, adults, children) {
     const occupancy = ROOM_OCCUPANCY[roomTypeValue];
@@ -212,6 +210,133 @@
       return occupancy.display;
     }
     return `${adults} Adult${adults > 1 ? 's' : ''}${children > 0 ? `, ${children} Child${children > 1 ? 'ren' : ''}` : ''}`;
+  }
+
+  // Function to validate email format
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Function to validate phone number (basic validation)
+  function isValidPhone(phone) {
+    // Remove spaces, dashes, and plus sign for validation
+    const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
+    // Accept +60, 0, or international format
+    const phoneRegex = /^(\+?[0-9]{1,4})?[0-9]{8,12}$/;
+    return phoneRegex.test(cleanPhone) && phone.trim().length >= 8;
+  }
+
+  // Function to validate all form fields
+  function validateForm() {
+    let isValid = true;
+    
+    // Get values
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    
+    // Clear previous errors
+    document.getElementById('fullNameError').textContent = '';
+    document.getElementById('emailError').textContent = '';
+    document.getElementById('phoneError').textContent = '';
+    
+    // Remove red border class
+    document.getElementById('fullName').classList.remove('input-error');
+    document.getElementById('email').classList.remove('input-error');
+    document.getElementById('phone').classList.remove('input-error');
+    
+    // Validate Full Name
+    if (!fullName) {
+      document.getElementById('fullNameError').textContent = 'Please enter your full name';
+      document.getElementById('fullName').classList.add('input-error');
+      isValid = false;
+    } else if (fullName.length < 2) {
+      document.getElementById('fullNameError').textContent = 'Name must be at least 2 characters';
+      document.getElementById('fullName').classList.add('input-error');
+      isValid = false;
+    }
+    
+    // Validate Email
+    if (!email) {
+      document.getElementById('emailError').textContent = 'Please enter your email address';
+      document.getElementById('email').classList.add('input-error');
+      isValid = false;
+    } else if (!isValidEmail(email)) {
+      document.getElementById('emailError').textContent = 'Please enter a valid email address (e.g., name@example.com)';
+      document.getElementById('email').classList.add('input-error');
+      isValid = false;
+    }
+    
+    // Validate Phone
+    if (!phone) {
+      document.getElementById('phoneError').textContent = 'Please enter your phone number';
+      document.getElementById('phone').classList.add('input-error');
+      isValid = false;
+    } else if (!isValidPhone(phone)) {
+      document.getElementById('phoneError').textContent = 'Please enter a valid phone number (e.g., +60123456789 or 0123456789)';
+      document.getElementById('phone').classList.add('input-error');
+      isValid = false;
+    }
+    
+    return isValid;
+  }
+
+  // Function to check login status and set form fields accordingly
+  function checkLoginAndSetupForm() {
+    if (typeof UserDB !== 'undefined') {
+      const currentUser = UserDB.getCurrentUser();
+      if (currentUser) {
+        isLoggedIn = true;
+        loggedInUser = currentUser;
+        
+        // Update status note
+        const loginStatusText = document.getElementById('loginStatusText');
+        loginStatusText.innerHTML = '<i class="fas fa-check-circle" style="color: #28a745;"></i> Logged in as: ' + currentUser.fullName;
+        
+        // Autofill form fields and make them readonly
+        document.getElementById('fullName').value = currentUser.fullName || '';
+        document.getElementById('email').value = currentUser.email || '';
+        document.getElementById('phone').value = currentUser.phone || '';
+        
+        // Make fields readonly for logged-in users
+        document.getElementById('fullName').readOnly = true;
+        document.getElementById('email').readOnly = true;
+        document.getElementById('phone').readOnly = true;
+        
+        // Add autofilled class for styling
+        document.getElementById('fullName').classList.add('autofilled');
+        document.getElementById('email').classList.add('autofilled');
+        document.getElementById('phone').classList.add('autofilled');
+        
+        return true;
+      }
+    }
+    
+    // Not logged in
+    isLoggedIn = false;
+    loggedInUser = null;
+    
+    // Update status note
+    const loginStatusText = document.getElementById('loginStatusText');
+    loginStatusText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i> Not logged in - Please fill in your contact details below';
+    
+    // Make fields editable for guest users
+    document.getElementById('fullName').readOnly = false;
+    document.getElementById('email').readOnly = false;
+    document.getElementById('phone').readOnly = false;
+    
+    // Remove autofilled class
+    document.getElementById('fullName').classList.remove('autofilled');
+    document.getElementById('email').classList.remove('autofilled');
+    document.getElementById('phone').classList.remove('autofilled');
+    
+    // Clear values for guest
+    document.getElementById('fullName').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('phone').value = '';
+    
+    return false;
   }
 
   // Function to load booking data
@@ -232,14 +357,11 @@
         room = hotel.rooms.find(r => r.id == bookingData.roomId);
       }
       
-      // IMPORTANT: Get dates from URL parameters
       if (params.checkIn) {
         bookingData.checkIn = params.checkIn;
-        console.log('Check-in from URL:', bookingData.checkIn);
       }
       if (params.checkOut) {
         bookingData.checkOut = params.checkOut;
-        console.log('Check-out from URL:', bookingData.checkOut);
       }
       if (params.adults) bookingData.adults = parseInt(params.adults);
       if (params.children) bookingData.children = parseInt(params.children);
@@ -253,19 +375,14 @@
     // SECOND: Try to get from searchParamsForHotel (from result.html)
     if (!hotel || !room) {
       const savedSearchParams = localStorage.getItem('searchParamsForHotel');
-      console.log('Search params from localStorage:', savedSearchParams);
-      
       if (savedSearchParams) {
         const searchParams = JSON.parse(savedSearchParams);
-        
-        // Get hotel from URL or use saved data
         const hotelId = params.hotelId || searchParams.hotelId;
         if (hotelId && HOTELS_DATABASE[hotelId]) {
           hotel = HOTELS_DATABASE[hotelId];
           bookingData.hotelId = parseInt(hotelId);
           bookingData.location = hotel.location;
           
-          // Find room by type value
           if (searchParams.roomTypeValue) {
             room = hotel.rooms.find(r => r.typeValue === searchParams.roomTypeValue);
             if (room) {
@@ -275,19 +392,15 @@
           }
         }
         
-        // Get dates from searchParams if not already set
         if (!bookingData.checkIn && searchParams.checkIn) {
           bookingData.checkIn = searchParams.checkIn;
-          console.log('Check-in from searchParams:', bookingData.checkIn);
         }
         if (!bookingData.checkOut && searchParams.checkOut) {
           bookingData.checkOut = searchParams.checkOut;
-          console.log('Check-out from searchParams:', bookingData.checkOut);
         }
         if (searchParams.adults) bookingData.adults = searchParams.adults;
         if (searchParams.children) bookingData.children = searchParams.children;
         
-        // Calculate nights
         if (bookingData.checkIn && bookingData.checkOut) {
           bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
         }
@@ -297,8 +410,6 @@
     // THIRD: Try to get from currentBooking (from room.html)
     if (!hotel || !room) {
       const savedBooking = localStorage.getItem('currentBooking');
-      console.log('Current booking from localStorage:', savedBooking);
-      
       if (savedBooking) {
         const booking = JSON.parse(savedBooking);
         bookingData = { ...bookingData, ...booking };
@@ -316,20 +427,15 @@
     // FOURTH: Try to get from searchParams (original search data)
     if (!bookingData.checkIn || !bookingData.checkOut) {
       const originalSearchParams = localStorage.getItem('searchParams');
-      console.log('Original search params:', originalSearchParams);
-      
       if (originalSearchParams) {
         const searchParams = JSON.parse(originalSearchParams);
         if (searchParams.checkIn && !bookingData.checkIn) {
           bookingData.checkIn = searchParams.checkIn;
-          console.log('Check-in from original search:', bookingData.checkIn);
         }
         if (searchParams.checkOut && !bookingData.checkOut) {
           bookingData.checkOut = searchParams.checkOut;
-          console.log('Check-out from original search:', bookingData.checkOut);
         }
         
-        // Calculate nights
         if (bookingData.checkIn && bookingData.checkOut) {
           bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
         }
@@ -347,22 +453,11 @@
       checkOutDate.setDate(checkInDate.getDate() + 3);
       bookingData.checkOut = checkOutDate.toISOString().split('T')[0];
       bookingData.nights = 3;
-      console.log('Using default dates:', bookingData.checkIn, bookingData.checkOut);
     }
     
-    // Calculate nights if not set
     if (!bookingData.nights || bookingData.nights === 0) {
       bookingData.nights = calculateNights(bookingData.checkIn, bookingData.checkOut);
     }
-    
-    console.log('Final booking data:', {
-      checkIn: bookingData.checkIn,
-      checkOut: bookingData.checkOut,
-      nights: bookingData.nights,
-      hotelId: bookingData.hotelId,
-      roomId: bookingData.roomId,
-      location: bookingData.location
-    });
     
     if (hotel && room) {
       bookingData.hotelName = hotel.name;
@@ -371,15 +466,11 @@
       bookingData.roomTypeValue = room.typeValue;
       bookingData.roomPrice = room.price;
       
-      // Calculate prices
       const roomTotal = bookingData.roomPrice * bookingData.nights;
       const tax = roomTotal * 0.1;
       const total = roomTotal + tax;
-      
-      // Get guest display text
       const guestDisplay = getGuestDisplay(bookingData.roomTypeValue, bookingData.adults, bookingData.children);
       
-      // Update the page with data
       document.getElementById('location').textContent = bookingData.location;
       document.getElementById('hotelName').textContent = bookingData.hotelName;
       document.getElementById('roomType').textContent = bookingData.roomType;
@@ -391,46 +482,14 @@
       document.getElementById('roomPrice').textContent = 'RM ' + roomTotal.toLocaleString();
       document.getElementById('taxAmount').textContent = 'RM ' + tax.toLocaleString();
       document.getElementById('totalPrice').textContent = 'RM ' + total.toLocaleString();
-      
-      console.log('Booking loaded successfully:', {
-        hotel: bookingData.hotelName,
-        location: bookingData.location,
-        room: bookingData.roomType,
-        checkIn: formatDateWithTime(bookingData.checkIn, true),
-        checkOut: formatDateWithTime(bookingData.checkOut, false),
-        nights: bookingData.nights,
-        guests: guestDisplay,
-        roomTotal: roomTotal,
-        total: total
-      });
     } else {
       console.error('Hotel or room not found');
       document.getElementById('location').textContent = 'Error loading data';
       document.getElementById('hotelName').textContent = 'Please go back and try again';
     }
     
-    // Load user profile data if logged in
-    loadUserProfile();
-  }
-  
-  // Function to load user profile from data.js
-  function loadUserProfile() {
-    if (typeof UserDB !== 'undefined') {
-      const currentUser = UserDB.getCurrentUser();
-      if (currentUser) {
-        document.getElementById('fullName').value = currentUser.fullName || 'Not set';
-        document.getElementById('email').value = currentUser.email || 'Not set';
-        document.getElementById('phone').value = currentUser.phone || 'Not set';
-      } else {
-        document.getElementById('fullName').value = 'Please login to autofill';
-        document.getElementById('email').value = 'Please login to autofill';
-        document.getElementById('phone').value = 'Please login to autofill';
-      }
-    } else {
-      document.getElementById('fullName').value = 'Guest User';
-      document.getElementById('email').value = 'guest@example.com';
-      document.getElementById('phone').value = '+60XXXXXXXXX';
-    }
+    // Check login status and setup form
+    checkLoginAndSetupForm();
   }
   
   // Function to go back to hotel page
@@ -447,16 +506,47 @@
     alert('Customer Service: +603 2380 8888\nEmail: reservations@luxestay.com.my\n24/7 Support Available\n\nCheck-in: 3:00 PM\nCheck-out: 12:00 PM');
   }
   
-  // =====================================================
-  // FIXED: Function to proceed to payment - Added location field
-  // =====================================================
+  // Function to validate and proceed to payment
+  function validateAndProceed() {
+    // If logged in, skip validation (already have user data)
+    if (isLoggedIn) {
+      proceedToPayment();
+      return;
+    }
+    
+    // For guest users, validate the form
+    if (validateForm()) {
+      proceedToPayment();
+    } else {
+      // Scroll to the first error
+      const firstError = document.querySelector('.input-error');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }
+  
+  // Function to proceed to payment
   function proceedToPayment() {
-    // Save final booking data before proceeding to payment
+    // Get contact information
+    let fullName, email, phone;
+    
+    if (isLoggedIn && loggedInUser) {
+      fullName = loggedInUser.fullName;
+      email = loggedInUser.email;
+      phone = loggedInUser.phone;
+    } else {
+      fullName = document.getElementById('fullName').value.trim();
+      email = document.getElementById('email').value.trim();
+      phone = document.getElementById('phone').value.trim();
+    }
+    
+    // Save final booking data with contact information
     const finalBooking = {
       hotelId: bookingData.hotelId,
       roomId: bookingData.roomId,
       hotelName: bookingData.hotelName,
-      location: bookingData.location,  // ← ADDED - FIXES LOCATION ISSUE
+      location: bookingData.location,
       roomType: bookingData.roomType,
       roomPrice: bookingData.roomPrice,
       checkIn: bookingData.checkIn,
@@ -466,13 +556,49 @@
       children: bookingData.children,
       guests: document.getElementById('guests').textContent,
       totalPrice: document.getElementById('totalPrice').textContent,
-      bookingDate: new Date().toISOString()
+      bookingDate: new Date().toISOString(),
+      // Contact information
+      guestName: fullName,
+      guestEmail: email,
+      guestPhone: phone,
+      isGuestUser: !isLoggedIn
     };
     
-    console.log('Saving finalBooking with location:', finalBooking.location);
+    console.log('Saving finalBooking with contact info:', finalBooking);
     localStorage.setItem('finalBooking', JSON.stringify(finalBooking));
+    
+    // Redirect to payment page
     window.location.href = 'pay.html';
   }
+  
+  // Add CSS for error styling with font-size 1rem
+  const style = document.createElement('style');
+  style.textContent = `
+    .required-star {
+      color: #dc3545;
+      margin-left: 4px;
+    }
+    .input-error {
+      border-color: #dc3545 !important;
+      background-color: #fff8f8 !important;
+    }
+    .error-message {
+      color: #dc3545;
+      font-size: 1rem;
+      margin-top: 5px;
+      display: block;
+    }
+    .autofilled {
+      background-color: #f0f8ff;
+      border-color: #28a745;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+    }
+  `;
+  document.head.appendChild(style);
   
   // Load navigation and booking data
   fetch('nav.html')
