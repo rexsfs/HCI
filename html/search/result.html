@@ -53,35 +53,8 @@
 
 <script>
   // =====================================================
-  // CHECK IF COMING FROM HOME PAGE - RESET SEARCH
+  // ROOM OCCUPANCY MAPPING
   // =====================================================
-  function shouldResetSearch() {
-    // Check if coming from home page
-    const referrer = document.referrer;
-    if (referrer && (referrer.includes('home.html') || referrer.includes('/nav/home.html'))) {
-      console.log('Coming from home page - resetting search');
-      return true;
-    }
-    // Check sessionStorage flag
-    const fromHome = sessionStorage.getItem('fromHome');
-    if (fromHome === 'true') {
-      sessionStorage.removeItem('fromHome');
-      console.log('Reset flag found - resetting search');
-      return true;
-    }
-    return false;
-  }
-
-  function goBackToSearch() {
-    // Clear search params before going back
-    if (shouldResetSearch()) {
-      localStorage.removeItem('searchParams');
-      localStorage.removeItem('searchParamsForHotel');
-    }
-    window.location.href = 'search.html';
-  }
-
-  // Room type occupancy mapping
   const ROOM_OCCUPANCY = {
     standard: { adults: 2, children: 0, display: "2 Adults" },
     deluxe: { adults: 2, children: 1, display: "2 Adults + 1 Child" },
@@ -106,12 +79,20 @@
     return guestText;
   }
 
-  // Get the specific room by type value from hotel's rooms
   function getRoomByTypeValue(rooms, roomTypeValue) {
     return rooms.find(room => room.typeValue === roomTypeValue);
   }
 
-  // Convert HOTELS_DATABASE to ALL_HOTELS array
+  // =====================================================
+  // GO BACK TO SEARCH - Preserve all data
+  // =====================================================
+  function goBackToSearch() {
+    window.location.href = 'search.html';
+  }
+
+  // =====================================================
+  // CONVERT DATABASE TO SEARCHABLE ARRAY
+  // =====================================================
   function convertToAllHotels() {
     const allHotels = [];
     
@@ -162,16 +143,18 @@
     return allHotels;
   }
 
+  // =====================================================
+  // GET SEARCH PARAMS (with validation)
+  // =====================================================
   function getSearchParams() {
-    // If coming from home, return null (no search params)
-    if (shouldResetSearch()) {
-      console.log('Resetting search params - returning null');
-      return null;
-    }
-    
     const params = localStorage.getItem('searchParams');
     if (params) {
-      return JSON.parse(params);
+      try {
+        return JSON.parse(params);
+      } catch(e) {
+        console.error('Error parsing searchParams:', e);
+        return null;
+      }
     }
     return null;
   }
@@ -212,10 +195,10 @@
   }
 
   // =====================================================
-  // FIXED SEARCH FUNCTION - Handles both "KL" and "kl"
+  // ENHANCED SEARCH FUNCTION - Works on first try
   // =====================================================
   function searchHotels(searchLocation, allHotels) {
-    if (!searchLocation) return [];
+    if (!searchLocation || allHotels.length === 0) return [];
     
     const searchTerm = searchLocation.toLowerCase().trim();
     const searchWords = searchTerm.split(' ');
@@ -239,17 +222,15 @@
       'ktn': 'kuantan'
     };
     
-    // Check if search term matches any abbreviation (including partial)
+    // Build expanded search terms
     let expandedSearchTerms = [searchTerm];
     let expandedWords = [];
     
-    // Check for exact abbreviation match
     if (abbreviationMap[searchTerm]) {
       expandedSearchTerms.push(abbreviationMap[searchTerm]);
       expandedWords = abbreviationMap[searchTerm].split(' ');
     }
     
-    // Check if search term contains any abbreviation
     for (const [abbr, full] of Object.entries(abbreviationMap)) {
       if (searchTerm.includes(abbr) && abbr.length > 1) {
         expandedSearchTerms.push(full);
@@ -257,66 +238,56 @@
       }
     }
     
-    // Remove duplicates
     expandedSearchTerms = [...new Set(expandedSearchTerms)];
     expandedWords = [...new Set(expandedWords)];
     
-    // Also add common variations
     if (searchTerm === 'kl' || searchTerm.includes('kl ')) {
       expandedSearchTerms.push('kuala lumpur', 'klcc');
     }
     
-    return allHotels.filter(hotel => {
+    // Filter hotels with multiple matching strategies
+    const results = allHotels.filter(hotel => {
       const hotelLocation = hotel.location.toLowerCase();
       const hotelName = hotel.name.toLowerCase();
       
-      // Check all expanded search terms
-      let locationMatch = false;
+      // Direct location match
       for (const term of expandedSearchTerms) {
-        if (hotelLocation.includes(term)) {
-          locationMatch = true;
-          break;
+        if (hotelLocation.includes(term)) return true;
+      }
+      
+      // Name match
+      for (const term of expandedSearchTerms) {
+        if (hotelName.includes(term)) return true;
+      }
+      
+      // Keyword match
+      for (const term of expandedSearchTerms) {
+        if (hotel.keywords.some(keyword => keyword.includes(term) || term.includes(keyword))) {
+          return true;
         }
       }
       
-      let nameMatch = false;
-      for (const term of expandedSearchTerms) {
-        if (hotelName.includes(term)) {
-          nameMatch = true;
-          break;
-        }
-      }
-      
-      // Check keywords
-      const keywordMatch = hotel.keywords.some(keyword => {
-        for (const term of expandedSearchTerms) {
-          if (keyword.includes(term) || term.includes(keyword)) {
-            return true;
-          }
-        }
-        return false;
-      });
-      
-      // Check individual words
-      let wordMatch = false;
+      // Word-by-word match
       const wordsToCheck = [...new Set([...searchWords, ...expandedWords])];
       for (const word of wordsToCheck) {
         if (word.length > 1) {
           if (hotelLocation.includes(word) || hotelName.includes(word) ||
               hotel.keywords.some(k => k.includes(word))) {
-            wordMatch = true;
-            break;
+            return true;
           }
         }
       }
       
-      // Special handling for KL
-      const isKL = searchTerm === 'kl' || searchTerm.includes('kl ') || searchTerm === 'KL';
-      const hasKL = hotelLocation.includes('kuala lumpur') || hotelLocation.includes('klcc') ||
-                    hotelName.includes('kuala lumpur');
+      // Special KL handling
+      const isKLSearch = searchTerm === 'kl' || searchTerm === 'kuala lumpur' || searchTerm.includes('klcc');
+      const isKLHotel = hotelLocation.includes('kuala lumpur') || hotelLocation.includes('klcc') ||
+                        hotelName.includes('kuala lumpur');
+      if (isKLSearch && isKLHotel) return true;
       
-      return locationMatch || keywordMatch || nameMatch || wordMatch || (isKL && hasKL);
+      return false;
     });
+    
+    return results;
   }
 
   function updateResultsCount(count, searchLocation) {
@@ -334,7 +305,7 @@
     }
   }
 
-  function renderHotels(hotels, selectedRoomTypeValue, hasSearchParams) {
+  function renderHotels(hotels, selectedRoomTypeValue, hasSearchParams, searchLocation) {
     const container = document.getElementById('hotelListContainer');
     
     if (!container) return;
@@ -358,7 +329,10 @@
         <div style="text-align: center; padding: 60px 20px; color: #666;">
           <i class="fas fa-hotel" style="font-size: 64px; color: #ccc; margin-bottom: 20px; display: block;"></i>
           <h3 style="margin-bottom: 10px;">No hotels found</h3>
-          <p>We couldn't find any hotels matching your search.<br>Try searching for a different location or check your spelling.</p>
+          <p>We couldn't find any hotels matching "${searchLocation || 'your search'}"<br>Try searching for a different location or check your spelling.</p>
+          <button onclick="window.location.href='search.html'" style="margin-top: 20px; padding: 12px 24px; background: #1e3a5f; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            <i class="fas fa-arrow-left"></i> Back to Search
+          </button>
         </div>
       `;
       return;
@@ -407,7 +381,7 @@
                 ${amenitiesHTML}
               </div>
               <div class="price">
-                RM ${displayRoom.price.toLocaleString()} <small>/ night</small>
+                RM ${displayRoom ? displayRoom.price.toLocaleString() : '0'} <small>/ night</small>
                 <span style="margin-left: 10px; font-size: 12px; font-weight: normal; color: #6c7e8e;">
                   <i class="fas fa-user-friends"></i> ${occupancyDisplay}
                 </span>
@@ -422,7 +396,7 @@
   }
 
   // =====================================================
-  // MAIN FUNCTION: Initialize page with search results
+  // MAIN FUNCTION: Initialize results
   // =====================================================
   function initializeResults() {
     if (typeof HOTELS_DATABASE === 'undefined') {
@@ -442,14 +416,14 @@
       const selectedRoomTypeValue = searchParams.roomTypeValue || 'standard';
       
       console.log('Searching for: "' + searchLocation + '"');
-      console.log('Selected Room Type: ' + selectedRoomTypeValue);
+      console.log('Total hotels in DB: ' + ALL_HOTELS.length);
       
       const matchingHotels = searchHotels(searchLocation, ALL_HOTELS);
       
       console.log('Found ' + matchingHotels.length + ' matching hotels');
       
       updateResultsCount(matchingHotels.length, searchLocation);
-      renderHotels(matchingHotels, selectedRoomTypeValue, true);
+      renderHotels(matchingHotels, selectedRoomTypeValue, true, searchLocation);
       
       localStorage.setItem('searchParamsForHotel', JSON.stringify({
         roomTypeValue: selectedRoomTypeValue,
@@ -465,11 +439,10 @@
       console.log('No search parameters found - showing empty state');
       displaySearchInfo(null);
       updateResultsCount(0, null);
-      renderHotels([], 'standard', false);
+      renderHotels([], 'standard', false, null);
     }
   }
 
-  // Make goBackToSearch available globally
   window.goBackToSearch = goBackToSearch;
   
   fetch('nav.html')

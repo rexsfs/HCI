@@ -14,18 +14,10 @@
     <button class="back-button" onclick="goBackToHome()">
       <i class="fas fa-arrow-left"></i>
     </button>
-    <div class="header-title">Search Your Destination</div>
+    <div class="header-title">Select Your Dates</div>
   </div>
 
   <div class="search-form">
-    <div class="search-field">
-      <label><i class="fas fa-map-marker-alt"></i> Location</label>
-      <div class="location-input">
-        <i class="fas fa-search"></i>
-        <input type="text" id="locationInput" placeholder="Where are you going? (City, hotel, or area)">
-      </div>
-    </div>
-
     <div class="date-row">
       <div class="date-field">
         <label><i class="fas fa-calendar-alt"></i> Check-In</label>
@@ -35,6 +27,7 @@
         </div>
       </div>
     </div>
+    
     <div class="date-row">
       <div class="date-field">
         <label><i class="fas fa-calendar-alt"></i> Check-Out</label>
@@ -45,25 +38,10 @@
       </div>
     </div>
 
-    <div class="room-field">
-      <label><i class="fas fa-bed"></i> Room Type</label>
-      <div class="room-select">
-        <i class="fas fa-hotel"></i>
-        <select id="roomSelect">
-          <option value="">Select Room Type</option>
-          <option value="standard">Standard Room</option>
-          <option value="deluxe">Deluxe King Room</option>
-          <option value="suite">Suite</option>
-          <option value="family">Family Room</option>
-          <option value="presidential">Presidential Suite</option>
-        </select>
-      </div>
-    </div>
-
     <div class="button-wrapper">
       <button class="search-button" id="searchDestinationBtn">
-        <i class="fas fa-search"></i>
-        <span>Search Your Destination</span>
+        <i class="fas fa-calendar-check"></i>
+        <span>View Hotels</span>
       </button>
     </div>
   </div>
@@ -75,19 +53,29 @@
   // Get DOM elements
   const checkInInput = document.getElementById('checkInDate');
   const checkOutInput = document.getElementById('checkOutDate');
-  const locationInput = document.getElementById('locationInput');
-  const roomSelect = document.getElementById('roomSelect');
   const searchBtn = document.getElementById('searchDestinationBtn');
 
   // =====================================================
-  // FUNCTION: Reset form to default values (only when explicitly going to home)
+  // FUNCTION: Check if coming from home page
+  // =====================================================
+  function isComingFromHome() {
+    const referrer = document.referrer;
+    if (referrer && (referrer.includes('home.html') || referrer.includes('/nav/home.html'))) {
+      return true;
+    }
+    const fromHome = sessionStorage.getItem('fromHome');
+    if (fromHome === 'true') {
+      sessionStorage.removeItem('fromHome');
+      return true;
+    }
+    return false;
+  }
+
+  // =====================================================
+  // FUNCTION: Reset form to default values
   // =====================================================
   function resetToDefault() {
     console.log('Resetting form to default values');
-    
-    if (locationInput) {
-      locationInput.value = '';
-    }
     
     const today = new Date();
     const tomorrow = new Date(today);
@@ -105,21 +93,20 @@
       checkOutInput.min = defaultCheckOut;
     }
     
-    if (roomSelect) {
-      roomSelect.value = '';
-    }
+    localStorage.removeItem('searchFormData');
   }
 
   // =====================================================
   // FUNCTION: Save search data to localStorage
   // =====================================================
   function saveSearchData() {
+    if (isComingFromHome()) {
+      return;
+    }
+    
     const searchData = {
-      location: locationInput ? locationInput.value.trim() : '',
-      checkIn: checkInInput ? checkInInput.value : '',
-      checkOut: checkOutInput ? checkOutInput.value : '',
-      roomType: roomSelect ? roomSelect.value : '',
-      roomTypeText: roomSelect && roomSelect.selectedIndex >= 0 ? roomSelect.options[roomSelect.selectedIndex]?.text || '' : ''
+      checkIn: checkInInput.value,
+      checkOut: checkOutInput.value
     };
     localStorage.setItem('searchFormData', JSON.stringify(searchData));
   }
@@ -128,29 +115,21 @@
   // FUNCTION: Load saved search data from localStorage
   // =====================================================
   function loadSavedSearchData() {
+    if (isComingFromHome()) {
+      resetToDefault();
+      return;
+    }
+    
     const savedData = localStorage.getItem('searchFormData');
     if (savedData) {
-      try {
-        const searchData = JSON.parse(savedData);
-        
-        if (searchData.location && locationInput) {
-          locationInput.value = searchData.location;
-        }
-        
-        if (searchData.checkIn && checkInInput) {
-          checkInInput.value = searchData.checkIn;
-        }
-        
-        if (searchData.checkOut && checkOutInput) {
-          checkOutInput.value = searchData.checkOut;
-        }
-        
-        if (searchData.roomType && roomSelect) {
-          roomSelect.value = searchData.roomType;
-        }
-      } catch(e) {
-        console.error('Error loading saved data:', e);
-        setDefaultDates();
+      const searchData = JSON.parse(savedData);
+      
+      if (searchData.checkIn && checkInInput) {
+        checkInInput.value = searchData.checkIn;
+      }
+      
+      if (searchData.checkOut && checkOutInput) {
+        checkOutInput.value = searchData.checkOut;
       }
     } else {
       setDefaultDates();
@@ -165,7 +144,7 @@
     return `${year}-${month}-${day}`;
   }
   
-  // Set default dates if empty
+  // Set default dates
   function setDefaultDates() {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -185,14 +164,21 @@
   }
 
   // =====================================================
-  // FUNCTION: Go back to home (ONLY this clears data for fresh start)
+  // FUNCTION: Go back to home
   // =====================================================
   function goBackToHome() {
-    // Clear all stored search data for fresh start on home page
-    localStorage.removeItem('searchFormData');
-    localStorage.removeItem('searchParams');
-    localStorage.removeItem('searchParamsForHotel');
+    sessionStorage.setItem('fromHome', 'true');
     window.location.href = '/html/nav/home.html';
+  }
+
+  // Calculate nights between dates
+  function calculateNights(checkIn, checkOut) {
+    if (!checkIn || !checkOut) return 0;
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
   }
 
   // Initialize page
@@ -228,24 +214,13 @@
         saveSearchData();
       });
     }
-
-    if (locationInput) {
-      locationInput.addEventListener('input', function() {
-        saveSearchData();
-      });
-    }
-
-    if (roomSelect) {
-      roomSelect.addEventListener('change', function() {
-        saveSearchData();
-      });
-    }
   }
 
+  // Function to show error message
   function showError(inputId, message) {
     const inputElement = document.getElementById(inputId);
     if (inputElement) {
-      let container = inputElement.closest('.search-field, .date-field, .room-field');
+      let container = inputElement.closest('.date-field');
       if (container) {
         container.classList.add('error');
         
@@ -259,7 +234,7 @@
         errorDiv.textContent = message;
         container.appendChild(errorDiv);
         
-        const inputContainer = container.querySelector('.location-input, .date-input, .room-select');
+        const inputContainer = container.querySelector('.date-input');
         if (inputContainer) {
           inputContainer.style.borderColor = '#e74c3c';
         }
@@ -267,40 +242,30 @@
     }
   }
   
+  // Function to clear all error messages
   function clearErrors() {
-    const errorContainers = document.querySelectorAll('.search-field, .date-field, .room-field');
+    const errorContainers = document.querySelectorAll('.date-field');
     errorContainers.forEach(container => {
       container.classList.remove('error');
       const errorMsg = container.querySelector('.error-message');
       if (errorMsg) {
         errorMsg.remove();
       }
-      const inputContainer = container.querySelector('.location-input, .date-input, .room-select');
+      const inputContainer = container.querySelector('.date-input');
       if (inputContainer) {
         inputContainer.style.borderColor = '';
       }
     });
   }
   
-  // Validation and search function
+  // Validation and search function - Redirect to hotel_all.html
   function validateAndSearch() {
-    const location = locationInput.value.trim();
     const checkIn = checkInInput.value;
     const checkOut = checkOutInput.value;
-    const roomType = roomSelect.value;
-    const roomTypeText = roomSelect.options[roomSelect.selectedIndex]?.text || '';
     
     clearErrors();
     
     let isValid = true;
-    
-    if (!location) {
-      showError('locationInput', 'Please enter a destination');
-      isValid = false;
-    } else if (location.length < 2) {
-      showError('locationInput', 'Please enter a valid destination (at least 2 characters)');
-      isValid = false;
-    }
     
     if (!checkIn) {
       showError('checkInDate', 'Please select check-in date');
@@ -317,11 +282,6 @@
       isValid = false;
     }
     
-    if (!roomType) {
-      showError('roomSelect', 'Please select a room type');
-      isValid = false;
-    }
-    
     if (isValid) {
       function formatDisplayDate(dateString) {
         const date = new Date(dateString);
@@ -329,39 +289,33 @@
         return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
       }
       
+      const nights = calculateNights(checkIn, checkOut);
+      
       const searchParams = {
-        location: location,
         checkIn: checkIn,
         checkOut: checkOut,
         checkInDisplay: formatDisplayDate(checkIn),
         checkOutDisplay: formatDisplayDate(checkOut),
-        roomType: roomTypeText,
-        roomTypeValue: roomType,
-        adults: 2,
-        rooms: 1
+        nights: nights
       };
       
-      // Save current form data before navigating
-      saveSearchData();
       localStorage.setItem('searchParams', JSON.stringify(searchParams));
-      window.location.href = '/html/search/result.html';
+      
+      // Check if there's a selected hotel ID from home page
+      const selectedHotelId = localStorage.getItem('selectedHotelId');
+      
+      if (selectedHotelId) {
+        // Redirect to specific hotel with dates
+        localStorage.removeItem('selectedHotelId');
+        window.location.href = `../hotel/hotel_all.html?id=${selectedHotelId}&checkIn=${checkIn}&checkOut=${checkOut}&nights=${nights}`;
+      } else {
+        // Redirect to result page to show all hotels
+        window.location.href = '/html/search/result.html';
+      }
     }
   }
   
   // Add real-time validation clearing
-  if (locationInput) {
-    locationInput.addEventListener('input', function() {
-      const container = this.closest('.search-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.location-input');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
   if (checkInInput) {
     checkInInput.addEventListener('change', function() {
       const container = this.closest('.date-field');
@@ -388,31 +342,12 @@
     });
   }
   
-  if (roomSelect) {
-    roomSelect.addEventListener('change', function() {
-      const container = this.closest('.room-field');
-      if (container && container.classList.contains('error')) {
-        container.classList.remove('error');
-        const errorMsg = container.querySelector('.error-message');
-        if (errorMsg) errorMsg.remove();
-        const inputContainer = container.querySelector('.room-select');
-        if (inputContainer) inputContainer.style.borderColor = '';
-      }
-    });
-  }
-  
+  // Attach search button click event
   if (searchBtn) {
     searchBtn.addEventListener('click', validateAndSearch);
   }
   
-  if (locationInput) {
-    locationInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        validateAndSearch();
-      }
-    });
-  }
-  
+  // Make functions available globally
   window.goBackToHome = goBackToHome;
   
   // Load navigation component and initialize page
