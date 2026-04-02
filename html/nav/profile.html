@@ -8,6 +8,174 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="/css/nav/profile.css">
   <script src="../login_register/data.js"></script>
+  <style>
+    /* Custom Modal Popup Styles */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    
+    .custom-modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      max-width: 350px;
+      width: 90%;
+      padding: 0;
+      text-align: center;
+      animation: modalFadeIn 0.3s ease;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Edit Form Modal */
+    .edit-modal-content {
+      max-width: 380px;
+    }
+    
+    .modal-icon {
+      font-size: 56px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .modal-icon.success {
+      color: #27ae60;
+    }
+    
+    .modal-icon.warning {
+      color: #e67e22;
+    }
+    
+    .modal-icon.edit {
+      color: #1e3a5f;
+    }
+    
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 12px;
+      padding: 0 20px;
+    }
+    
+    .modal-message {
+      color: #5a6e8a;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 0 20px;
+    }
+    
+    /* Edit Form Fields */
+    .edit-form {
+      padding: 0 20px 20px 20px;
+      text-align: left;
+    }
+    
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #5a6e8a;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      background: #f8fafd;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus {
+      border-color: #1e3a5f;
+      background: white;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      border-top: 1px solid #eef2f6;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 0;
+    }
+    
+    .modal-btn:first-child {
+      border-bottom-left-radius: 24px;
+      border-right: 1px solid #eef2f6;
+      color: #5a6e8a;
+    }
+    
+    .modal-btn:last-child {
+      border-bottom-right-radius: 24px;
+      color: #1e3a5f;
+    }
+    
+    .modal-btn:active {
+      background: #f5f7fb;
+    }
+    
+    .modal-btn-cancel {
+      color: #7f8c8d;
+    }
+    
+    .modal-btn-confirm {
+      color: #1e3a5f;
+      font-weight: 700;
+    }
+    
+    .modal-btn-confirm.success {
+      color: #27ae60;
+    }
+    
+    /* Success Modal Specific */
+    .success-modal .modal-btn-confirm {
+      color: #27ae60;
+    }
+  </style>
 </head>
 <body>
 <div class="app-container">
@@ -39,20 +207,20 @@
     <div class="profile-details">
       <div class="detail-item">
         <span class="detail-label">Full Name</span>
-        <span class="detail-value">Ahmad Bin Abdullah</span>
+        <span class="detail-value" id="profileFullName">Ahmad Bin Abdullah</span>
       </div>
       <div class="detail-item">
         <span class="detail-label">Phone Number</span>
-        <span class="detail-value">+6012 345 6789</span>
+        <span class="detail-value" id="profilePhone">+6012 345 6789</span>
       </div>
       <div class="detail-item">
         <span class="detail-label">Email Address</span>
-        <span class="detail-value">ahmad.abdullah@email.com</span>
+        <span class="detail-value" id="profileEmail">ahmad.abdullah@email.com</span>
       </div>
     </div>
 
     <!-- Edit Profile Button - Larger -->
-    <button class="edit-profile-btn">
+    <button class="edit-profile-btn" id="editProfileBtn">
       <i class="fas fa-edit"></i>
       Edit Profile
     </button>
@@ -62,10 +230,128 @@
   <div id="nav-container"></div>
 </div>
 
+<!-- Custom Edit Modal Popup -->
+<div id="editModal" class="custom-modal">
+  <div class="modal-content edit-modal-content">
+    <div class="modal-icon edit">
+      <i class="fas fa-user-edit"></i>
+    </div>
+    <div class="modal-title">Edit Profile</div>
+    <div class="edit-form">
+      <div class="form-group">
+        <label><i class="fas fa-user"></i> Full Name</label>
+        <input type="text" id="editFullName" placeholder="Enter your full name">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Address</label>
+        <input type="email" id="editEmail" placeholder="Enter your email address">
+      </div>
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-cancel" id="editCancelBtn">Cancel</button>
+      <button class="modal-btn modal-btn-confirm" id="editSaveBtn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Success Modal Popup -->
+<div id="successModal" class="custom-modal">
+  <div class="modal-content">
+    <div class="modal-icon success">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="modal-title">Update Successful!</div>
+    <div class="modal-message">
+      Your profile information has been updated successfully.
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-confirm success" id="successOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
 <script>
     // Function to generate random username (number between 100000 and 999999)
     function generateRandomUsername() {
         return 'User' + Math.floor(Math.random() * 900000 + 100000);
+    }
+    
+    // Function to show modal
+    function showModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('show');
+      }
+    }
+    
+    // Function to hide modal
+    function hideModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('show');
+      }
+    }
+    
+    // Function to show edit modal with current values
+    function showEditModal() {
+      const user = UserDB.getCurrentUser();
+      if (!user) {
+        window.location.href = '../login_register/login.html';
+        return;
+      }
+      
+      const currentName = user.fullName || generateRandomUsername();
+      const currentEmail = user.email || '';
+      
+      document.getElementById('editFullName').value = currentName;
+      document.getElementById('editEmail').value = currentEmail;
+      
+      showModal('editModal');
+    }
+    
+    // Function to show success modal
+    function showSuccessModal() {
+      showModal('successModal');
+    }
+    
+    // Function to save profile changes
+    function saveProfileChanges() {
+      const user = UserDB.getCurrentUser();
+      if (!user) {
+        window.location.href = '../login_register/login.html';
+        return;
+      }
+      
+      const newFullName = document.getElementById('editFullName').value.trim();
+      const newEmail = document.getElementById('editEmail').value.trim();
+      
+      if (!newFullName) {
+        alert('Please enter your full name');
+        return;
+      }
+      
+      // Update user data
+      const updatedUser = UserDB.updateUser(user.phone, {
+        fullName: newFullName,
+        email: newEmail
+      });
+      
+      if (updatedUser) {
+        UserDB.setCurrentUser(updatedUser);
+        
+        // Update profile display
+        document.getElementById('profileFullName').textContent = updatedUser.fullName || generateRandomUsername();
+        document.getElementById('profileEmail').textContent = updatedUser.email || 'Not set';
+        document.getElementById('profilePhone').textContent = updatedUser.phone;
+        
+        // Hide edit modal
+        hideModal('editModal');
+        
+        // Show success modal
+        showSuccessModal();
+      } else {
+        alert('Failed to update profile. Please try again.');
+      }
     }
     
     // Profile page functionality
@@ -84,10 +370,10 @@
     }
     
     // Get profile elements
-    const fullNameSpan = document.querySelector('.detail-item:first-child .detail-value');
-    const phoneSpan = document.querySelector('.detail-item:nth-child(2) .detail-value');
-    const emailSpan = document.querySelector('.detail-item:nth-child(3) .detail-value');
-    const editBtn = document.querySelector('.edit-profile-btn');
+    const fullNameSpan = document.getElementById('profileFullName');
+    const phoneSpan = document.getElementById('profilePhone');
+    const emailSpan = document.getElementById('profileEmail');
+    const editBtn = document.getElementById('editProfileBtn');
     
     if (currentUser) {
         // User is logged in - show profile data
@@ -101,39 +387,51 @@
         if (emailSpan) emailSpan.textContent = '';
     }
     
-    // Edit profile button click handler
+    // Edit profile button click handler - opens modal
     if (editBtn) {
         editBtn.addEventListener('click', function() {
             if (UserDB.isLoggedIn()) {
-                // Get current user again to ensure we have latest data
-                const user = UserDB.getCurrentUser();
-                
-                // If user has no name, generate a random one as default
-                const currentName = user?.fullName || generateRandomUsername();
-                const currentEmail = user?.email || '';
-                
-                const newName = prompt('Enter your full name:', currentName);
-                const newEmail = prompt('Enter your email address:', currentEmail);
-                
-                if (newName !== null || newEmail !== null) {
-                    const updatedUser = UserDB.updateUser(user.phone, {
-                        fullName: newName !== null ? newName : user.fullName,
-                        email: newEmail !== null ? newEmail : user.email
-                    });
-                    
-                    if (updatedUser) {
-                        UserDB.setCurrentUser(updatedUser);
-                        if (fullNameSpan) fullNameSpan.textContent = updatedUser.fullName || generateRandomUsername();
-                        if (emailSpan) emailSpan.textContent = updatedUser.email || 'Not set';
-                        alert('Profile updated successfully!');
-                    }
-                }
+                showEditModal();
             } else {
-                // If not logged in, redirect to login page
                 window.location.href = '../login_register/login.html';
             }
         });
     }
+    
+    // Edit modal buttons
+    const editCancelBtn = document.getElementById('editCancelBtn');
+    const editSaveBtn = document.getElementById('editSaveBtn');
+    
+    if (editCancelBtn) {
+      editCancelBtn.addEventListener('click', function() {
+        hideModal('editModal');
+      });
+    }
+    
+    if (editSaveBtn) {
+      editSaveBtn.addEventListener('click', saveProfileChanges);
+    }
+    
+    // Success modal button
+    const successOkBtn = document.getElementById('successOkBtn');
+    if (successOkBtn) {
+      successOkBtn.addEventListener('click', function() {
+        hideModal('successModal');
+      });
+    }
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+      const editModal = document.getElementById('editModal');
+      const successModal = document.getElementById('successModal');
+      
+      if (event.target === editModal) {
+        hideModal('editModal');
+      }
+      if (event.target === successModal) {
+        hideModal('successModal');
+      }
+    });
 
     // Load navigation component from external file
     fetch('nav.html')
@@ -147,7 +445,7 @@
             document.getElementById('nav-container').innerHTML = html;
             
             // After loading nav, set active state
-            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+            const currentPage = window.location.pathname.split('/').pop() || 'profile.html';
             const navItems = document.querySelectorAll('.nav-item');
             
             navItems.forEach(item => {
@@ -184,7 +482,7 @@
             `;
             
             // Set active state for fallback
-            const currentPage = window.location.pathname.split('/').pop() || 'home.html';
+            const currentPage = window.location.pathname.split('/').pop() || 'profile.html';
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 const href = item.getAttribute('href');
