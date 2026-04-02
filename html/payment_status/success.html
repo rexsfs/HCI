@@ -9,6 +9,108 @@
   <link rel="stylesheet" href="/css/nav/nav.css">
   <link rel="stylesheet" href="/css/payment_status/success.css">
   <script src="../login_register/data.js"></script>
+  <style>
+    /* Custom Modal Popup Styles - Centered in Middle */
+    .custom-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+    
+    .custom-modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      max-width: 320px;
+      width: 85%;
+      padding: 0;
+      text-align: center;
+      animation: modalFadeIn 0.3s ease;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .modal-icon {
+      font-size: 56px;
+      color: #28a745;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    
+    .modal-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 12px;
+      padding: 0 20px;
+    }
+    
+    .modal-message {
+      color: #5a6e8a;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 0 20px;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      border-top: 1px solid #eef2f6;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      background: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 0;
+    }
+    
+    .modal-btn:first-child {
+      border-bottom-left-radius: 24px;
+      border-right: 1px solid #eef2f6;
+      color: #5a6e8a;
+    }
+    
+    .modal-btn:last-child {
+      border-bottom-right-radius: 24px;
+      color: #1e3a5f;
+    }
+    
+    .modal-btn:active {
+      background: #f5f7fb;
+    }
+    
+    .modal-btn-confirm {
+      color: #28a745;
+      font-weight: 700;
+    }
+  </style>
 </head>
 <body>
 <div class="app-container">
@@ -121,6 +223,23 @@
 
   <!-- Navigation Container -->
   <div id="nav-container"></div>
+</div>
+
+<!-- Custom Modal Popup -->
+<div id="successModal" class="custom-modal">
+  <div class="modal-content">
+    <div class="modal-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <div class="modal-title">Payment Successful</div>
+    <div class="modal-message">
+      Your reservation has been confirmed.<br>
+      Thank you for choosing LuxeStay!
+    </div>
+    <div class="modal-buttons">
+      <button class="modal-btn modal-btn-confirm" id="modalOkBtn">OK</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -310,6 +429,24 @@
       
       loadPaymentResult();
     });
+  
+  // Show success modal on page load
+  window.addEventListener('load', function() {
+    const modal = document.getElementById('successModal');
+    modal.classList.add('show');
+    
+    // Close modal when OK button is clicked
+    document.getElementById('modalOkBtn').addEventListener('click', function() {
+      modal.classList.remove('show');
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.classList.remove('show');
+      }
+    });
+  });
 </script>
 </body>
 </html>
