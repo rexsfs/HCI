@@ -568,9 +568,14 @@ function updateRoomPage(hotel, room) {
     
     // Update main room image
     const mainImage = document.querySelector('.main-room-image img');
-    if (mainImage && room.image) {
-        mainImage.src = room.image;
+    const ROOM_IMAGE_FALLBACK = 'https://via.placeholder.com/800x500?text=Image+Unavailable';
+    if (mainImage) {
+        mainImage.src = room.image || ROOM_IMAGE_FALLBACK;
         mainImage.alt = `${hotel.name} - ${room.type}`;
+        mainImage.onerror = () => {
+            mainImage.src = ROOM_IMAGE_FALLBACK;
+            mainImage.onerror = null;
+        };
     }
     
     // Update amenities with hotel-specific amenities
@@ -587,14 +592,25 @@ function updateRoomPage(hotel, room) {
     const galleryItems = document.querySelectorAll('.gallery-item');
     
     if (galleryItems.length >= 3) {
+        const galleryFallback = 'https://via.placeholder.com/800x500?text=Image+Unavailable';
+
         const deskImg = galleryItems[0]?.querySelector('.gallery-image img');
-        if (deskImg) deskImg.src = gallery.workDesk;
+        if (deskImg) {
+            deskImg.src = gallery.workDesk || galleryFallback;
+            deskImg.onerror = () => { deskImg.src = galleryFallback; deskImg.onerror = null; };
+        }
         
         const overviewImg = galleryItems[1]?.querySelector('.gallery-image img');
-        if (overviewImg) overviewImg.src = gallery.overview;
+        if (overviewImg) {
+            overviewImg.src = gallery.overview || galleryFallback;
+            overviewImg.onerror = () => { overviewImg.src = galleryFallback; overviewImg.onerror = null; };
+        }
         
         const bathroomImg = galleryItems[2]?.querySelector('.gallery-image img');
-        if (bathroomImg) bathroomImg.src = gallery.bathroom;
+        if (bathroomImg) {
+            bathroomImg.src = gallery.bathroom || galleryFallback;
+            bathroomImg.onerror = () => { bathroomImg.src = galleryFallback; bathroomImg.onerror = null; };
+        }
     }
     
     // Update room details table - NOW INCLUDES ROOM NAME

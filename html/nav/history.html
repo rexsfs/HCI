@@ -200,7 +200,7 @@
       bookingsHTML += `
         <div class="booking-card" onclick="viewBookingDetails('${bookingId}', '${bookingType}')" style="cursor: pointer;">
           <div class="booking-image">
-            <img src="${hotelImage}" alt="${hotelName}">
+            <img src="${hotelImage}" alt="${hotelName}" onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300?text=Image+Unavailable';">
           </div>
           <div class="booking-details">
             <div class="booking-info">

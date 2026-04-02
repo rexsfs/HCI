@@ -366,8 +366,14 @@
     }
     
     // Update the page
-    document.getElementById('hotelImage').src = hotelImage;
-    document.getElementById('hotelImage').alt = hotelName;
+    const hotelImageEl = document.getElementById('hotelImage');
+    const IMAGE_FALLBACK = 'https://via.placeholder.com/800x500?text=Image+Unavailable';
+    hotelImageEl.src = hotelImage || IMAGE_FALLBACK;
+    hotelImageEl.alt = hotelName;
+    hotelImageEl.onerror = () => {
+      hotelImageEl.src = IMAGE_FALLBACK;
+      hotelImageEl.onerror = null;
+    };
     document.getElementById('hotelName').textContent = hotelName;
     document.getElementById('hotelLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${hotelLocation || 'Location not available'}`;
     
