@@ -484,8 +484,10 @@
       e.preventDefault();
       e.stopPropagation();
 
+      const href = e.currentTarget.getAttribute('href');
+      
       showPendingModal(() => {
-        savePendingBooking();
+        savePendingAndNavigate(href);
       });
       return false;
     }

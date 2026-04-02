@@ -32,7 +32,7 @@
 
   <!-- Room Info Section -->
   <div class="room-info-section">
-    <div class="room-type" id="roomType">Loading...</div>
+    <div class="room-name" id="roomName">Loading...</div>
     <div class="suitable-for" id="suitableFor">
       <i class="fas fa-users"></i> Loading...
     </div>
@@ -123,10 +123,16 @@
     currentHotelData = hotel;
     currentRoomData = room;
     
-    // Update room type display with ROOM NAME instead of type
+    // Update room type display with actual room type (not room name)
     const roomTypeElement = document.querySelector('.room-type');
     if (roomTypeElement) {
-      roomTypeElement.textContent = getRoomDisplayName(room);
+      roomTypeElement.textContent = room.type || 'N/A';
+    }
+
+    // Update room name display with roomName if available, otherwise fallback to room type
+    const roomNameElement = document.querySelector('.room-name');
+    if (roomNameElement) {
+      roomNameElement.textContent = getRoomDisplayName(room);
     }
     
     // Update suitable for text (keep using typeValue for occupancy)
@@ -168,16 +174,15 @@
       }
     }
     
-    // Update room details table - NOW DISPLAYS ROOM NAME
+    // Update room details table with explicit Room Type and Room Name
     const table = document.querySelector('.info-table');
     if (table && typeof getRoomDetailsTable === 'function') {
-      // Create a modified version of room details with room name
+      // Create a modified version of room details that keeps room type and room name distinct
       const originalDetails = getRoomDetailsTable(room, hotel);
       
-      // Modify the details to use room name for Room Type display
       const modifiedDetails = {
         ...originalDetails,
-        "Room Type": getRoomDisplayName(room),
+        "Room Type": room.type || 'N/A',
         "Room Name": getRoomDisplayName(room)
       };
       

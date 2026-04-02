@@ -158,6 +158,7 @@
     roomPrice: 0,
     roomType: '',
     roomTypeValue: '',
+    roomName: '',
     hotelName: '',
     location: '',
     checkIn: '',
@@ -463,6 +464,7 @@
       bookingData.hotelName = hotel.name;
       bookingData.location = hotel.location;
       bookingData.roomType = room.type;
+      bookingData.roomName = room.roomName || room.type;
       bookingData.roomTypeValue = room.typeValue;
       bookingData.roomPrice = room.price;
       
@@ -548,6 +550,7 @@
       hotelName: bookingData.hotelName,
       location: bookingData.location,
       roomType: bookingData.roomType,
+      roomName: bookingData.roomName,
       roomPrice: bookingData.roomPrice,
       checkIn: bookingData.checkIn,
       checkOut: bookingData.checkOut,
