@@ -125,14 +125,21 @@
       </div>
       <div class="divider"></div>
       <div class="info-row">
-        <span class="info-label">Total Paid Amount:</span>
+        <span class="info-label">Total Amount:</span>
         <span class="total-amount" id="totalAmount">RM 0 <small>including tax</small></span>
       </div>
     </div>
 
-    <!-- Cancel Booking Button Section - Hide if already cancelled -->
-    <div class="cancel-section" id="cancelSection">
-      <button class="cancel-btn" onclick="redirectToCancelPage()">
+    <!-- Action Buttons Section -->
+    <div class="action-buttons-section" id="actionButtonsSection">
+      <!-- Pay Now Button (only for pending bookings) -->
+      <button class="pay-now-btn" id="payNowBtn" style="display: none;" onclick="redirectToPayment()">
+        <i class="fas fa-credit-card"></i>
+        Pay Now
+      </button>
+      
+      <!-- Cancel Booking Button -->
+      <button class="cancel-btn" id="cancelBtn" onclick="redirectToCancelPage()">
         <i class="fas fa-trash-alt"></i>
         Click Here to Cancel Booking
       </button>
@@ -192,6 +199,46 @@
       <span class="amenity-tag"><i class="fas fa-bath"></i> Private Bathroom</span>
       <span class="amenity-tag"><i class="fas fa-concierge-bell"></i> Room Service</span>
     `;
+  }
+
+  // Function to redirect to payment page
+  function redirectToPayment() {
+    if (!currentBooking) {
+      alert('Booking information not found');
+      return;
+    }
+    
+    // Save booking data to localStorage for payment page
+    const bookingDataForPayment = {
+      hotelName: currentBooking.hotelName,
+      location: currentBooking.location || currentBooking.hotelLocation,
+      hotelLocation: currentBooking.location || currentBooking.hotelLocation,
+      roomType: currentBooking.roomType,
+      roomTypeValue: currentBooking.roomTypeValue || 'standard',
+      roomName: currentBooking.roomName || currentBooking.roomType,
+      checkIn: currentBooking.checkIn,
+      checkOut: currentBooking.checkOut,
+      nights: currentBooking.nights,
+      totalPrice: currentBooking.totalAmount,
+      roomPrice: currentBooking.roomPrice,
+      adults: 2,
+      children: 0,
+      guests: currentBooking.guests || '2 Adults'
+    };
+    
+    localStorage.setItem('finalBooking', JSON.stringify(bookingDataForPayment));
+    localStorage.setItem('currentBooking', JSON.stringify(bookingDataForPayment));
+    
+    // Remove the pending booking from pendingPayments
+    let pendingPayments = localStorage.getItem('pendingPayments');
+    if (pendingPayments) {
+      pendingPayments = JSON.parse(pendingPayments);
+      const updatedPending = pendingPayments.filter(b => b.bookingId !== currentBooking.bookingId);
+      localStorage.setItem('pendingPayments', JSON.stringify(updatedPending));
+    }
+    
+    // Redirect to payment page
+    window.location.href = '../payment_status/pay.html';
   }
 
   // Function to redirect to cancel page
@@ -356,23 +403,30 @@
     let statusColor = '';
     let statusBg = '';
     
+    const payNowBtn = document.getElementById('payNowBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    
     if (bookingType === 'cancelled') {
       statusText = 'Cancelled';
       statusColor = '#c62828';
       statusBg = '#ffebee';
-      // Hide cancel button for cancelled bookings
-      const cancelSection = document.getElementById('cancelSection');
-      if (cancelSection) {
-        cancelSection.style.display = 'none';
-      }
+      // Hide both buttons for cancelled bookings
+      if (payNowBtn) payNowBtn.style.display = 'none';
+      if (cancelBtn) cancelBtn.style.display = 'none';
     } else if (bookingType === 'completed') {
       statusText = 'Paid';
       statusColor = '#2e7d32';
       statusBg = '#e8f5e9';
+      // Hide pay now button, show cancel button for completed
+      if (payNowBtn) payNowBtn.style.display = 'none';
+      if (cancelBtn) cancelBtn.style.display = 'flex';
     } else {
-      statusText = 'Pending';
+      statusText = 'Pending Payment';
       statusColor = '#ed6c02';
       statusBg = '#fff3e0';
+      // Show pay now button, show cancel button for pending
+      if (payNowBtn) payNowBtn.style.display = 'flex';
+      if (cancelBtn) cancelBtn.style.display = 'flex';
     }
     
     document.getElementById('paymentStatus').innerHTML = `<span style="color: ${statusColor}; background: ${statusBg}; padding: 6px 14px; border-radius: 30px; font-size: 0.9rem; font-weight: 700;">${statusText}</span>`;
@@ -386,10 +440,13 @@
   
   // Function to show error message
   function showErrorMessage(message) {
-    const sections = document.querySelectorAll('.hotel-info-card, .info-card, .room-card, .payment-card, .cancel-section');
+    const sections = document.querySelectorAll('.hotel-info-card, .info-card, .room-card, .payment-card');
+    const actionSection = document.querySelector('.action-buttons-section');
+    
     sections.forEach(section => {
       section.style.display = 'none';
     });
+    if (actionSection) actionSection.style.display = 'none';
     
     const errorDiv = document.createElement('div');
     errorDiv.style.textAlign = 'center';
@@ -407,6 +464,7 @@
   }
   
   // Make functions available globally
+  window.redirectToPayment = redirectToPayment;
   window.redirectToCancelPage = redirectToCancelPage;
   window.goBack = goBack;
   
